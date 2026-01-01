@@ -4,13 +4,25 @@ import Hero from '../components/Hero'
 import Welcome from '../components/Welcome'
 import Products from '../components/Products'
 import History from '../components/History'
-import About from '../components/About'
 import Visit from '../components/Visit'
 import Contact from '../components/Contact'
 import Footer from '../components/Footer'
 import Features from '../components/Featurs'
+import Wholesale from '../components/Wholesale'
+import Socials from '../components/Socials'
+import useSEO from '../hooks/useSEO'
 
 function Home() {
+  const url = window.location.href;
+  
+  useSEO({
+    title: "Home - The Vanilla Shop",
+    description: "The Vanilla Shop is more than a café — it’s Sri Lanka’s first dedicated vanilla boutique.",
+    url,
+    image_alt: "Home",
+    twitter_card: "summary_large_image",
+  });
+  
   return (
     <div className="bg-vanilla-50 text-vanilla-800 font-sans antialiased leading-relaxed scroll-smooth">
       <Navbar />
@@ -19,9 +31,10 @@ function Home() {
       <History />
       <Products />
       <Features />
-      <About />
       <Visit />
+      <Wholesale />
       <Contact />
+      <Socials />
       <Footer />
     </div>
   )

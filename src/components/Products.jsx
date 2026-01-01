@@ -1,12 +1,48 @@
-import React from 'react';
+import React from "react";
 
 const products = [
-  { id: 1, name: 'Pure Vanilla Extract', desc: 'Hand-cured Sri Lankan beans, slowly steeped.', price: '$18.00', img: 'https://images.unsplash.com/photo-1629851720239-2c7075c3f915?auto=format&fit=crop&q=80&w=600' },
-  { id: 2, name: 'Gourmet Vanilla Syrup', desc: 'Smooth sweetness for lattes and cocktails.', price: '$12.50', img: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&q=80&w=600' },
-  { id: 3, name: 'Vanilla Infused Tea', desc: 'A calming blend of Ceylon tea and natural vanilla.', price: '$15.00', img: 'https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&q=80&w=600' },
-  { id: 4, name: 'Handmade Vanilla Soap', desc: 'Gentle, fragrant, and naturally moisturizing.', price: '$8.50', img: 'https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?auto=format&fit=crop&q=80&w=600' },
-  { id: 5, name: 'Café Pastries', desc: 'Cupcakes, éclairs, and cookies from our kitchen.', price: 'From $3.00', img: 'https://images.unsplash.com/photo-1587314168485-3236d6710814?auto=format&fit=crop&q=80&w=600' },
-  { id: 6, name: 'Vanilla Bean Powder', desc: 'Fine, aromatic ingredient for baking.', price: '$22.00', img: 'https://images.unsplash.com/photo-1603569283847-aa295f0d016a?auto=format&fit=crop&q=80&w=600' },
+  {
+    id: 1,
+    name: "Pure Vanilla Extract",
+    desc: "Pure, concentrated, and ideal for baking or beverages.",
+    price: "$18.00",
+    img: "/images/products/alcoholic-vanilla-extracts.jpg",
+  },
+  {
+    id: 2,
+    name: "Gourmet Vanilla Syrup",
+    desc: "Smooth sweetness for lattes, cocktails, and desserts.",
+    price: "$12.50",
+    img: "/images/products/vanilla-syrup.jpg",
+  },
+  {
+    id: 3,
+    name: "Vanilla Infused Tea",
+    desc: "A calming blend of Ceylon tea and natural vanilla.",
+    price: "$15.00",
+    img: "/images/products/vanilla-tea.jpg",
+  },
+  {
+    id: 4,
+    name: "Handmade Vanilla Soap",
+    desc: "Gentle, fragrant, and naturally moisturizing.",
+    price: "$8.50",
+    img: "/images/products/handmade-vanilla-soap.jpg",
+  },
+  {
+    id: 5,
+    name: "Café Pastries",
+    desc: "Deliciously infused creations from our café kitchen.",
+    price: "From $3.00",
+    img: "/images/products/vanilla-paste.jpg",
+  },
+  {
+    id: 6,
+    name: "Vanilla Bean Powder",
+    desc: "Fine, aromatic ingredient for baking.",
+    price: "$22.00",
+    img: "/images/products/vanilla-powder.png",
+  },
 ];
 
 const Products = () => {
@@ -14,25 +50,35 @@ const Products = () => {
     <section id="products" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-serif font-bold text-vanilla-900">Curated Vanilla Collection</h2>
-          <p className="text-gray-500 mt-4">Crafted for purity, taste, and inspiration.</p>
+          <h2 className="text-4xl font-serif font-bold text-vanilla-900">
+            Curated Vanilla Collection
+          </h2>
+          <p className="text-gray-500 mt-4">
+            Crafted for purity, taste, and inspiration.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product) => (
             <div key={product.id} className="group cursor-pointer">
               <div className="overflow-hidden rounded-lg mb-4">
-                <img src={product.img} alt={product.name} className="w-full h-64 object-cover transform group-hover:scale-105 transition duration-500" />
+                <img
+                  src={product.img}
+                  alt={product.name}
+                  className="w-full h-64 object-cover transform group-hover:scale-105 transition duration-500"
+                />
               </div>
               <h3 className="text-xl font-serif font-bold">{product.name}</h3>
               <p className="text-gray-600 text-sm mb-2">{product.desc}</p>
-              <span className="text-gold-500 font-bold">{product.price}</span>
+              {/* <span className="text-gold-500 font-bold">{product.price}</span> */}
             </div>
           ))}
         </div>
-        
+
         <div className="text-center mt-12">
-          <button className="bg-vanilla-900 text-white px-8 py-3 rounded-full hover:bg-gold-500 transition shadow-lg">View Full Catalog</button>
+          <button className="bg-vanilla-900 text-white px-8 py-3 rounded-full hover:bg-gold-500 transition shadow-lg">
+            View Full Catalog
+          </button>
         </div>
       </div>
     </section>
