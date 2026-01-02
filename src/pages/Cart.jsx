@@ -288,7 +288,7 @@ const Cart = () => {
                     </div>
 
                     {/* Free Shipping Progress */}
-                    {subtotal < shippingThreshold ? (
+                    {subtotal < shippingThreshold && (
                         <div className="bg-vanilla-100 rounded-xl p-4 mb-8 border border-vanilla-200">
                             <div className="flex items-center gap-3 mb-2">
                                 <Truck className="w-5 h-5 text-gold-500" />
@@ -302,13 +302,6 @@ const Cart = () => {
                                     style={{ width: `${Math.min((subtotal / shippingThreshold) * 100, 100)}%` }}
                                 />
                             </div>
-                        </div>
-                    ) : (
-                         <div className="bg-green-50 rounded-xl p-4 mb-8 flex items-center gap-3 border border-green-100">
-                            <CheckCircle className="w-5 h-5 text-green-600" />
-                            <span className="text-green-800 font-medium">
-                                Congratulations! You've unlocked FREE shipping! 🎉
-                            </span>
                         </div>
                     )}
 
