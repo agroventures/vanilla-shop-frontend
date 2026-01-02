@@ -24,7 +24,8 @@ import {
     Mail,
     X,
     Scale,
-    AlertCircle
+    AlertCircle,
+    Globe // Added Globe icon for currency selector
 } from 'lucide-react'
 import axios from 'axios'
 import Footer from '../components/Footer'
@@ -47,6 +48,9 @@ const ProductDetail = () => {
     const [addedToCart, setAddedToCart] = useState(false)
     const [relatedProducts, setRelatedProducts] = useState([])
     const [isImageZoomed, setIsImageZoomed] = useState(false)
+    
+    // New Currency State
+    const [currency, setCurrency] = useState('LKR')
 
     // Fetch product
     useEffect(() => {
@@ -163,16 +167,40 @@ const ProductDetail = () => {
         }
     }
 
-    const formatPrice = (price) => new Intl.NumberFormat('en-LK').format(price)
+    // --- Price Helpers ---
+
+    // Get value based on currency
+    const getPriceValue = (item) => {
+        if (!item) return 0;
+        if (currency === 'USD') {
+            return item.priceInUSD || 0;
+        }
+        return item.priceInLKR || item.price || 0;
+    }
+
+    const formatPrice = (price) => {
+        if (currency === 'USD') {
+            return new Intl.NumberFormat('en-US', { 
+                style: 'currency', 
+                currency: 'USD' 
+            }).format(price)
+        }
+        return 'LKR ' + new Intl.NumberFormat('en-LK').format(price)
+    }
 
     const getPriceInfo = () => {
         if (!product) return { hasPrice: false, min: 0, max: 0, single: 0, hasRange: false }
 
         if (hasVariants()) {
-            const prices = product.variants.map(v => v.price).filter(p => p > 0)
+            // Map variants to specific currency price
+            const prices = product.variants.map(v => getPriceValue(v)).filter(p => p > 0)
+            
+            // Fallback to base product price if no variant prices
+            const basePrice = getPriceValue(product)
+
             if (prices.length === 0) {
-                if (product.price && product.price > 0) {
-                    return { hasPrice: true, min: product.price, max: product.price, single: product.price, hasRange: false }
+                if (basePrice > 0) {
+                    return { hasPrice: true, min: basePrice, max: basePrice, single: basePrice, hasRange: false }
                 }
                 return { hasPrice: false, min: 0, max: 0, single: 0, hasRange: false }
             }
@@ -180,8 +208,9 @@ const ProductDetail = () => {
             const max = Math.max(...prices)
             return { hasPrice: true, min, max, single: min, hasRange: min !== max }
         } else {
-            if (product.price && product.price > 0) {
-                return { hasPrice: true, min: product.price, max: product.price, single: product.price, hasRange: false }
+            const price = getPriceValue(product)
+            if (price > 0) {
+                return { hasPrice: true, min: price, max: price, single: price, hasRange: false }
             }
             return { hasPrice: false, min: 0, max: 0, single: 0, hasRange: false }
         }
@@ -190,19 +219,20 @@ const ProductDetail = () => {
     const getCurrentPrice = () => {
         if (hasVariants()) {
             const selectedVariant = getSelectedVariant()
-            return selectedVariant?.price || 0
+            return selectedVariant ? getPriceValue(selectedVariant) : 0
         } else {
-            return product?.price || 0
+            return getPriceValue(product)
         }
     }
 
     const canAddToCart = () => {
         if (!product) return false
+        const currentPrice = getCurrentPrice()
         if (hasVariants()) {
             const selectedVariant = getSelectedVariant()
-            return selectedVariant && isVariantInStock(selectedVariant)
+            return selectedVariant && isVariantInStock(selectedVariant) && currentPrice > 0
         } else {
-            return isProductInStock() && (product.price || 0) > 0
+            return isProductInStock() && currentPrice > 0
         }
     }
 
@@ -246,12 +276,14 @@ const ProductDetail = () => {
         if (!canAddToCart()) return
 
         const selectedVariant = getSelectedVariant()
+        const itemPrice = getCurrentPrice()
 
         const cartItem = {
             productId: product._id,
             name: product.name,
             slug: product.slug,
-            price: getCurrentPrice(),
+            price: itemPrice, // Specific currency price
+            currency: currency, // Track currency
             stock: getAvailableStock(),
             image: images[0] || null,
             quantity: quantity,
@@ -260,7 +292,7 @@ const ProductDetail = () => {
             variant: hasVariants() ? {
                 label: selectedVariant.label,
                 weight: selectedVariant.weight,
-                price: selectedVariant.price,
+                price: itemPrice,
                 stock: selectedVariant.stock
             } : null
         }
@@ -304,7 +336,7 @@ const ProductDetail = () => {
             return (
                 <div className="flex items-baseline gap-3 flex-wrap">
                     <span className="font-serif text-4xl font-bold text-gold-500">
-                        LKR {formatPrice(selectedVariant.price)}
+                        {formatPrice(getPriceValue(selectedVariant))}
                     </span>
                     {selectedVariant.weight && (
                         <span className="text-vanilla-800/60 font-sans text-lg">
@@ -319,7 +351,7 @@ const ProductDetail = () => {
             return (
                 <div className="flex items-baseline gap-3 flex-wrap">
                     <span className="font-serif text-4xl font-bold text-gold-500">
-                        LKR {formatPrice(priceInfo.single)}
+                        {formatPrice(priceInfo.single)}
                     </span>
                     {product.weight && (
                         <span className="text-vanilla-800/60 font-sans text-lg">
@@ -335,18 +367,18 @@ const ProductDetail = () => {
                 return (
                     <div className="flex items-baseline gap-2 flex-wrap">
                         <span className="font-serif text-3xl font-bold text-gold-500">
-                            LKR {formatPrice(priceInfo.min)}
+                            {formatPrice(priceInfo.min)}
                         </span>
                         <span className="text-vanilla-800/40 text-xl font-serif">-</span>
                         <span className="font-serif text-3xl font-bold text-gold-500">
-                            LKR {formatPrice(priceInfo.max)}
+                            {formatPrice(priceInfo.max)}
                         </span>
                     </div>
                 )
             } else {
                 return (
                     <span className="font-serif text-4xl font-bold text-gold-500">
-                        LKR {formatPrice(priceInfo.single)}
+                        {formatPrice(priceInfo.single)}
                     </span>
                 )
             }
@@ -421,23 +453,38 @@ const ProductDetail = () => {
             <main className="pt-24 pb-16 min-h-screen bg-vanilla-50 font-sans text-vanilla-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Breadcrumbs */}
-                    <nav className="flex items-center gap-2 text-sm py-6 overflow-x-auto">
-                        <Link
-                            to="/"
-                            className="text-vanilla-800/60 hover:text-gold-500 transition-colors flex items-center gap-1 shrink-0"
-                        >
-                            <Home className="w-4 h-4" />
-                            <span>Home</span>
-                        </Link>
-                        <ChevronRight className="w-4 h-4 text-vanilla-200 shrink-0" />
-                        <Link
-                            to="/products"
-                            className="text-vanilla-800/60 hover:text-gold-500 transition-colors shrink-0"
-                        >
-                            Products
-                        </Link>
-                        <ChevronRight className="w-4 h-4 text-vanilla-200 shrink-0" />
-                        <span className="text-vanilla-900 font-medium truncate">{product.name}</span>
+                    <nav className="flex items-center justify-between text-sm py-6 overflow-x-auto">
+                        <div className="flex items-center gap-2">
+                            <Link
+                                to="/"
+                                className="text-vanilla-800/60 hover:text-gold-500 transition-colors flex items-center gap-1 shrink-0"
+                            >
+                                <Home className="w-4 h-4" />
+                                <span>Home</span>
+                            </Link>
+                            <ChevronRight className="w-4 h-4 text-vanilla-200 shrink-0" />
+                            <Link
+                                to="/shop"
+                                className="text-vanilla-800/60 hover:text-gold-500 transition-colors shrink-0"
+                            >
+                                Products
+                            </Link>
+                            <ChevronRight className="w-4 h-4 text-vanilla-200 shrink-0" />
+                            <span className="text-vanilla-900 font-medium truncate">{product.name}</span>
+                        </div>
+
+                        {/* Currency Selector (Top Right) */}
+                        <div className="hidden sm:block relative">
+                            <select 
+                                value={currency} 
+                                onChange={(e) => setCurrency(e.target.value)} 
+                                className="appearance-none pl-3 pr-8 py-1.5 bg-white border border-vanilla-200 rounded-lg text-vanilla-900 font-medium text-xs focus:outline-none focus:border-gold-500 cursor-pointer shadow-sm"
+                            >
+                                <option value="LKR">LKR (Rs)</option>
+                                <option value="USD">USD ($)</option>
+                            </select>
+                            <Globe className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-vanilla-400 pointer-events-none" />
+                        </div>
                     </nav>
 
                     {/* Main Product Section */}
@@ -543,6 +590,19 @@ const ProductDetail = () => {
                                             {product.name}
                                         </h1>
                                         <div className="flex items-center gap-2 shrink-0">
+                                            {/* Mobile Currency Selector (Only visible on small screens) */}
+                                            <div className="sm:hidden relative mr-2">
+                                                <select 
+                                                    value={currency} 
+                                                    onChange={(e) => setCurrency(e.target.value)} 
+                                                    className="appearance-none pl-3 pr-7 py-2 bg-vanilla-50 border border-vanilla-200 rounded-lg text-vanilla-900 font-medium text-xs focus:outline-none focus:border-gold-500"
+                                                >
+                                                    <option value="LKR">LKR</option>
+                                                    <option value="USD">USD</option>
+                                                </select>
+                                                <Globe className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-vanilla-400 pointer-events-none" />
+                                            </div>
+
                                             {/* Share Button */}
                                             <div className="relative">
                                                 <button
@@ -686,7 +746,7 @@ const ProductDetail = () => {
 
                                                         <div className="flex items-center justify-between">
                                                             <span className="text-gold-500 font-bold font-serif">
-                                                                LKR {formatPrice(variant.price)}
+                                                                {formatPrice(getPriceValue(variant))}
                                                             </span>
                                                             {variant.weight && (
                                                                 <span className="text-vanilla-800/50 text-sm flex items-center gap-1">
@@ -763,7 +823,7 @@ const ProductDetail = () => {
                                         ) : (
                                             <>
                                                 <ShoppingBag className="w-5 h-5" />
-                                                Add to Cart <span className="hidden sm:inline">- LKR {formatPrice(currentPrice * quantity)}</span>
+                                                Add to Cart <span className="hidden sm:inline">- {formatPrice(currentPrice * quantity)}</span>
                                             </>
                                         )}
                                     </button>
@@ -778,7 +838,7 @@ const ProductDetail = () => {
                                             {selectedVariant.weight && ` (${selectedVariant.weight})`}
                                             {' • '}
                                             <span className="text-gold-500 font-bold">
-                                                LKR {formatPrice(selectedVariant.price)}
+                                                {formatPrice(getPriceValue(selectedVariant))}
                                             </span>
                                             {' • '}
                                             <span className="text-green-700">
@@ -894,7 +954,7 @@ const ProductDetail = () => {
                                                             {variant.label}
                                                         </div>
                                                         <div className="text-gold-500 font-bold">
-                                                            LKR {formatPrice(variant.price)}
+                                                            {formatPrice(getPriceValue(variant))}
                                                         </div>
                                                         {variant.weight && (
                                                             <div className="text-vanilla-800/50 text-sm mt-1">
@@ -1007,6 +1067,7 @@ const ProductDetail = () => {
                                     <RelatedProductCard
                                         key={relatedProduct._id}
                                         product={relatedProduct}
+                                        currency={currency}
                                     />
                                 ))}
                             </div>
@@ -1077,13 +1138,20 @@ const ProductDetail = () => {
 // ============================================
 // RELATED PRODUCT CARD COMPONENT
 // ============================================
-const RelatedProductCard = ({ product }) => {
+const RelatedProductCard = ({ product, currency }) => {
     const images = product.images && product.images.length > 0 ? product.images : []
+
+    // Helper to get price based on currency prop
+    const getPriceValue = (item) => {
+        if (!item) return 0;
+        if (currency === 'USD') return item.priceInUSD || 0;
+        return item.priceInLKR || item.price || 0;
+    }
 
     // Get price info - check variants first, then product price
     const getPriceInfo = () => {
         if (product.variants && product.variants.length > 0) {
-            const prices = product.variants.map(v => v.price).filter(p => p > 0)
+            const prices = product.variants.map(v => getPriceValue(v)).filter(p => p > 0)
             if (prices.length > 0) {
                 return {
                     min: Math.min(...prices),
@@ -1093,10 +1161,11 @@ const RelatedProductCard = ({ product }) => {
             }
         }
 
-        if (product.price && product.price > 0) {
+        const price = getPriceValue(product);
+        if (price > 0) {
             return {
-                min: product.price,
-                max: product.price,
+                min: price,
+                max: price,
                 hasPrice: true
             }
         }
@@ -1114,7 +1183,13 @@ const RelatedProductCard = ({ product }) => {
 
     const priceInfo = getPriceInfo()
     const inStock = isInStock()
-    const formatPrice = (price) => new Intl.NumberFormat('en-LK').format(price)
+    
+    const formatPrice = (price) => {
+        if (currency === 'USD') {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price)
+        }
+        return 'LKR ' + new Intl.NumberFormat('en-LK').format(price)
+    }
 
     return (
         <Link
@@ -1167,9 +1242,9 @@ const RelatedProductCard = ({ product }) => {
                 {priceInfo.hasPrice ? (
                     <div className="font-serif font-bold text-gold-500 text-lg">
                         {priceInfo.min === priceInfo.max ? (
-                            <span>LKR {formatPrice(priceInfo.min)}</span>
+                            <span>{formatPrice(priceInfo.min)}</span>
                         ) : (
-                            <span>LKR {formatPrice(priceInfo.min)} - {formatPrice(priceInfo.max)}</span>
+                            <span>{formatPrice(priceInfo.min)} - {formatPrice(priceInfo.max)}</span>
                         )}
                     </div>
                 ) : (

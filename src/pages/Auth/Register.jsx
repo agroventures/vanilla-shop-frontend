@@ -53,7 +53,7 @@ export default function Register() {
             localStorage.setItem("role", res.data.role);
 
             toast.success("Register successful");
-            navigate("/login");
+            navigate("/admin");
         } catch (err) {
             toast.error(
                 err?.response?.data?.message || "Register failed"

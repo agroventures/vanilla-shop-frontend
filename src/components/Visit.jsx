@@ -22,7 +22,7 @@ const Visit = () => {
             </h3>
             <ul className="space-y-6">
               <li className="flex items-start">
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-vanilla-800 flex items-center justify-center mr-4">
+                <div className="shrink-0 w-10 h-10 rounded-full bg-vanilla-800 flex items-center justify-center mr-4">
                   <i className="fa-solid fa-cloud-moon text-gold-500"></i>
                 </div>
                 <div>
@@ -31,7 +31,7 @@ const Visit = () => {
                 </div>
               </li>
               <li className="flex items-start">
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-vanilla-800 flex items-center justify-center mr-4">
+                <div className="shrink-0 w-10 h-10 rounded-full bg-vanilla-800 flex items-center justify-center mr-4">
                   <i className="fa-solid fa-mug-hot text-gold-500"></i>
                 </div>
                 <div>
@@ -40,7 +40,7 @@ const Visit = () => {
                 </div>
               </li>
               <li className="flex items-start">
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-vanilla-800 flex items-center justify-center mr-4">
+                <div className="shrink-0 w-10 h-10 rounded-full bg-vanilla-800 flex items-center justify-center mr-4">
                   <i className="fa-solid fa-cookie-bite text-gold-500"></i>
                 </div>
                 <div>
@@ -49,7 +49,7 @@ const Visit = () => {
                 </div>
               </li>
               <li className="flex items-start">
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-vanilla-800 flex items-center justify-center mr-4">
+                <div className="shrink-0 w-10 h-10 rounded-full bg-vanilla-800 flex items-center justify-center mr-4">
                   <i className="fa-solid fa-flask text-gold-500"></i>
                 </div>
                 <div>
@@ -58,7 +58,7 @@ const Visit = () => {
                 </div>
               </li>
               <li className="flex items-start">
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-vanilla-800 flex items-center justify-center mr-4">
+                <div className="shrink-0 w-10 h-10 rounded-full bg-vanilla-800 flex items-center justify-center mr-4">
                   <i className="fa-solid fa-calendar-check text-gold-500"></i>
                 </div>
                 <div>
@@ -74,13 +74,13 @@ const Visit = () => {
             {/* Map */}
             <div className="h-64 lg:h-80 w-full rounded-lg overflow-hidden shadow-2xl mb-8 border-2 border-vanilla-800">
               <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63371.80385598126!2d79.9197669!3d6.9270786!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2593d4a678885%3A0x673072044234568f!2sBattaramulla%2C%20Sri%20Lanka!5e0!3m2!1sen!2slk!4v1700000000000!5m2!1sen!2slk" 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.8574202206732!2d79.92745087581785!3d6.9076472185783775!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae257002cdff261%3A0x5c380231f9b1b6!2sThe%20Vanilla%20Shop!5e0!3m2!1sen!2slk!4v1767322484792!5m2!1sen!2slk" 
                 width="100%" height="100%" style={{ border:0 }} allowFullScreen="" loading="lazy">
               </iframe>
             </div>
 
             {/* Location Details */}
-            <div className="bg-vanilla-800 p-6 rounded-lg flex-grow">
+            <div className="bg-vanilla-800 p-6 rounded-lg grow">
               <h3 className="font-serif font-bold text-gold-500 text-xl mb-4">How to Get Here</h3>
               
               <div className="space-y-4 text-sm">

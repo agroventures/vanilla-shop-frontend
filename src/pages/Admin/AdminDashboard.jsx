@@ -8,7 +8,6 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  MoreVertical,
   Eye,
   X,
   User,
@@ -16,13 +15,12 @@ import {
   CreditCard,
   FileText,
 } from "lucide-react";
-import axios from "axios";
+import { Link } from "react-router-dom";
 import { StatCard } from "../../components/admin/StatCard";
 import PageTitle from "../../components/admin/PageTitle";
 import { getOrders, getProducts, getTodayOrders, getTotalRevenue } from "../../api/data.api";
-import { Link } from "react-router-dom";
 
-// Helper functions
+// --- Helper Functions ---
 const formatPrice = (price) => {
   return `LKR ${new Intl.NumberFormat().format(price || 0)}`;
 };
@@ -49,27 +47,53 @@ const PAYMENT_METHODS = {
   bank: 'Bank Transfer'
 };
 
-// Order Status Badge
+// --- Status Badge Component ---
 const StatusBadge = ({ status }) => {
   const statusConfig = {
-    pending: { bg: "bg-yellow-100", text: "text-yellow-800", icon: Clock },
-    processing: { bg: "bg-blue-100", text: "text-blue-800", icon: Package },
-    cancelled: { bg: "bg-red-100", text: "text-red-800", icon: XCircle },
-    delivered: { bg: "bg-green-100", text: "text-green-800", icon: CheckCircle },
-    shipped: { bg: "bg-purple-100", text: "text-purple-800", icon: Truck },
+    pending: { 
+      bg: "bg-amber-100", 
+      text: "text-amber-800", 
+      border: "border-amber-200",
+      icon: Clock 
+    },
+    processing: { 
+      bg: "bg-blue-50", 
+      text: "text-blue-800", 
+      border: "border-blue-200",
+      icon: Package 
+    },
+    cancelled: { 
+      bg: "bg-red-50", 
+      text: "text-red-800", 
+      border: "border-red-200",
+      icon: XCircle 
+    },
+    delivered: { 
+      bg: "bg-emerald-50", 
+      text: "text-emerald-800", 
+      border: "border-emerald-200",
+      icon: CheckCircle 
+    },
+    shipped: { 
+      bg: "bg-purple-50", 
+      text: "text-purple-800", 
+      border: "border-purple-200",
+      icon: Truck 
+    },
   };
 
   const config = statusConfig[status] || statusConfig.pending;
   const Icon = config.icon;
 
   return (
-    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${config.bg} ${config.text}`}>
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${config.bg} ${config.text} ${config.border}`}>
       <Icon className="w-3 h-3" />
       {status?.charAt(0).toUpperCase() + status?.slice(1)}
     </span>
   );
 };
 
+// --- Main Dashboard Component ---
 function AdminDashboard() {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -83,7 +107,7 @@ function AdminDashboard() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      window.location.href = "/";
+      window.location.href = "/login";
     }
 
     setLoading(true);
@@ -108,10 +132,9 @@ function AdminDashboard() {
       });
   }, []);
 
-  // Calculate top products from orders
+  // Calculate top products
   const topProducts = useMemo(() => {
     if (!orders || orders.length === 0) return [];
-
     const productMap = new Map();
 
     orders.forEach(order => {
@@ -135,72 +158,69 @@ function AdminDashboard() {
       }
     });
 
-    // Convert to array and sort by sales
     const productsArray = Array.from(productMap.values());
     productsArray.sort((a, b) => b.sales - a.sales);
-
-    // Calculate growth (mock calculation - you can implement real logic)
-    return productsArray.slice(0, 4).map((product, index) => ({
-      ...product,
-      growth: `+${Math.floor(Math.random() * 20) + 1}%`, // Replace with real growth calculation
-    }));
+    return productsArray.slice(0, 4);
   }, [orders]);
 
   const recentOrders = orders.slice(0, 5);
 
-  // Handle view order click
   const handleViewOrder = (order) => {
     setSelectedOrder(order);
     setShowViewModal(true);
   };
 
+  // --- Modal Component ---
   const ViewOrderModal = ({ order, onClose }) => {
     if (!order) return null;
 
     return (
       <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+        {/* Backdrop */}
+        <div className="absolute inset-0 bg-vanilla-900/60 backdrop-blur-sm transition-opacity" onClick={onClose} />
 
-        <div className="relative bg-white w-full h-[90vh] sm:h-auto sm:max-w-3xl sm:max-h-[90vh] rounded-t-2xl sm:rounded-2xl shadow-xl flex flex-col">
+        {/* Modal Content */}
+        <div className="relative bg-vanilla-50 w-full h-[90vh] sm:h-auto sm:max-w-3xl sm:max-h-[85vh] rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col font-sans border border-vanilla-200">
+          
           {/* Fixed Header */}
-          <div className="flex-none flex items-center justify-between p-4 border-b border-vanilla-100 bg-white rounded-t-2xl">
+          <div className="flex-none flex items-center justify-between p-5 border-b border-vanilla-200 bg-white sm:rounded-t-2xl">
             <div className="min-w-0 flex-1">
-              <h2 className="text-lg font-semibold text-dark truncate">Order Details</h2>
-              <p className="text-charcoal/60 text-xs mt-0.5">
-                ID: <span className="font-mono">{order.orderId?.slice(-8) || order._id?.slice(-8)}</span>
+              <h2 className="text-xl font-bold font-serif text-vanilla-900 truncate">Order Details</h2>
+              <p className="text-vanilla-800/70 text-sm mt-1">
+                ID: <span className="font-mono text-gold-500 font-medium">#{order.orderId?.slice(-8) || order._id?.slice(-8)}</span>
               </p>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-vanilla-100 rounded-lg transition-colors ml-2"
+              className="p-2 text-vanilla-800 hover:bg-vanilla-100 hover:text-vanilla-900 rounded-lg transition-colors"
             >
-              <X className="w-5 h-5" />
+              <X className="w-6 h-6" />
             </button>
           </div>
 
-          {/* Scrollable Content */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+          {/* Scrollable Body */}
+          <div className="flex-1 overflow-y-auto p-5 sm:p-8 space-y-8 bg-vanilla-50">
             <div className="grid md:grid-cols-2 gap-6">
               {/* Customer Info */}
               <div className="space-y-3">
-                <h3 className="font-semibold text-dark flex items-center gap-2 text-sm">
-                  <User className="w-4 h-4 text-vanilla-600" />
-                  Customer Information
+                <h3 className="font-bold text-vanilla-900 flex items-center gap-2 text-sm uppercase tracking-wider">
+                  <User className="w-4 h-4 text-gold-500" />
+                  Customer
                 </h3>
-                <div className="bg-vanilla-50 rounded-xl p-4 space-y-3 text-sm">
+                <div className="bg-white border border-vanilla-200 rounded-xl p-4 space-y-2 text-sm shadow-sm">
                   <div>
-                    <p className="text-charcoal/60 text-xs">Name</p>
-                    <p className="font-medium text-dark">{getCustomerName(order)}</p>
+                    <p className="text-vanilla-800/60 text-xs">Name</p>
+                    <p className="font-medium text-vanilla-900">{getCustomerName(order)}</p>
                   </div>
                   <div>
-                    <p className="text-charcoal/60 text-xs">Email</p>
-                    <a href={`mailto:${order.email}`} className="text-vanilla-600 hover:underline break-all">
+                    <p className="text-vanilla-800/60 text-xs">Email</p>
+                    <a href={`mailto:${order.email}`} className="text-gold-500 hover:underline break-all">
                       {order.email}
                     </a>
                   </div>
                   <div>
-                    <p className="text-charcoal/60 text-xs">Phone</p>
-                    <a href={`tel:${order.phone}`} className="text-vanilla-600 hover:underline">
+                    <p className="text-vanilla-800/60 text-xs">Phone</p>
+                    <a href={`tel:${order.phone}`} className="text-vanilla-900 hover:text-gold-500">
                       {order.phone}
                     </a>
                   </div>
@@ -209,46 +229,46 @@ function AdminDashboard() {
 
               {/* Shipping Address */}
               <div className="space-y-3">
-                <h3 className="font-semibold text-dark flex items-center gap-2 text-sm">
-                  <MapPin className="w-4 h-4 text-vanilla-600" />
-                  Shipping Address
+                <h3 className="font-bold text-vanilla-900 flex items-center gap-2 text-sm uppercase tracking-wider">
+                  <MapPin className="w-4 h-4 text-gold-500" />
+                  Shipping To
                 </h3>
-                <div className="bg-vanilla-50 rounded-xl p-4 text-sm">
-                  <p className="text-dark font-medium mb-1">{order.shippingAddress?.address}</p>
-                  <p className="text-charcoal/70">
+                <div className="bg-white border border-vanilla-200 rounded-xl p-4 text-sm shadow-sm h-full">
+                  <p className="text-vanilla-900 font-medium mb-1">{order.shippingAddress?.address}</p>
+                  <p className="text-vanilla-800/80">
                     {order.shippingAddress?.city}, {order.shippingAddress?.state} {order.shippingAddress?.zipCode}
                   </p>
-                  <p className="text-charcoal/70">{order.shippingAddress?.country}</p>
+                  <p className="text-vanilla-800/80">{order.shippingAddress?.country}</p>
                 </div>
               </div>
             </div>
 
             {/* Order Items */}
-            <div className="mt-6 space-y-3">
-              <h3 className="font-semibold text-dark flex items-center gap-2 text-sm">
-                <ShoppingBag className="w-4 h-4 text-vanilla-600" />
-                Order Items ({order.orderItems?.length || 0})
+            <div className="space-y-3">
+              <h3 className="font-bold text-vanilla-900 flex items-center gap-2 text-sm uppercase tracking-wider">
+                <ShoppingBag className="w-4 h-4 text-gold-500" />
+                Items ({order.orderItems?.length || 0})
               </h3>
 
-              {/* Mobile Item List */}
+              {/* Mobile List */}
               <div className="sm:hidden space-y-3">
                 {order.orderItems?.map((item, index) => (
-                  <div key={index} className="bg-vanilla-50 rounded-xl p-3 flex gap-3 border border-vanilla-100">
+                  <div key={index} className="bg-white border border-vanilla-200 rounded-xl p-3 flex gap-3 shadow-sm">
                     {item.image ? (
                       <img
                         src={item.image}
                         alt={item.name}
-                        className="w-16 h-16 rounded-lg object-cover max-w-full shrink-0"
+                        className="w-16 h-16 rounded-lg object-cover bg-vanilla-100 shrink-0"
                       />
                     ) : (
-                      <div className="w-16 h-16 bg-vanilla-200 rounded-lg flex items-center justify-center shrink-0">
+                      <div className="w-16 h-16 bg-vanilla-100 rounded-lg flex items-center justify-center shrink-0">
                         <Package className="w-6 h-6 text-vanilla-400" />
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-dark text-sm truncate">{item.name}</p>
-                      <p className="text-charcoal/60 text-xs mt-0.5">Qty: {item.quantity} × {formatPrice(item.price)}</p>
-                      <p className="text-dark font-semibold text-sm mt-1">
+                      <p className="font-medium text-vanilla-900 text-sm truncate">{item.name}</p>
+                      <p className="text-vanilla-800/60 text-xs mt-0.5">{item.quantity} × {formatPrice(item.price)}</p>
+                      <p className="text-gold-500 font-bold text-sm mt-1">
                         {formatPrice(item.price * item.quantity)}
                       </p>
                     </div>
@@ -256,15 +276,15 @@ function AdminDashboard() {
                 ))}
               </div>
 
-              {/* Desktop Item Table */}
-              <div className="hidden sm:block bg-vanilla-50 rounded-xl overflow-hidden border border-vanilla-100">
+              {/* Desktop Table */}
+              <div className="hidden sm:block bg-white rounded-xl overflow-hidden border border-vanilla-200 shadow-sm">
                 <table className="w-full text-sm">
-                  <thead className="bg-vanilla-100">
+                  <thead className="bg-vanilla-100 text-vanilla-800">
                     <tr>
-                      <th className="px-4 py-3 text-left font-medium">Product</th>
-                      <th className="px-4 py-3 text-center font-medium">Qty</th>
-                      <th className="px-4 py-3 text-right font-medium">Price</th>
-                      <th className="px-4 py-3 text-right font-medium">Total</th>
+                      <th className="px-4 py-3 text-left font-semibold">Product</th>
+                      <th className="px-4 py-3 text-center font-semibold">Qty</th>
+                      <th className="px-4 py-3 text-right font-semibold">Price</th>
+                      <th className="px-4 py-3 text-right font-semibold">Total</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-vanilla-100">
@@ -276,19 +296,19 @@ function AdminDashboard() {
                               <img
                                 src={item.image}
                                 alt={item.name}
-                                className="w-10 h-10 rounded-lg object-cover max-w-full"
+                                className="w-10 h-10 rounded-lg object-cover bg-vanilla-100"
                               />
                             ) : (
-                              <div className="w-10 h-10 bg-vanilla-200 rounded-lg flex items-center justify-center">
+                              <div className="w-10 h-10 bg-vanilla-100 rounded-lg flex items-center justify-center">
                                 <Package className="w-5 h-5 text-vanilla-400" />
                               </div>
                             )}
-                            <span className="font-medium text-dark">{item.name}</span>
+                            <span className="font-medium text-vanilla-900">{item.name}</span>
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-center">{item.quantity}</td>
-                        <td className="px-4 py-3 text-right">{formatPrice(item.price)}</td>
-                        <td className="px-4 py-3 text-right font-medium">
+                        <td className="px-4 py-3 text-center text-vanilla-800">{item.quantity}</td>
+                        <td className="px-4 py-3 text-right text-vanilla-800">{formatPrice(item.price)}</td>
+                        <td className="px-4 py-3 text-right font-medium text-vanilla-900">
                           {formatPrice(item.price * item.quantity)}
                         </td>
                       </tr>
@@ -298,55 +318,53 @@ function AdminDashboard() {
               </div>
             </div>
 
-            {/* Order Summary */}
-            <div className="mt-6 grid md:grid-cols-2 gap-6">
-              {/* Payment & Status */}
+            {/* Order Summary & Payment */}
+            <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-3">
-                <h3 className="font-semibold text-dark flex items-center gap-2 text-sm">
-                  <CreditCard className="w-4 h-4 text-vanilla-600" />
-                  Payment & Status
+                <h3 className="font-bold text-vanilla-900 flex items-center gap-2 text-sm uppercase tracking-wider">
+                  <CreditCard className="w-4 h-4 text-gold-500" />
+                  Status
                 </h3>
-                <div className="bg-vanilla-50 rounded-xl p-4 space-y-3 text-sm">
+                <div className="bg-white border border-vanilla-200 rounded-xl p-4 space-y-3 text-sm shadow-sm">
                   <div className="flex justify-between items-center">
-                    <span className="text-charcoal/60">Payment</span>
-                    <span className="font-medium text-dark">
+                    <span className="text-vanilla-800/70">Payment Method</span>
+                    <span className="font-medium text-vanilla-900">
                       {PAYMENT_METHODS[order.paymentMethod] || order.paymentMethod}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-charcoal/60">Status</span>
+                    <span className="text-vanilla-800/70">Order Status</span>
                     <StatusBadge status={order.status || 'pending'} />
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-charcoal/60">Date</span>
-                    <span className="font-medium text-dark">{formatDate(order.createdAt)}</span>
+                    <span className="text-vanilla-800/70">Placed On</span>
+                    <span className="font-medium text-vanilla-900">{formatDate(order.createdAt)}</span>
                   </div>
                 </div>
               </div>
 
-              {/* Price Summary */}
               <div className="space-y-3">
-                <h3 className="font-semibold text-dark flex items-center gap-2 text-sm">
-                  <FileText className="w-4 h-4 text-vanilla-600" />
-                  Price Summary
+                <h3 className="font-bold text-vanilla-900 flex items-center gap-2 text-sm uppercase tracking-wider">
+                  <FileText className="w-4 h-4 text-gold-500" />
+                  Summary
                 </h3>
-                <div className="bg-vanilla-50 rounded-xl p-4 space-y-2 text-sm">
+                <div className="bg-white border border-vanilla-200 rounded-xl p-4 space-y-2 text-sm shadow-sm">
                   <div className="flex justify-between">
-                    <span className="text-charcoal/60">Subtotal</span>
-                    <span>{formatPrice(order.itemsPrice)}</span>
+                    <span className="text-vanilla-800/70">Subtotal</span>
+                    <span className="text-vanilla-900">{formatPrice(order.itemsPrice)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-charcoal/60">Shipping</span>
+                    <span className="text-vanilla-800/70">Shipping</span>
                     <span>
                       {order.shippingPrice === 0
-                        ? <span className="text-green-600">Free</span>
-                        : formatPrice(order.shippingPrice)
+                        ? <span className="text-green-600 font-medium">Free</span>
+                        : <span className="text-vanilla-900">{formatPrice(order.shippingPrice)}</span>
                       }
                     </span>
                   </div>
-                  <div className="flex justify-between pt-3 border-t border-vanilla-200 mt-2">
-                    <span className="font-semibold text-dark text-base">Total</span>
-                    <span className="font-bold text-dark text-base">{formatPrice(order.totalPrice)}</span>
+                  <div className="flex justify-between pt-3 border-t border-vanilla-100 mt-2">
+                    <span className="font-bold text-vanilla-900 text-base">Total</span>
+                    <span className="font-bold text-gold-500 text-lg">{formatPrice(order.totalPrice)}</span>
                   </div>
                 </div>
               </div>
@@ -354,12 +372,12 @@ function AdminDashboard() {
           </div>
 
           {/* Fixed Footer */}
-          <div className="flex-none p-4 bg-vanilla-50 border-t border-vanilla-100 flex gap-3">
+          <div className="flex-none p-4 bg-white border-t border-vanilla-200 sm:rounded-b-2xl">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-2.5 border border-vanilla-200 bg-white rounded-lg hover:bg-vanilla-100 transition-colors text-sm"
+              className="w-full py-3 bg-vanilla-900 text-vanilla-50 font-medium rounded-lg hover:bg-vanilla-800 transition-colors shadow-lg"
             >
-              Close
+              Close Details
             </button>
           </div>
         </div>
@@ -368,7 +386,7 @@ function AdminDashboard() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 font-sans">
       {/* Header Section */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <PageTitle title="Dashboard" subtitle="Welcome back! Here's what's happening with your store today." />
@@ -379,83 +397,68 @@ function AdminDashboard() {
         <StatCard
           title="Today's Orders"
           value={loading ? "..." : todayOrders.length}
-          icon={<ShoppingBag className="w-6 h-6" />}
+          icon={<ShoppingBag className="w-6 h-6 text-gold-500" />}
         />
         <StatCard
           title="Revenue"
           value={`LKR ${loading ? "..." : new Intl.NumberFormat().format(totalRevenue)}`}
-          icon={<DollarSign className="w-6 h-6" />}
+          icon={<DollarSign className="w-6 h-6 text-gold-500" />}
         />
         <StatCard
           title="Products"
           value={loading ? "..." : products.length}
-          icon={<Gift className="w-6 h-6" />}
+          icon={<Gift className="w-6 h-6 text-gold-500" />}
         />
         <StatCard
           title="Total Orders"
           value={loading ? "..." : orders.length}
-          icon={<ShoppingBag className="w-6 h-6" />}
+          icon={<ShoppingBag className="w-6 h-6 text-gold-500" />}
         />
       </div>
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        
         {/* Recent Orders Table */}
-        <div className="xl:col-span-2 bg-cream rounded-2xl border border-vanilla-200 shadow-md overflow-hidden">
-          <div className="p-6 border-b border-vanilla-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-semibold text-dark">Recent Orders</h2>
-                <p className="text-sm text-vanilla-600 mt-1">
-                  Latest transactions from your store
-                </p>
-              </div>
-              <Link to='/admin/orders'>
-                <button className="text-sm font-medium text-dark cursor-pointer hover:underline transition-colors">
-                  View All →
-                </button>
-              </Link>
+        <div className="xl:col-span-2 bg-vanilla-50 rounded-2xl border border-vanilla-200 shadow-xl overflow-hidden flex flex-col">
+          <div className="p-6 border-b border-vanilla-200 flex items-center justify-between bg-white">
+            <div>
+              <h2 className="text-xl font-bold font-serif text-vanilla-900">Recent Orders</h2>
+              <p className="text-sm text-vanilla-800/70 mt-1">Latest transactions from your store</p>
             </div>
+            <Link to='/admin/orders'>
+              <button className="text-sm font-semibold text-gold-500 hover:text-vanilla-900 transition-colors flex items-center gap-1">
+                View All →
+              </button>
+            </Link>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto flex-1">
             <table className="w-full">
               <thead className="bg-vanilla-100">
                 <tr>
-                  <th className="text-left text-xs font-semibold text-vanilla-700 uppercase tracking-wider px-6 py-4">
-                    Order
-                  </th>
-                  <th className="text-left text-xs font-semibold text-vanilla-700 uppercase tracking-wider px-6 py-4">
-                    Customer
-                  </th>
-                  <th className="text-left text-xs font-semibold text-vanilla-700 uppercase tracking-wider px-6 py-4">
-                    Status
-                  </th>
-                  <th className="text-left text-xs font-semibold text-vanilla-700 uppercase tracking-wider px-6 py-4">
-                    Amount
-                  </th>
-                  <th className="text-left text-xs font-semibold text-vanilla-700 uppercase tracking-wider px-6 py-4">
-                    Actions
-                  </th>
+                  <th className="text-left text-xs font-bold text-vanilla-800 uppercase tracking-wider px-6 py-4">Order</th>
+                  <th className="text-left text-xs font-bold text-vanilla-800 uppercase tracking-wider px-6 py-4">Customer</th>
+                  <th className="text-left text-xs font-bold text-vanilla-800 uppercase tracking-wider px-6 py-4">Status</th>
+                  <th className="text-left text-xs font-bold text-vanilla-800 uppercase tracking-wider px-6 py-4">Amount</th>
+                  <th className="text-left text-xs font-bold text-vanilla-800 uppercase tracking-wider px-6 py-4">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-vanilla-200">
+              <tbody className="divide-y divide-vanilla-200 bg-white">
                 {recentOrders.map((order) => (
-                  <tr key={order._id} className="hover:bg-vanilla-100 transition-colors">
+                  <tr key={order._id} className="hover:bg-vanilla-50 transition-colors">
                     <td className="px-6 py-4">
-                      <div>
-                        <p className="font-semibold text-dark">{order.orderId}</p>
-                        <p className="text-xs text-vanilla-600">{order.date}</p>
-                      </div>
+                      <p className="font-semibold text-vanilla-900 font-mono text-sm">#{order.orderId}</p>
+                      <p className="text-xs text-vanilla-800/60 mt-0.5">{formatDate(order.createdAt).split(',')[0]}</p>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-dark flex items-center justify-center text-cream font-semibold text-sm">
+                        <div className="w-9 h-9 rounded-full bg-vanilla-900 flex items-center justify-center text-gold-500 font-serif font-bold text-sm shadow-sm">
                           {order.avatar ? order.avatar : (order.firstName?.charAt(0) || '') + (order.lastName?.charAt(0) || '')}
                         </div>
                         <div>
-                          <p className="font-medium text-dark">{order.firstName + " " + order.lastName}</p>
-                          <p className="text-xs text-vanilla-600">{order.email}</p>
+                          <p className="font-medium text-vanilla-900 text-sm">{order.firstName + " " + order.lastName}</p>
+                          <p className="text-xs text-vanilla-800/60 truncate max-w-30">{order.email}</p>
                         </div>
                       </div>
                     </td>
@@ -463,15 +466,15 @@ function AdminDashboard() {
                       <StatusBadge status={order.status} />
                     </td>
                     <td className="px-6 py-4">
-                      <span className="font-semibold text-dark">LKR {new Intl.NumberFormat().format(order.totalPrice)}</span>
+                      <span className="font-medium text-vanilla-900">LKR {new Intl.NumberFormat().format(order.totalPrice)}</span>
                     </td>
                     <td className="px-6 py-4">
-                      {/* Fixed: Added onClick handler to show modal */}
                       <button 
                         onClick={() => handleViewOrder(order)} 
-                        className="p-2 hover:bg-vanilla-200 rounded-lg transition-colors"
+                        className="p-2 text-vanilla-400 hover:text-gold-500 hover:bg-vanilla-100 rounded-lg transition-all"
+                        title="View Details"
                       >
-                        <Eye className="w-4 h-4 text-vanilla-700" />
+                        <Eye className="w-4 h-4" />
                       </button>
                     </td>
                   </tr>
@@ -481,53 +484,51 @@ function AdminDashboard() {
           </div>
         </div>
 
-        {/* Right Sidebar */}
+        {/* Top Products Sidebar */}
         <div className="space-y-6">
-          {/* Top Products - Now dynamic from orders */}
-          <div className="bg-cream rounded-2xl border border-vanilla-200 shadow-md p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-semibold text-dark">Top Products</h3>
+          <div className="bg-vanilla-50 rounded-2xl border border-vanilla-200 shadow-xl overflow-hidden h-full">
+            <div className="p-6 border-b border-vanilla-200 bg-white">
+              <h3 className="text-xl font-bold font-serif text-vanilla-900">Top Products</h3>
             </div>
 
-            <div className="space-y-3">
+            <div className="p-4 space-y-2 bg-white h-full">
               {loading ? (
-                <div className="text-center py-4 text-vanilla-600">Loading...</div>
+                <div className="text-center py-8 text-vanilla-400 animate-pulse">Loading data...</div>
               ) : topProducts.length > 0 ? (
                 topProducts.map((product, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-4 p-3 rounded-xl hover:bg-vanilla-100 transition-colors"
+                    className="flex items-center gap-4 p-3 rounded-xl hover:bg-vanilla-50 border border-transparent hover:border-vanilla-200 transition-all group"
                   >
                     {product.image ? (
                       <img 
                         src={product.image} 
                         alt={product.name}
-                        className="w-10 h-10 rounded-lg object-cover"
+                        className="w-12 h-12 rounded-lg object-cover bg-vanilla-100 shadow-sm"
                       />
                     ) : (
-                      <div className="w-10 h-10 rounded-lg bg-vanilla-100 flex items-center justify-center">
-                        <Package className="w-5 h-5 text-dark" />
+                      <div className="w-12 h-12 rounded-lg bg-vanilla-100 flex items-center justify-center">
+                        <Package className="w-6 h-6 text-vanilla-400" />
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-dark truncate">{product.name}</p>
-                      {/* <p className="text-xs text-vanilla-600">{product.sales} sales</p> */}
+                      <p className="font-medium text-vanilla-900 truncate group-hover:text-gold-600 transition-colors">{product.name}</p>
+                      <p className="text-xs text-vanilla-800/60">{product.sales} sales generated</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-dark text-sm">{formatPrice(product.revenue)}</p>
-                      {/* <p className="text-xs text-green-600 font-medium">{product.growth}</p> */}
+                      <p className="font-bold text-vanilla-900 text-sm">{formatPrice(product.revenue)}</p>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="text-center py-4 text-vanilla-600">No product data available</div>
+                <div className="text-center py-8 text-vanilla-400 italic">No product data available</div>
               )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Fixed: Modal now shows based on showViewModal state */}
+      {/* View Order Modal */}
       {showViewModal && selectedOrder && (
         <ViewOrderModal
           order={selectedOrder}

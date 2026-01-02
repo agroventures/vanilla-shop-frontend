@@ -11,17 +11,13 @@ import {
     RefreshCcw,
     CreditCard,
     AlertTriangle,
-    HelpCircle,
     Globe,
-    Mail,
     FileText,
     Calendar,
     ArrowUp,
     CheckCircle,
     XCircle,
     Info,
-    Phone,
-    Printer,
     Download,
     DollarSign,
     ShieldCheck,
@@ -42,7 +38,6 @@ const Refund = () => {
     const [activeSection, setActiveSection] = useState(null)
     const [showScrollTop, setShowScrollTop] = useState(false)
     const [isVisible, setIsVisible] = useState({})
-    const [activeTab, setActiveTab] = useState('shipping')
     const sectionRefs = useRef({})
 
     const url = window.location.href;
@@ -151,15 +146,15 @@ const Refund = () => {
     const getSectionColor = (title) => {
         const titleLower = title.toLowerCase()
         if (titleLower.includes('return') || titleLower.includes('refund') || titleLower.includes('exchange')) {
-            return 'from-blue-400 to-blue-600'
+            return 'bg-blue-500'
         }
         if (titleLower.includes('non-refund') || titleLower.includes('exception') || titleLower.includes('cancel')) {
-            return 'from-red-400 to-red-600'
+            return 'bg-red-500'
         }
         if (titleLower.includes('damage') || titleLower.includes('defect')) {
-            return 'from-amber-400 to-amber-600'
+            return 'bg-amber-500'
         }
-        return 'from-vanilla-400 to-vanilla-600'
+        return 'bg-gold-500'
     }
 
 
@@ -175,7 +170,7 @@ const Refund = () => {
         <div className="pt-24 min-h-screen bg-vanilla-50">
             <Navbar />
 
-            <section className="relative bg-dark text-white py-16 lg:py-20 overflow-hidden">
+            <section className="relative bg-vanilla-900 text-white py-16 lg:py-20 overflow-hidden">
                 {/* Background Pattern */}
                 <div className="absolute inset-0 opacity-10">
                     <div
@@ -188,32 +183,32 @@ const Refund = () => {
                 </div>
 
                 {/* Decorative Elements */}
-                <div className="absolute top-0 right-0 w-96 h-96 bg-vanilla-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+                <div className="absolute top-0 right-0 w-96 h-96 bg-gold-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                <div className="absolute bottom-0 left-0 w-80 h-80 bg-vanilla-400/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
                     {/* Breadcrumbs */}
                     <nav className="flex items-center gap-2 text-sm mb-8">
-                        <Link to="/" className="text-white/60 hover:text-vanilla-400 transition-colors flex items-center gap-1">
+                        <Link to="/" className="text-white/60 hover:text-gold-500 transition-colors flex items-center gap-1">
                             <Home className="w-4 h-4" />
                             <span>Home</span>
                         </Link>
                         <ChevronRight className="w-4 h-4 text-white/30" />
-                        <span className="text-vanilla-400">Shipping & Refunds</span>
+                        <span className="text-gold-500">Shipping & Refunds</span>
                     </nav>
 
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                         <div>
                             <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
-                                <Truck className="w-4 h-4 text-vanilla-400" />
-                                <span className="text-vanilla-300 text-sm font-medium tracking-wide uppercase">
+                                <Truck className="w-4 h-4 text-gold-500" />
+                                <span className="text-vanilla-100 text-sm font-medium tracking-wide uppercase">
                                     Shipping & Returns
                                 </span>
                             </div>
 
                             <h1 className="font-serif text-4xl sm:text-5xl font-semibold leading-tight mb-4">
                                 Shipping & Refund
-                                <span className="text-vanilla-400 italic"> Policy</span>
+                                <span className="text-gold-500 italic"> Policy</span>
                             </h1>
 
                             <p className="text-white/70 text-lg max-w-2xl">
@@ -226,7 +221,7 @@ const Refund = () => {
                             <a
                                 href="/shipping-refund-policy.pdf"
                                 download
-                                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-vanilla-400 text-dark rounded-xl font-medium hover:bg-vanilla-500 transition-colors print:hidden"
+                                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gold-500 text-white rounded-xl font-medium hover:bg-gold-600 transition-colors print:hidden shadow-lg shadow-gold-500/20"
                             >
                                 <Download className="w-4 h-4" />
                                 Download PDF
@@ -242,7 +237,7 @@ const Refund = () => {
                                 className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10"
                             >
                                 <div className="flex items-center gap-3 mb-2">
-                                    <div className="text-vanilla-400">
+                                    <div className="text-gold-500">
                                         {stat.icon}
                                     </div>
                                     <span className="text-white/60 text-sm">{stat.label}</span>
@@ -274,24 +269,24 @@ const Refund = () => {
                             <div className="lg:sticky lg:top-44">
                                 <div className="bg-white rounded-2xl border border-vanilla-100 shadow-sm overflow-hidden">
                                     <div className="p-4 bg-vanilla-50 border-b border-vanilla-100">
-                                        <h3 className="font-semibold text-dark flex items-center gap-2">
-                                            <FileText className="w-4 h-4 text-vanilla-600" />
+                                        <h3 className="font-semibold text-vanilla-900 flex items-center gap-2">
+                                            <FileText className="w-4 h-4 text-gold-500" />
                                             Table of Contents
                                         </h3>
                                     </div>
-                                    <nav className="p-2 max-h-[50vh] overflow-y-auto">
+                                    <nav className="p-2 max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-vanilla-200">
                                         {shippingAndRefund.map((section) => (
                                             <button
                                                 key={section.id}
                                                 onClick={() => scrollToSection(`section-${section.id}`)}
                                                 className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all duration-200 flex items-center gap-3 ${activeSection === `section-${section.id}`
-                                                        ? 'bg-vanilla-100 text-dark font-medium'
-                                                        : 'text-charcoal/70 hover:bg-vanilla-50 hover:text-dark'
+                                                        ? 'bg-vanilla-100 text-vanilla-900 font-medium'
+                                                        : 'text-vanilla-800/70 hover:bg-vanilla-50 hover:text-vanilla-900'
                                                     }`}
                                             >
                                                 <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium shrink-0 ${activeSection === `section-${section.id}`
-                                                        ? 'bg-vanilla-400 text-dark'
-                                                        : 'bg-vanilla-100 text-charcoal/60'
+                                                        ? 'bg-gold-500 text-white'
+                                                        : 'bg-vanilla-100 text-vanilla-800/60'
                                                     }`}>
                                                     {section.id}
                                                 </span>
@@ -302,15 +297,15 @@ const Refund = () => {
                                 </div>
 
                                 {/* Shipping Calculator CTA */}
-                                <div className="mt-6 bg-linear-to-br from-vanilla-400 to-vanilla-500 rounded-2xl p-5 text-dark">
-                                    <Boxes className="w-8 h-8 mb-3" />
-                                    <h4 className="font-semibold mb-2">Need Shipping Estimate?</h4>
-                                    <p className="text-dark/70 text-sm mb-4">
+                                <div className="mt-6 bg-gold-500 rounded-2xl p-5 text-white shadow-lg">
+                                    <Boxes className="w-8 h-8 mb-3 text-white" />
+                                    <h4 className="font-semibold mb-2 text-white">Need Shipping Estimate?</h4>
+                                    <p className="text-vanilla-100 text-sm mb-4">
                                         Calculate shipping costs before you order.
                                     </p>
                                     <Link
                                         to="/products"
-                                        className="inline-flex items-center gap-2 px-4 py-2 bg-dark text-white rounded-lg text-sm font-medium hover:bg-charcoal transition-colors"
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-vanilla-900 text-white rounded-lg text-sm font-medium hover:bg-vanilla-800 transition-colors shadow-sm"
                                     >
                                         Shop Now
                                         <ChevronRight className="w-4 h-4" />
@@ -321,19 +316,19 @@ const Refund = () => {
 
                         <div className="flex-1 min-w-0">
                             {/* Introduction Card */}
-                            <div className="bg-linear-to-br from-vanilla-100 to-vanilla-50 rounded-2xl p-6 lg:p-8 mb-8 border border-vanilla-200">
+                            <div className="bg-white rounded-2xl p-6 lg:p-8 mb-8 border border-vanilla-100 shadow-sm">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 bg-vanilla-400 rounded-xl flex items-center justify-center shrink-0">
-                                        <Info className="w-6 h-6 text-dark" />
+                                    <div className="w-12 h-12 bg-vanilla-100 rounded-xl flex items-center justify-center shrink-0">
+                                        <Info className="w-6 h-6 text-gold-500" />
                                     </div>
                                     <div>
-                                        <h2 className="text-lg font-semibold text-dark mb-2">
+                                        <h2 className="text-lg font-semibold text-vanilla-900 mb-2 font-serif">
                                             About This Policy
                                         </h2>
-                                        <p className="text-charcoal/70 leading-relaxed">
+                                        <p className="text-vanilla-800/70 leading-relaxed font-sans">
                                             This Shipping & Refund Policy applies to all purchases made through
                                             The Vanilla Shop website at{' '}
-                                            <Link to="/" className="text-vanilla-600 font-semibold hover:text-vanilla-700 transition-colors">
+                                            <Link to="/" className="text-gold-500 font-semibold hover:text-gold-600 transition-colors">
                                                 https://thevanillashop.lk/
                                             </Link>.
                                             The Vanilla Shop is operated by <strong>Agro Ventures Exports (Pvt) Ltd</strong>,
@@ -345,47 +340,47 @@ const Refund = () => {
 
                             {/* Key Highlights */}
                             <div className="grid sm:grid-cols-2 gap-4 mb-8">
-                                <div className="bg-white rounded-xl p-5 border border-vanilla-100 shadow-sm">
+                                <div className="bg-white rounded-xl p-5 border border-vanilla-100 shadow-sm hover:shadow-md transition-shadow">
                                     <div className="flex items-center gap-3 mb-3">
                                         <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                                             <Truck className="w-5 h-5 text-green-600" />
                                         </div>
-                                        <h3 className="font-semibold text-dark">Free Shipping</h3>
+                                        <h3 className="font-semibold text-vanilla-900">Free Shipping</h3>
                                     </div>
-                                    <p className="text-charcoal/60 text-sm">
+                                    <p className="text-vanilla-800/60 text-sm">
                                         Enjoy free shipping on all orders over LKR 5,000 within Sri Lanka.
                                     </p>
                                 </div>
-                                <div className="bg-white rounded-xl p-5 border border-vanilla-100 shadow-sm">
+                                <div className="bg-white rounded-xl p-5 border border-vanilla-100 shadow-sm hover:shadow-md transition-shadow">
                                     <div className="flex items-center gap-3 mb-3">
                                         <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                                             <RefreshCcw className="w-5 h-5 text-blue-600" />
                                         </div>
-                                        <h3 className="font-semibold text-dark">Easy Returns</h3>
+                                        <h3 className="font-semibold text-vanilla-900">Easy Returns</h3>
                                     </div>
-                                    <p className="text-charcoal/60 text-sm">
+                                    <p className="text-vanilla-800/60 text-sm">
                                         14-day return policy for unopened products in original packaging.
                                     </p>
                                 </div>
-                                <div className="bg-white rounded-xl p-5 border border-vanilla-100 shadow-sm">
+                                <div className="bg-white rounded-xl p-5 border border-vanilla-100 shadow-sm hover:shadow-md transition-shadow">
                                     <div className="flex items-center gap-3 mb-3">
                                         <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
                                             <ShieldCheck className="w-5 h-5 text-amber-600" />
                                         </div>
-                                        <h3 className="font-semibold text-dark">Quality Guarantee</h3>
+                                        <h3 className="font-semibold text-vanilla-900">Quality Guarantee</h3>
                                     </div>
-                                    <p className="text-charcoal/60 text-sm">
+                                    <p className="text-vanilla-800/60 text-sm">
                                         Immediate replacement for damaged or defective products.
                                     </p>
                                 </div>
-                                <div className="bg-white rounded-xl p-5 border border-vanilla-100 shadow-sm">
+                                <div className="bg-white rounded-xl p-5 border border-vanilla-100 shadow-sm hover:shadow-md transition-shadow">
                                     <div className="flex items-center gap-3 mb-3">
                                         <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
                                             <Timer className="w-5 h-5 text-purple-600" />
                                         </div>
-                                        <h3 className="font-semibold text-dark">Fast Processing</h3>
+                                        <h3 className="font-semibold text-vanilla-900">Fast Processing</h3>
                                     </div>
-                                    <p className="text-charcoal/60 text-sm">
+                                    <p className="text-vanilla-800/60 text-sm">
                                         Orders processed within 1-3 business days of confirmation.
                                     </p>
                                 </div>
@@ -406,16 +401,16 @@ const Refund = () => {
                                     >
                                         {/* Section Header */}
                                         <div className="flex items-center gap-4 p-5 lg:p-6 border-b border-vanilla-100 bg-vanilla-50/50">
-                                            <div className={`w-10 h-10 bg-linear-to-br ${getSectionColor(section.title)} rounded-xl flex items-center justify-center text-white shrink-0`}>
+                                            <div className={`w-10 h-10 ${getSectionColor(section.title)} rounded-xl flex items-center justify-center text-white shrink-0 shadow-md`}>
                                                 {getSectionIcon(section.title)}
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center gap-2">
-                                                    <span className="text-vanilla-600 text-sm font-medium">
+                                                    <span className="text-gold-500 text-sm font-bold uppercase tracking-wider">
                                                         Section {section.id}
                                                     </span>
                                                 </div>
-                                                <h2 className="text-lg lg:text-xl font-semibold text-dark">
+                                                <h2 className="text-lg lg:text-xl font-semibold text-vanilla-900 font-serif mt-1">
                                                     {section.title}
                                                 </h2>
                                             </div>
@@ -423,7 +418,7 @@ const Refund = () => {
 
                                         {/* Section Content */}
                                         <div className="p-5 lg:p-6">
-                                            <div className="prose prose-vanilla max-w-none text-charcoal/70 leading-relaxed">
+                                            <div className="prose prose-vanilla max-w-none text-vanilla-800/70 leading-relaxed font-sans">
                                                 {/* Render description - handle both string and JSX */}
                                                 {typeof section.description === 'string' ? (
                                                     <p>{section.description}</p>
@@ -441,14 +436,14 @@ const Refund = () => {
                             {/* Important Notice */}
                             <div className="mt-8 bg-amber-50 rounded-2xl p-6 lg:p-8 border border-amber-200">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center shrink-0">
+                                    <div className="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center shrink-0 shadow-lg shadow-amber-500/20">
                                         <AlertTriangle className="w-5 h-5 text-white" />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-semibold text-amber-800 mb-2">
+                                        <h3 className="text-lg font-semibold text-amber-900 mb-2 font-serif">
                                             Important Notice
                                         </h3>
-                                        <p className="text-amber-700 leading-relaxed">
+                                        <p className="text-amber-800/80 leading-relaxed font-sans">
                                             Please inspect your package upon delivery. If you notice any damage
                                             to the packaging, please note it on the delivery receipt and contact
                                             us immediately with photos of the damage. This helps us process your
@@ -471,7 +466,7 @@ const Refund = () => {
             {/* Scroll to Top Button */}
             <button
                 onClick={scrollToTop}
-                className={`fixed bottom-6 right-6 w-12 h-12 bg-vanilla-400 text-dark rounded-full flex items-center justify-center shadow-lg hover:bg-vanilla-500 transition-all duration-300 z-40 print:hidden ${showScrollTop
+                className={`fixed bottom-6 right-6 w-12 h-12 bg-vanilla-900 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-gold-500 transition-all duration-300 z-40 print:hidden ${showScrollTop
                         ? 'opacity-100 translate-y-0'
                         : 'opacity-0 translate-y-4 pointer-events-none'
                     }`}

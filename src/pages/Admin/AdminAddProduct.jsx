@@ -4,7 +4,6 @@ import {
   ArrowLeft,
   Plus,
   X,
-  Upload,
   Image as ImageIcon,
   GripVertical,
   AlertCircle,
@@ -13,15 +12,21 @@ import {
   Trash2,
   ChevronDown,
   ChevronUp,
-  Package,
   Layers,
   Save,
   Eye,
   EyeOff,
 } from "lucide-react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
-// Variant Card Component
+// --- Shared Styles ---
+const INPUT_CLASSES = "w-full px-4 py-2.5 rounded-lg bg-white border border-vanilla-200 text-vanilla-900 placeholder-vanilla-400 focus:outline-none focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition text-sm";
+const LABEL_CLASSES = "block text-sm font-bold text-vanilla-900 mb-2";
+const CARD_CLASSES = "bg-white rounded-xl border border-vanilla-200 shadow-sm overflow-hidden";
+const SECTION_HEADER_CLASSES = "p-6 border-b border-vanilla-200 bg-vanilla-50/50";
+
+// --- Variant Card Component ---
 const VariantCard = ({
   variant,
   index,
@@ -37,23 +42,30 @@ const VariantCard = ({
   const [newHighlight, setNewHighlight] = useState("");
 
   return (
-    <div className="border border-vanilla-200 rounded-xl overflow-hidden bg-white">
+    <div className="border border-vanilla-200 rounded-xl overflow-hidden bg-white shadow-sm transition-all hover:shadow-md">
       {/* Variant Header */}
       <div
-        className="flex items-center justify-between p-4 bg-vanilla-50 cursor-pointer"
+        className="flex items-center justify-between p-4 bg-vanilla-50 cursor-pointer select-none"
         onClick={() => setExpanded(!expanded)}
       >
         <div className="flex items-center gap-3">
           <GripVertical className="w-5 h-5 text-vanilla-400" />
-          <span className="font-medium text-dark">
+          <span className="font-bold text-vanilla-900">
             Variant {index + 1}
-            {variant.label && `: ${variant.label}`}
+            {variant.label && <span className="font-normal text-vanilla-600">: {variant.label}</span>}
           </span>
-          {variant.price && (
-            <span className="text-sm text-vanilla-500">
-              - LKR {Number(variant.price).toLocaleString()}
-            </span>
-          )}
+          <div className="flex gap-2">
+            {variant.priceInLKR && (
+              <span className="text-sm px-2 py-0.5 bg-green-100 text-green-700 rounded-full font-medium">
+                LKR {Number(variant.priceInLKR).toLocaleString()}
+              </span>
+            )}
+            {variant.priceInUSD && (
+              <span className="text-sm px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full font-medium">
+                $ {Number(variant.priceInUSD).toLocaleString()}
+              </span>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -62,25 +74,25 @@ const VariantCard = ({
               e.stopPropagation();
               onRemove(index);
             }}
-            className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition"
+            className="p-2 text-vanilla-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
           >
             <Trash2 className="w-4 h-4" />
           </button>
           {expanded ? (
-            <ChevronUp className="w-5 h-5 text-vanilla-500" />
+            <ChevronUp className="w-5 h-5 text-vanilla-400" />
           ) : (
-            <ChevronDown className="w-5 h-5 text-vanilla-500" />
+            <ChevronDown className="w-5 h-5 text-vanilla-400" />
           )}
         </div>
       </div>
 
       {/* Variant Content */}
       {expanded && (
-        <div className="p-4 space-y-4">
+        <div className="p-5 space-y-5 border-t border-vanilla-100">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Label */}
             <div>
-              <label className="block text-sm font-medium text-dark mb-1">
+              <label className={LABEL_CLASSES}>
                 Label <span className="text-red-500">*</span>
               </label>
               <input
@@ -88,29 +100,45 @@ const VariantCard = ({
                 value={variant.label}
                 onChange={(e) => onUpdate(index, "label", e.target.value)}
                 placeholder="e.g., Small, 250g"
-                className="w-full px-3 py-2 rounded-lg bg-cream border border-vanilla-200 text-dark text-sm focus:outline-none focus:ring-2 focus:ring-vanilla-300"
+                className={INPUT_CLASSES}
               />
             </div>
 
-            {/* Price */}
+            {/* Price LKR */}
             <div>
-              <label className="block text-sm font-medium text-dark mb-1">
+              <label className={LABEL_CLASSES}>
                 Price (LKR) <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
-                value={variant.price}
-                onChange={(e) => onUpdate(index, "price", e.target.value)}
+                value={variant.priceInLKR}
+                onChange={(e) => onUpdate(index, "priceInLKR", e.target.value)}
                 placeholder="0.00"
                 min="0"
                 step="0.01"
-                className="w-full px-3 py-2 rounded-lg bg-cream border border-vanilla-200 text-dark text-sm focus:outline-none focus:ring-2 focus:ring-vanilla-300"
+                className={INPUT_CLASSES}
+              />
+            </div>
+
+            {/* Price USD */}
+            <div>
+              <label className={LABEL_CLASSES}>
+                Price (USD) <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                value={variant.priceInUSD}
+                onChange={(e) => onUpdate(index, "priceInUSD", e.target.value)}
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+                className={INPUT_CLASSES}
               />
             </div>
 
             {/* Stock */}
             <div>
-              <label className="block text-sm font-medium text-dark mb-1">
+              <label className={LABEL_CLASSES}>
                 Stock
               </label>
               <input
@@ -119,13 +147,13 @@ const VariantCard = ({
                 onChange={(e) => onUpdate(index, "stock", e.target.value)}
                 placeholder="0"
                 min="0"
-                className="w-full px-3 py-2 rounded-lg bg-cream border border-vanilla-200 text-dark text-sm focus:outline-none focus:ring-2 focus:ring-vanilla-300"
+                className={INPUT_CLASSES}
               />
             </div>
 
             {/* Weight */}
             <div>
-              <label className="block text-sm font-medium text-dark mb-1">
+              <label className={LABEL_CLASSES}>
                 Weight
               </label>
               <input
@@ -133,14 +161,14 @@ const VariantCard = ({
                 value={variant.weight}
                 onChange={(e) => onUpdate(index, "weight", e.target.value)}
                 placeholder="e.g., 500g"
-                className="w-full px-3 py-2 rounded-lg bg-cream border border-vanilla-200 text-dark text-sm focus:outline-none focus:ring-2 focus:ring-vanilla-300"
+                className={INPUT_CLASSES}
               />
             </div>
           </div>
 
           {/* Variant Images */}
           <div>
-            <label className="block text-sm font-medium text-dark mb-2">
+            <label className={LABEL_CLASSES}>
               Variant Images
             </label>
             <div className="flex gap-2 mb-3">
@@ -149,7 +177,7 @@ const VariantCard = ({
                 value={newImage}
                 onChange={(e) => setNewImage(e.target.value)}
                 placeholder="Enter image URL"
-                className="flex-1 px-3 py-2 rounded-lg bg-cream border border-vanilla-200 text-dark text-sm focus:outline-none focus:ring-2 focus:ring-vanilla-300"
+                className={INPUT_CLASSES}
                 onKeyPress={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
@@ -168,17 +196,17 @@ const VariantCard = ({
                     setNewImage("");
                   }
                 }}
-                className="px-3 py-2 bg-vanilla-200 text-dark rounded-lg hover:bg-vanilla-300 transition"
+                className="px-4 py-2 bg-vanilla-900 text-white rounded-lg hover:bg-vanilla-800 transition shadow-sm"
               >
-                <Plus className="w-4 h-4" />
+                <Plus className="w-5 h-5" />
               </button>
             </div>
             {variant.images && variant.images.length > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3">
                 {variant.images.map((img, imgIndex) => (
                   <div
                     key={imgIndex}
-                    className="relative w-16 h-16 rounded-lg overflow-hidden bg-vanilla-100 group"
+                    className="relative w-20 h-20 rounded-lg overflow-hidden bg-vanilla-100 border border-vanilla-200 group"
                   >
                     <img
                       src={img}
@@ -188,9 +216,9 @@ const VariantCard = ({
                     <button
                       type="button"
                       onClick={() => onRemoveImage(index, imgIndex)}
-                      className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                      className="absolute inset-0 bg-vanilla-900/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition backdrop-blur-sm"
                     >
-                      <X className="w-4 h-4 text-white" />
+                      <X className="w-5 h-5 text-white" />
                     </button>
                   </div>
                 ))}
@@ -200,7 +228,7 @@ const VariantCard = ({
 
           {/* Variant Highlights */}
           <div>
-            <label className="block text-sm font-medium text-dark mb-2">
+            <label className={LABEL_CLASSES}>
               Variant Highlights
             </label>
             <div className="flex gap-2 mb-3">
@@ -209,7 +237,7 @@ const VariantCard = ({
                 value={newHighlight}
                 onChange={(e) => setNewHighlight(e.target.value)}
                 placeholder="Add highlight for this variant"
-                className="flex-1 px-3 py-2 rounded-lg bg-cream border border-vanilla-200 text-dark text-sm focus:outline-none focus:ring-2 focus:ring-vanilla-300"
+                className={INPUT_CLASSES}
                 onKeyPress={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
@@ -228,9 +256,9 @@ const VariantCard = ({
                     setNewHighlight("");
                   }
                 }}
-                className="px-3 py-2 bg-vanilla-200 text-dark rounded-lg hover:bg-vanilla-300 transition"
+                className="px-4 py-2 bg-vanilla-900 text-white rounded-lg hover:bg-vanilla-800 transition shadow-sm"
               >
-                <Plus className="w-4 h-4" />
+                <Plus className="w-5 h-5" />
               </button>
             </div>
             {variant.highlights && variant.highlights.length > 0 && (
@@ -238,13 +266,13 @@ const VariantCard = ({
                 {variant.highlights.map((hl, hlIndex) => (
                   <span
                     key={hlIndex}
-                    className="inline-flex items-center gap-1 px-2 py-1 bg-vanilla-100 text-dark rounded-full text-xs"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-gold-50 text-gold-700 border border-gold-200 rounded-full text-xs font-medium"
                   >
                     {hl}
                     <button
                       type="button"
                       onClick={() => onRemoveHighlight(index, hlIndex)}
-                      className="hover:text-red-500"
+                      className="hover:text-red-600 transition"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -259,7 +287,7 @@ const VariantCard = ({
   );
 };
 
-// Main Add Product Page Component
+// --- Main Add Product Page Component ---
 export default function AdminAddProduct() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -271,7 +299,8 @@ export default function AdminAddProduct() {
     slug: "",
     category: "",
     description: "",
-    price: "",
+    priceInLKR: "",
+    priceInUSD: "",
     stock: "",
     weight: "",
     isActive: true,
@@ -335,7 +364,8 @@ export default function AdminAddProduct() {
         ...prev.variants,
         {
           label: "",
-          price: "",
+          priceInLKR: "",
+          priceInUSD: "",
           stock: "",
           weight: "",
           images: [],
@@ -433,16 +463,20 @@ export default function AdminAddProduct() {
       return;
     }
 
-    if (formData.variants.length === 0 && !formData.price) {
-      setError("Please add a price or create variants");
-      setLoading(false);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      return;
+    // Check base price if no variants
+    if (formData.variants.length === 0) {
+      if (!formData.priceInLKR || !formData.priceInUSD) {
+        setError("Please add both LKR and USD prices or create variants");
+        setLoading(false);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
     }
 
+    // Check variant prices
     for (let i = 0; i < formData.variants.length; i++) {
-      if (!formData.variants[i].label || !formData.variants[i].price) {
-        setError(`Variant ${i + 1}: Label and Price are required`);
+      if (!formData.variants[i].label || !formData.variants[i].priceInLKR || !formData.variants[i].priceInUSD) {
+        setError(`Variant ${i + 1}: Label and both Prices (LKR & USD) are required`);
         setLoading(false);
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
@@ -452,11 +486,13 @@ export default function AdminAddProduct() {
     try {
       const productData = {
         ...formData,
-        price: formData.price ? Number(formData.price) : undefined,
+        priceInLKR: formData.priceInLKR ? Number(formData.priceInLKR) : undefined,
+        priceInUSD: formData.priceInUSD ? Number(formData.priceInUSD) : undefined,
         stock: formData.stock ? Number(formData.stock) : 0,
         variants: formData.variants.map((v) => ({
           ...v,
-          price: Number(v.price),
+          priceInLKR: Number(v.priceInLKR),
+          priceInUSD: Number(v.priceInUSD),
           stock: v.stock ? Number(v.stock) : 0,
         })),
       };
@@ -474,32 +510,33 @@ export default function AdminAddProduct() {
       setSuccess(true);
       setTimeout(() => {
         navigate("/admin/products");
+        toast.success('Product created successfully');
       }, 1500);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to create product");
+      toast.error('Failed to create product');
       window.scrollTo({ top: 0, behavior: "smooth" });
     } finally {
       setLoading(false);
     }
   };
 
-  // Check if has variants
   const hasVariants = formData.variants.length > 0;
 
   return (
-    <div className="space-y-6 pb-8">
+    <div className="space-y-6 pb-20 font-sans">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate("/admin/products")}
-            className="p-2 hover:bg-vanilla-100 rounded-lg transition"
+            className="p-2 bg-white border border-vanilla-200 hover:bg-vanilla-50 rounded-lg transition text-vanilla-600 shadow-sm"
           >
-            <ArrowLeft className="w-5 h-5 text-dark" />
+            <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-dark">Add New Product</h1>
-            <p className="text-sm text-vanilla-600">
+            <h1 className="text-2xl font-bold font-serif text-vanilla-900">Add New Product</h1>
+            <p className="text-sm text-vanilla-500">
               Create a new product for your store
             </p>
           </div>
@@ -509,14 +546,14 @@ export default function AdminAddProduct() {
           <button
             type="button"
             onClick={() => navigate("/admin/products")}
-            className="px-4 py-2.5 border border-vanilla-200 text-dark rounded-lg hover:bg-vanilla-100 transition font-medium"
+            className="px-5 py-2.5 border border-vanilla-200 bg-white text-vanilla-900 rounded-lg hover:bg-vanilla-50 transition font-medium shadow-sm"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="flex items-center gap-2 px-4 py-2.5 bg-dark text-cream rounded-lg hover:opacity-90 transition font-medium disabled:opacity-50"
+            className="flex items-center gap-2 px-5 py-2.5 bg-vanilla-900 text-white rounded-lg hover:bg-vanilla-800 transition font-medium disabled:opacity-50 shadow-md"
           >
             {loading ? (
               <>
@@ -535,7 +572,7 @@ export default function AdminAddProduct() {
 
       {/* Success Message */}
       {success && (
-        <div className="p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3 text-green-700">
+        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-3 text-emerald-700 shadow-sm">
           <Check className="w-5 h-5 shrink-0" />
           <p className="text-sm font-medium">
             Product created successfully! Redirecting...
@@ -545,7 +582,7 @@ export default function AdminAddProduct() {
 
       {/* Error Message */}
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700">
+        <div className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700 shadow-sm">
           <AlertCircle className="w-5 h-5 shrink-0" />
           <p className="text-sm">{error}</p>
         </div>
@@ -553,12 +590,12 @@ export default function AdminAddProduct() {
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Basic Information */}
-        <div className="bg-cream rounded-2xl border border-vanilla-200 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-vanilla-200">
-            <h2 className="text-lg font-semibold text-dark">
+        <div className={CARD_CLASSES}>
+          <div className={SECTION_HEADER_CLASSES}>
+            <h2 className="text-lg font-bold font-serif text-vanilla-900">
               Basic Information
             </h2>
-            <p className="text-sm text-vanilla-600 mt-1">
+            <p className="text-sm text-vanilla-500 mt-1">
               Enter the basic details of your product
             </p>
           </div>
@@ -567,7 +604,7 @@ export default function AdminAddProduct() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Product Name */}
               <div>
-                <label className="block text-sm font-medium text-dark mb-2">
+                <label className={LABEL_CLASSES}>
                   Product Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -576,13 +613,13 @@ export default function AdminAddProduct() {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="Enter product name"
-                  className="w-full px-4 py-2.5 rounded-lg bg-white border border-vanilla-200 text-dark placeholder-vanilla-400 focus:outline-none focus:ring-2 focus:ring-vanilla-300"
+                  className={INPUT_CLASSES}
                 />
               </div>
 
               {/* Slug */}
               <div>
-                <label className="block text-sm font-medium text-dark mb-2">
+                <label className={LABEL_CLASSES}>
                   Slug <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -591,16 +628,16 @@ export default function AdminAddProduct() {
                   value={formData.slug}
                   onChange={handleChange}
                   placeholder="product-slug"
-                  className="w-full px-4 py-2.5 rounded-lg bg-white border border-vanilla-200 text-dark placeholder-vanilla-400 focus:outline-none focus:ring-2 focus:ring-vanilla-300"
+                  className={INPUT_CLASSES}
                 />
-                <p className="text-xs text-vanilla-500 mt-1">
+                <p className="text-xs text-vanilla-400 mt-1">
                   Auto-generated from name. Must be unique.
                 </p>
               </div>
 
               {/* Category */}
               <div>
-                <label className="block text-sm font-medium text-dark mb-2">
+                <label className={LABEL_CLASSES}>
                   Category <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -609,13 +646,13 @@ export default function AdminAddProduct() {
                   value={formData.category}
                   onChange={handleChange}
                   placeholder="e.g., Honey, Oils, Gifts"
-                  className="w-full px-4 py-2.5 rounded-lg bg-white border border-vanilla-200 text-dark placeholder-vanilla-400 focus:outline-none focus:ring-2 focus:ring-vanilla-300"
+                  className={INPUT_CLASSES}
                 />
               </div>
 
               {/* Weight */}
               <div>
-                <label className="block text-sm font-medium text-dark mb-2">
+                <label className={LABEL_CLASSES}>
                   Weight
                 </label>
                 <input
@@ -625,37 +662,61 @@ export default function AdminAddProduct() {
                   onChange={handleChange}
                   placeholder="e.g., 500g, 1kg"
                   disabled={hasVariants}
-                  className="w-full px-4 py-2.5 rounded-lg bg-white border border-vanilla-200 text-dark placeholder-vanilla-400 focus:outline-none focus:ring-2 focus:ring-vanilla-300 disabled:bg-vanilla-100 disabled:cursor-not-allowed"
+                  className={`${INPUT_CLASSES} disabled:bg-vanilla-50 disabled:cursor-not-allowed disabled:text-vanilla-400`}
                 />
               </div>
 
-              {/* Price */}
+              {/* Price LKR */}
               <div>
-                <label className="block text-sm font-medium text-dark mb-2">
+                <label className={LABEL_CLASSES}>
                   Price (LKR){" "}
                   {!hasVariants && <span className="text-red-500">*</span>}
                 </label>
                 <input
                   type="number"
-                  name="price"
-                  value={formData.price}
+                  name="priceInLKR"
+                  value={formData.priceInLKR}
                   onChange={handleChange}
                   placeholder="0.00"
                   min="0"
                   step="0.01"
                   disabled={hasVariants}
-                  className="w-full px-4 py-2.5 rounded-lg bg-white border border-vanilla-200 text-dark placeholder-vanilla-400 focus:outline-none focus:ring-2 focus:ring-vanilla-300 disabled:bg-vanilla-100 disabled:cursor-not-allowed"
+                  className={`${INPUT_CLASSES} disabled:bg-vanilla-50 disabled:cursor-not-allowed disabled:text-vanilla-400`}
                 />
                 {hasVariants && (
-                  <p className="text-xs text-vanilla-500 mt-1">
-                    Price is set per variant
+                  <p className="text-xs text-gold-600 mt-1 font-medium">
+                    Price is managed per variant
+                  </p>
+                )}
+              </div>
+
+               {/* Price USD */}
+               <div>
+                <label className={LABEL_CLASSES}>
+                  Price (USD){" "}
+                  {!hasVariants && <span className="text-red-500">*</span>}
+                </label>
+                <input
+                  type="number"
+                  name="priceInUSD"
+                  value={formData.priceInUSD}
+                  onChange={handleChange}
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                  disabled={hasVariants}
+                  className={`${INPUT_CLASSES} disabled:bg-vanilla-50 disabled:cursor-not-allowed disabled:text-vanilla-400`}
+                />
+                {hasVariants && (
+                  <p className="text-xs text-gold-600 mt-1 font-medium">
+                    Price is managed per variant
                   </p>
                 )}
               </div>
 
               {/* Stock */}
               <div>
-                <label className="block text-sm font-medium text-dark mb-2">
+                <label className={LABEL_CLASSES}>
                   Stock
                 </label>
                 <input
@@ -666,11 +727,11 @@ export default function AdminAddProduct() {
                   placeholder="0"
                   min="0"
                   disabled={hasVariants}
-                  className="w-full px-4 py-2.5 rounded-lg bg-white border border-vanilla-200 text-dark placeholder-vanilla-400 focus:outline-none focus:ring-2 focus:ring-vanilla-300 disabled:bg-vanilla-100 disabled:cursor-not-allowed"
+                  className={`${INPUT_CLASSES} disabled:bg-vanilla-50 disabled:cursor-not-allowed disabled:text-vanilla-400`}
                 />
                 {hasVariants && (
-                  <p className="text-xs text-vanilla-500 mt-1">
-                    Stock is set per variant
+                  <p className="text-xs text-gold-600 mt-1 font-medium">
+                    Stock is managed per variant
                   </p>
                 )}
               </div>
@@ -678,7 +739,7 @@ export default function AdminAddProduct() {
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-dark mb-2">
+              <label className={LABEL_CLASSES}>
                 Description <span className="text-red-500">*</span>
               </label>
               <textarea
@@ -687,12 +748,12 @@ export default function AdminAddProduct() {
                 onChange={handleChange}
                 placeholder="Enter product description"
                 rows={4}
-                className="w-full px-4 py-2.5 rounded-lg bg-white border border-vanilla-200 text-dark placeholder-vanilla-400 focus:outline-none focus:ring-2 focus:ring-vanilla-300 resize-none"
+                className={`${INPUT_CLASSES} resize-none`}
               />
             </div>
 
             {/* Active Status */}
-            <div className="flex items-center gap-3 p-4 bg-vanilla-50 rounded-xl">
+            <div className="flex items-center gap-4 p-4 bg-vanilla-50 rounded-xl border border-vanilla-100">
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
@@ -701,10 +762,10 @@ export default function AdminAddProduct() {
                   onChange={handleChange}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-vanilla-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-vanilla-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                <div className="w-11 h-6 bg-vanilla-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-gold-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500 shadow-inner"></div>
               </label>
               <div>
-                <span className="text-sm font-medium text-dark flex items-center gap-2">
+                <span className="text-sm font-bold text-vanilla-900 flex items-center gap-2">
                   {formData.isActive ? (
                     <>
                       <Eye className="w-4 h-4 text-green-600" />
@@ -712,7 +773,7 @@ export default function AdminAddProduct() {
                     </>
                   ) : (
                     <>
-                      <EyeOff className="w-4 h-4 text-vanilla-500" />
+                      <EyeOff className="w-4 h-4 text-vanilla-400" />
                       Product is Inactive
                     </>
                   )}
@@ -728,10 +789,10 @@ export default function AdminAddProduct() {
         </div>
 
         {/* Product Images */}
-        <div className="bg-cream rounded-2xl border border-vanilla-200 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-vanilla-200">
-            <h2 className="text-lg font-semibold text-dark">Product Images</h2>
-            <p className="text-sm text-vanilla-600 mt-1">
+        <div className={CARD_CLASSES}>
+          <div className={SECTION_HEADER_CLASSES}>
+            <h2 className="text-lg font-bold font-serif text-vanilla-900">Product Images</h2>
+            <p className="text-sm text-vanilla-500 mt-1">
               Add image URLs for your product. First image will be the main
               image.
             </p>
@@ -745,7 +806,7 @@ export default function AdminAddProduct() {
                 value={newImage}
                 onChange={(e) => setNewImage(e.target.value)}
                 placeholder="Enter image URL (https://...)"
-                className="flex-1 px-4 py-2.5 rounded-lg bg-white border border-vanilla-200 text-dark placeholder-vanilla-400 focus:outline-none focus:ring-2 focus:ring-vanilla-300"
+                className={INPUT_CLASSES}
                 onKeyPress={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
@@ -756,10 +817,10 @@ export default function AdminAddProduct() {
               <button
                 type="button"
                 onClick={() => addArrayItem("images", newImage, setNewImage)}
-                className="px-4 py-2.5 bg-dark text-cream rounded-lg hover:opacity-90 transition flex items-center gap-2"
+                className="px-5 py-2.5 bg-vanilla-900 text-white rounded-lg hover:bg-vanilla-800 transition flex items-center gap-2 shadow-md"
               >
                 <Plus className="w-5 h-5" />
-                <span className="hidden sm:inline">Add</span>
+                <span className="hidden sm:inline font-medium">Add</span>
               </button>
             </div>
 
@@ -769,7 +830,7 @@ export default function AdminAddProduct() {
                 {formData.images.map((image, index) => (
                   <div
                     key={index}
-                    className="relative group aspect-square rounded-xl overflow-hidden bg-vanilla-100 border border-vanilla-200"
+                    className="relative group aspect-square rounded-xl overflow-hidden bg-vanilla-50 border border-vanilla-200 shadow-sm hover:shadow-md transition-all"
                   >
                     <img
                       src={image}
@@ -781,33 +842,33 @@ export default function AdminAddProduct() {
                       }}
                     />
                     <div
-                      className="absolute inset-0 items-center justify-center bg-vanilla-100 hidden"
+                      className="absolute inset-0 items-center justify-center bg-vanilla-100 hidden w-full h-full"
                       style={{ display: "none" }}
                     >
-                      <ImageIcon className="w-8 h-8 text-vanilla-400" />
+                      <ImageIcon className="w-8 h-8 text-vanilla-300" />
                     </div>
                     {index === 0 && (
-                      <span className="absolute top-2 left-2 px-2 py-1 bg-dark text-cream text-xs rounded-full font-medium">
+                      <span className="absolute top-2 left-2 px-2 py-1 bg-vanilla-900/90 text-white text-[10px] uppercase font-bold tracking-wider rounded backdrop-blur-sm">
                         Main
                       </span>
                     )}
                     <button
                       type="button"
                       onClick={() => removeArrayItem("images", index)}
-                      className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition"
+                      className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition shadow-sm hover:bg-red-600"
                     >
                       <X className="w-4 h-4" />
                     </button>
-                    <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs p-2 truncate opacity-0 group-hover:opacity-100 transition">
+                    <div className="absolute bottom-0 left-0 right-0 bg-vanilla-900/80 backdrop-blur-sm text-white text-[10px] p-2 truncate opacity-0 group-hover:opacity-100 transition">
                       {image}
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="border-2 border-dashed border-vanilla-300 rounded-xl p-8 text-center">
-                <ImageIcon className="w-12 h-12 text-vanilla-400 mx-auto mb-3" />
-                <p className="text-vanilla-600 font-medium">
+              <div className="border-2 border-dashed border-vanilla-200 rounded-xl p-10 text-center bg-vanilla-50/50">
+                <ImageIcon className="w-12 h-12 text-vanilla-300 mx-auto mb-3" />
+                <p className="text-vanilla-900 font-medium">
                   No images added yet
                 </p>
                 <p className="text-sm text-vanilla-500 mt-1">
@@ -819,10 +880,10 @@ export default function AdminAddProduct() {
         </div>
 
         {/* Product Details */}
-        <div className="bg-cream rounded-2xl border border-vanilla-200 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-vanilla-200">
-            <h2 className="text-lg font-semibold text-dark">Product Details</h2>
-            <p className="text-sm text-vanilla-600 mt-1">
+        <div className={CARD_CLASSES}>
+          <div className={SECTION_HEADER_CLASSES}>
+            <h2 className="text-lg font-bold font-serif text-vanilla-900">Product Details</h2>
+            <p className="text-sm text-vanilla-500 mt-1">
               Add ingredients, highlights, and usage tips
             </p>
           </div>
@@ -830,7 +891,7 @@ export default function AdminAddProduct() {
           <div className="p-6 space-y-8">
             {/* Ingredients */}
             <div>
-              <label className="block text-sm font-medium text-dark mb-2">
+              <label className={LABEL_CLASSES}>
                 Ingredients
               </label>
               <div className="flex gap-2 mb-3">
@@ -839,7 +900,7 @@ export default function AdminAddProduct() {
                   value={newIngredient}
                   onChange={(e) => setNewIngredient(e.target.value)}
                   placeholder="Add ingredient"
-                  className="flex-1 px-4 py-2.5 rounded-lg bg-white border border-vanilla-200 text-dark placeholder-vanilla-400 focus:outline-none focus:ring-2 focus:ring-vanilla-300"
+                  className={INPUT_CLASSES}
                   onKeyPress={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
@@ -856,7 +917,7 @@ export default function AdminAddProduct() {
                   onClick={() =>
                     addArrayItem("ingredients", newIngredient, setNewIngredient)
                   }
-                  className="px-4 py-2.5 bg-dark text-cream rounded-lg hover:opacity-90 transition"
+                  className="px-4 py-2 bg-vanilla-900 text-white rounded-lg hover:bg-vanilla-800 transition shadow-sm"
                 >
                   <Plus className="w-5 h-5" />
                 </button>
@@ -866,13 +927,13 @@ export default function AdminAddProduct() {
                   {formData.ingredients.map((item, index) => (
                     <span
                       key={index}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-vanilla-100 text-dark rounded-full text-sm"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-vanilla-100 text-vanilla-900 border border-vanilla-200 rounded-full text-sm font-medium"
                     >
                       {item}
                       <button
                         type="button"
                         onClick={() => removeArrayItem("ingredients", index)}
-                        className="hover:text-red-500 transition"
+                        className="text-vanilla-500 hover:text-red-600 transition"
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -880,7 +941,7 @@ export default function AdminAddProduct() {
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-vanilla-500 italic">
+                <p className="text-sm text-vanilla-400 italic">
                   No ingredients added
                 </p>
               )}
@@ -888,7 +949,7 @@ export default function AdminAddProduct() {
 
             {/* Highlights */}
             <div>
-              <label className="block text-sm font-medium text-dark mb-2">
+              <label className={LABEL_CLASSES}>
                 Highlights
               </label>
               <div className="flex gap-2 mb-3">
@@ -897,7 +958,7 @@ export default function AdminAddProduct() {
                   value={newHighlight}
                   onChange={(e) => setNewHighlight(e.target.value)}
                   placeholder="Add highlight"
-                  className="flex-1 px-4 py-2.5 rounded-lg bg-white border border-vanilla-200 text-dark placeholder-vanilla-400 focus:outline-none focus:ring-2 focus:ring-vanilla-300"
+                  className={INPUT_CLASSES}
                   onKeyPress={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
@@ -910,7 +971,7 @@ export default function AdminAddProduct() {
                   onClick={() =>
                     addArrayItem("highlights", newHighlight, setNewHighlight)
                   }
-                  className="px-4 py-2.5 bg-dark text-cream rounded-lg hover:opacity-90 transition"
+                  className="px-4 py-2 bg-vanilla-900 text-white rounded-lg hover:bg-vanilla-800 transition shadow-sm"
                 >
                   <Plus className="w-5 h-5" />
                 </button>
@@ -920,16 +981,18 @@ export default function AdminAddProduct() {
                   {formData.highlights.map((item, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-3 bg-vanilla-50 rounded-lg border border-vanilla-100"
+                      className="flex items-center justify-between p-3 bg-white rounded-lg border border-vanilla-200 shadow-sm"
                     >
-                      <div className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-green-600" />
-                        <span className="text-sm text-dark">{item}</span>
+                      <div className="flex items-center gap-3">
+                        <div className="p-1 rounded-full bg-green-100 text-green-600">
+                          <Check className="w-3 h-3" />
+                        </div>
+                        <span className="text-sm font-medium text-vanilla-900">{item}</span>
                       </div>
                       <button
                         type="button"
                         onClick={() => removeArrayItem("highlights", index)}
-                        className="text-vanilla-500 hover:text-red-500 transition"
+                        className="text-vanilla-400 hover:text-red-600 transition"
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -937,7 +1000,7 @@ export default function AdminAddProduct() {
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-vanilla-500 italic">
+                <p className="text-sm text-vanilla-400 italic">
                   No highlights added
                 </p>
               )}
@@ -945,7 +1008,7 @@ export default function AdminAddProduct() {
 
             {/* Usage Tips */}
             <div>
-              <label className="block text-sm font-medium text-dark mb-2">
+              <label className={LABEL_CLASSES}>
                 Usage Tips
               </label>
               <div className="flex gap-2 mb-3">
@@ -954,7 +1017,7 @@ export default function AdminAddProduct() {
                   value={newUsageTip}
                   onChange={(e) => setNewUsageTip(e.target.value)}
                   placeholder="Add usage tip"
-                  className="flex-1 px-4 py-2.5 rounded-lg bg-white border border-vanilla-200 text-dark placeholder-vanilla-400 focus:outline-none focus:ring-2 focus:ring-vanilla-300"
+                  className={INPUT_CLASSES}
                   onKeyPress={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
@@ -967,7 +1030,7 @@ export default function AdminAddProduct() {
                   onClick={() =>
                     addArrayItem("usageTips", newUsageTip, setNewUsageTip)
                   }
-                  className="px-4 py-2.5 bg-dark text-cream rounded-lg hover:opacity-90 transition"
+                  className="px-4 py-2 bg-vanilla-900 text-white rounded-lg hover:bg-vanilla-800 transition shadow-sm"
                 >
                   <Plus className="w-5 h-5" />
                 </button>
@@ -977,10 +1040,10 @@ export default function AdminAddProduct() {
                   {formData.usageTips.map((item, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-3 bg-vanilla-50 rounded-lg border border-vanilla-100"
+                      className="flex items-center justify-between p-3 bg-vanilla-50 rounded-lg border border-vanilla-200"
                     >
-                      <span className="text-sm text-dark">
-                        <span className="font-medium text-vanilla-600 mr-2">
+                      <span className="text-sm text-vanilla-900">
+                        <span className="font-bold text-vanilla-400 mr-3">
                           {index + 1}.
                         </span>
                         {item}
@@ -988,7 +1051,7 @@ export default function AdminAddProduct() {
                       <button
                         type="button"
                         onClick={() => removeArrayItem("usageTips", index)}
-                        className="text-vanilla-500 hover:text-red-500 transition"
+                        className="text-vanilla-400 hover:text-red-600 transition"
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -996,7 +1059,7 @@ export default function AdminAddProduct() {
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-vanilla-500 italic">
+                <p className="text-sm text-vanilla-400 italic">
                   No usage tips added
                 </p>
               )}
@@ -1005,27 +1068,27 @@ export default function AdminAddProduct() {
         </div>
 
         {/* Product Variants */}
-        <div className="bg-cream rounded-2xl border border-vanilla-200 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-vanilla-200">
+        <div className={CARD_CLASSES}>
+          <div className={SECTION_HEADER_CLASSES}>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h2 className="text-lg font-semibold text-dark flex items-center gap-2">
-                  <Layers className="w-5 h-5" />
+                <h2 className="text-lg font-bold font-serif text-vanilla-900 flex items-center gap-2">
+                  <Layers className="w-5 h-5 text-gold-500" />
                   Product Variants
                   {formData.variants.length > 0 && (
-                    <span className="px-2 py-0.5 bg-vanilla-200 text-vanilla-700 text-sm rounded-full">
+                    <span className="px-2 py-0.5 bg-vanilla-200 text-vanilla-800 text-xs rounded-full font-sans">
                       {formData.variants.length}
                     </span>
                   )}
                 </h2>
-                <p className="text-sm text-vanilla-600 mt-1">
+                <p className="text-sm text-vanilla-500 mt-1">
                   Add variants for different sizes, flavors, or options
                 </p>
               </div>
               <button
                 type="button"
                 onClick={addVariant}
-                className="flex items-center gap-2 px-4 py-2.5 bg-dark text-cream rounded-lg hover:opacity-90 transition text-sm font-medium"
+                className="flex items-center gap-2 px-4 py-2 bg-vanilla-900 text-white rounded-lg hover:bg-vanilla-800 transition text-sm font-medium shadow-md"
               >
                 <Plus className="w-4 h-4" />
                 Add Variant
@@ -1051,19 +1114,19 @@ export default function AdminAddProduct() {
                 ))}
               </div>
             ) : (
-              <div className="border-2 border-dashed border-vanilla-300 rounded-xl p-8 text-center">
-                <Layers className="w-12 h-12 text-vanilla-400 mx-auto mb-3" />
-                <p className="text-vanilla-600 font-medium">
+              <div className="border-2 border-dashed border-vanilla-200 rounded-xl p-10 text-center bg-vanilla-50/50">
+                <Layers className="w-12 h-12 text-vanilla-300 mx-auto mb-3" />
+                <p className="text-vanilla-900 font-medium">
                   No variants added
                 </p>
-                <p className="text-sm text-vanilla-500 mt-1 mb-4">
+                <p className="text-sm text-vanilla-500 mt-1 mb-6">
                   Add variants if your product comes in different sizes or
                   options
                 </p>
                 <button
                   type="button"
                   onClick={addVariant}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-vanilla-100 text-dark rounded-lg hover:bg-vanilla-200 transition text-sm font-medium"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-vanilla-300 text-vanilla-900 rounded-lg hover:bg-vanilla-50 transition text-sm font-medium shadow-sm"
                 >
                   <Plus className="w-4 h-4" />
                   Add Your First Variant
@@ -1072,11 +1135,12 @@ export default function AdminAddProduct() {
             )}
 
             {hasVariants && (
-              <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-                <p className="text-sm text-blue-700">
+              <div className="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-xl flex gap-3">
+                <AlertCircle className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+                <p className="text-sm text-blue-800">
                   <strong>Note:</strong> When variants are added, the main
                   product price and stock fields are disabled. Each variant will
-                  have its own price and stock.
+                  have its own price and stock configuration.
                 </p>
               </div>
             )}
@@ -1084,23 +1148,23 @@ export default function AdminAddProduct() {
         </div>
 
         {/* Submit Section */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-vanilla-50 rounded-2xl border border-vanilla-200">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-white rounded-2xl border border-vanilla-200 shadow-md">
           <div className="text-sm text-vanilla-600">
-            <span className="text-red-500">*</span> Required fields must be
+            <span className="text-red-500 font-bold">*</span> Required fields must be
             filled before saving
           </div>
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <button
               type="button"
               onClick={() => navigate("/admin/products")}
-              className="flex-1 sm:flex-none px-6 py-2.5 border border-vanilla-200 text-dark rounded-lg hover:bg-vanilla-100 transition font-medium"
+              className="flex-1 sm:flex-none px-6 py-2.5 border border-vanilla-200 text-vanilla-900 rounded-lg hover:bg-vanilla-50 transition font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-dark text-cream rounded-lg hover:opacity-90 transition font-medium disabled:opacity-50"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-8 py-2.5 bg-vanilla-900 text-white rounded-lg hover:bg-vanilla-800 transition font-medium disabled:opacity-70 shadow-lg"
             >
               {loading ? (
                 <>

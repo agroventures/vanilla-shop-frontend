@@ -1,11 +1,14 @@
 import { ShoppingBagIcon } from "lucide-react";
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const location = useLocation()
+
+  const isHomePage = location.pathname === '/'
 
   // 1. Scroll Effect Logic
   useEffect(() => {
@@ -21,14 +24,13 @@ const Navbar = () => {
     const updateCartCount = () => {
       // Get cart from local storage
       const cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
-      
+
       // Sum up quantities
       const count = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
-      
+
       setCartCount(count);
     };
 
-    // Run immediately on mount
     updateCartCount();
 
     // Listen for custom event (triggered when user clicks 'Add to Cart')
@@ -44,25 +46,36 @@ const Navbar = () => {
 
   const navLinks = [
     { name: "Home", href: "/" },
+    { name: "Shop", href: "/shop" },
     { name: "About", href: "/about" },
-    { name: "Shop", href: "/products" },
+    { name: "Contact", href: "/contact" },
   ];
+
+  const getNavbarStyle = () => {
+    if (!isHomePage) {
+      return isScrolled
+        ? 'bg-white/95 backdrop-blur-sm shadow-md py-3'
+        : 'bg-vanilla-900 py-3 shadow-lg'
+    }
+    // Home page: transparent initially, white when scrolled
+    return isScrolled
+      ? 'bg-white/95 backdrop-blur-sm shadow-md py-3'
+      : 'bg-transparent py-6'
+  }
 
   return (
     <nav
-      className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white/95 backdrop-blur-sm shadow-md" : "bg-transparent"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${getNavbarStyle()}`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="shrink-0 flex items-center">
             <Link to="/" className="font-serif text-2xl font-bold tracking-wider">
-              <img 
-                src='/logo.png' 
+              <img
+                src='/logo.png'
                 alt="Logo"
-                className={`w-18 h-18 ${isScrolled ? 'brightness-100 invert-0' : 'brightness-0 invert'}`} 
+                className={`w-18 h-18 ${isScrolled ? 'brightness-100 invert-0' : 'brightness-0 invert'}`}
               />
             </Link>
           </div>
@@ -73,9 +86,8 @@ const Navbar = () => {
               <Link
                 key={link.name}
                 to={link.href}
-                className={`${
-                  isScrolled ? "text-vanilla-900" : "text-white"
-                } hover:text-gold-500 transition font-medium`}
+                className={`${isScrolled ? "text-vanilla-900" : "text-white"
+                  } hover:text-gold-500 transition font-semibold`}
               >
                 {link.name}
               </Link>
@@ -86,14 +98,13 @@ const Navbar = () => {
           <div className="hidden md:flex">
             <Link
               to="/cart"
-              className={`relative px-2 py-2 border ${
-                isScrolled 
-                  ? 'text-vanilla-900 border-vanilla-900 hover:bg-vanilla-900 hover:text-white' 
-                  : 'text-white border-white hover:bg-white hover:text-vanilla-900'
-              } rounded-full transition group`}
+              className={`relative px-2 py-2 border ${isScrolled
+                ? 'text-vanilla-900 border-vanilla-900 hover:bg-vanilla-900 hover:text-white'
+                : 'text-white border-white hover:bg-white hover:text-vanilla-900'
+                } rounded-full transition group`}
             >
               <ShoppingBagIcon size={20} />
-              
+
               {/* The Count Badge */}
               {cartCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-gold-500 text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm">

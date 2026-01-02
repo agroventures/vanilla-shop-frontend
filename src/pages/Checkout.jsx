@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import {
     ChevronRight,
     ChevronLeft,
@@ -97,47 +97,51 @@ const OrderSummaryContent = ({
     total,
     formatPrice,
     selectedShipping,
-    getItemKey
+    getItemKey,
+    getPriceValue
 }) => {
     return (
         <div className="font-sans">
             {/* Cart Items */}
             <div className="space-y-4 mb-6 max-h-64 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-vanilla-200">
-                {cartItems.map((item) => (
-                    <div key={getItemKey(item)} className="flex gap-3">
-                        <div className="relative w-16 h-16 bg-vanilla-50 rounded-lg shrink-0 overflow-hidden border border-vanilla-100">
-                            {item.image ? (
-                                <img
-                                    src={item.image}
-                                    alt={item.name}
-                                    className="w-full h-full object-cover"
-                                    onError={(e) => {
-                                        e.target.style.display = 'none'
-                                    }}
-                                />
-                            ) : (
-                                <div className="w-full h-full flex items-center justify-center">
-                                    <Package className="w-6 h-6 text-vanilla-200" />
-                                </div>
-                            )}
-                            <span className="absolute -top-2 -right-2 w-5 h-5 bg-vanilla-900 text-white rounded-full text-xs flex items-center justify-center shadow-sm">
-                                {item.quantity}
+                {cartItems.map((item) => {
+                     const itemPrice = getPriceValue(item);
+                     return (
+                        <div key={getItemKey(item)} className="flex gap-3">
+                            <div className="relative w-16 h-16 bg-vanilla-50 rounded-lg shrink-0 overflow-hidden border border-vanilla-100">
+                                {item.image ? (
+                                    <img
+                                        src={item.image}
+                                        alt={item.name}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.target.style.display = 'none'
+                                        }}
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center">
+                                        <Package className="w-6 h-6 text-vanilla-200" />
+                                    </div>
+                                )}
+                                <span className="absolute -top-2 -right-2 w-5 h-5 bg-vanilla-900 text-white rounded-full text-xs flex items-center justify-center shadow-sm">
+                                    {item.quantity}
+                                </span>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <h4 className="font-bold text-vanilla-900 text-sm line-clamp-1 font-serif">{item.name}</h4>
+                                {item.variantLabel && (
+                                    <p className="text-vanilla-800/60 text-xs">{item.variantLabel}</p>
+                                )}
+                                {item.weight && (
+                                    <p className="text-vanilla-800/50 text-xs">{item.weight}</p>
+                                )}
+                            </div>
+                            <span className="font-medium text-vanilla-900 text-sm shrink-0">
+                                {formatPrice(itemPrice * item.quantity)}
                             </span>
                         </div>
-                        <div className="flex-1 min-w-0">
-                            <h4 className="font-bold text-vanilla-900 text-sm line-clamp-1 font-serif">{item.name}</h4>
-                            {item.variantLabel && (
-                                <p className="text-vanilla-800/60 text-xs">{item.variantLabel}</p>
-                            )}
-                            {item.weight && (
-                                <p className="text-vanilla-800/50 text-xs">{item.weight}</p>
-                            )}
-                        </div>
-                        <span className="font-medium text-vanilla-900 text-sm shrink-0">
-                            {formatPrice(item.price * item.quantity)}
-                        </span>
-                    </div>
-                ))}
+                    )
+                })}
             </div>
 
             <div className="h-px bg-vanilla-100 mb-4" />
@@ -245,7 +249,6 @@ const STEPS = [
     { id: 3, name: 'Payment', icon: <CreditCard className="w-5 h-5" /> }
 ]
 
-const formatPrice = (price) => `LKR ${price.toLocaleString('en-LK')}`
 const getItemKey = (item) => `${item.productId}-${item.variantLabel || 'no-variant'}`
 
 // ============================================
@@ -254,6 +257,7 @@ const getItemKey = (item) => `${item.productId}-${item.variantLabel || 'no-varia
 
 const Checkout = () => {
     const navigate = useNavigate()
+    const location = useLocation()
 
     // State
     const [cartItems, setCartItems] = useState([])
@@ -265,6 +269,9 @@ const Checkout = () => {
     const [showOrderSummary, setShowOrderSummary] = useState(false)
     const [agreedToTerms, setAgreedToTerms] = useState(false)
     const [shippingMethod, setShippingMethod] = useState('standard')
+    
+    // Currency State (default to LKR, or retrieve from state)
+    const [currency, setCurrency] = useState(location.state?.currency || 'LKR')
 
     const [formData, setFormData] = useState({
         firstName: '', lastName: '', email: '', phone: '',
@@ -282,16 +289,46 @@ const Checkout = () => {
         twitter_card: "summary_large_image",
     });
 
+    // Helper: Price Formatter
+    const formatPrice = (price) => {
+        if (currency === 'USD') {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price)
+        }
+        return `LKR ${price.toLocaleString('en-LK')}`
+    }
+
+    // Helper: Get Price Value based on Currency
+    const getPriceValue = (item) => {
+        if (currency === 'USD') {
+            return item.priceInUSD || item.price || 0
+        }
+        return item.priceInLKR || item.price || 0
+    }
+
     // Shipping Logic
     const getShippingMethods = () => {
         const isLocal = formData.country === 'Sri Lanka'
         if (isLocal) {
+            if (currency === 'USD') {
+                return [
+                    { id: 'standard', name: 'Standard Delivery', description: '3-5 business days', price: 2, freeOver: 20 },
+                    { id: 'express', name: 'Express Delivery', description: '1-2 business days', price: 4, freeOver: null },
+                    { id: 'pickup', name: 'Store Pickup', description: 'Pick up from our Colombo store', price: 0, freeOver: null }
+                ]
+            }
             return [
                 { id: 'standard', name: 'Standard Delivery', description: '3-5 business days', price: 350, freeOver: 5000 },
                 { id: 'express', name: 'Express Delivery', description: '1-2 business days', price: 750, freeOver: null },
                 { id: 'pickup', name: 'Store Pickup', description: 'Pick up from our Colombo store', price: 0, freeOver: null }
             ]
         } else {
+            // International
+            if (currency === 'USD') {
+                 return [
+                    { id: 'international-standard', name: 'International Standard', description: '10-15 business days', price: 15, freeOver: 100 },
+                    { id: 'international-express', name: 'International Express', description: '5-7 business days', price: 30, freeOver: null }
+                ]
+            }
             return [
                 { id: 'international-standard', name: 'International Standard', description: '10-15 business days', price: 2500, freeOver: 25000 },
                 { id: 'international-express', name: 'International Express', description: '5-7 business days', price: 5000, freeOver: null }
@@ -343,7 +380,7 @@ const Checkout = () => {
     }, [currentStep])
 
     // Calculations
-    const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+    const subtotal = cartItems.reduce((sum, item) => sum + (getPriceValue(item) * item.quantity), 0)
     const selectedShipping = shippingMethods.find(m => m.id === shippingMethod)
 
     const getShippingCost = () => {
@@ -404,11 +441,12 @@ const Checkout = () => {
                 lastName: formData.lastName.trim(),
                 email: formData.email.trim().toLowerCase(),
                 phone: formData.phone.trim(),
+                currency: currency, // Send currency
                 orderItems: cartItems.map(item => ({
                     name: item.variantLabel ? `${item.name} (${item.variantLabel})` : item.name,
                     quantity: item.quantity,
                     image: item.image || '/images/placeholder.jpg',
-                    price: item.price,
+                    price: getPriceValue(item), // Send currency-specific price
                     product: item.productId
                 })),
                 shippingAddress: {
@@ -552,6 +590,7 @@ const Checkout = () => {
                                             formatPrice={formatPrice}
                                             getItemKey={getItemKey}
                                             selectedShipping={selectedShipping}
+                                            getPriceValue={getPriceValue}
                                         />
                                     </div>
                                 )}
@@ -783,7 +822,7 @@ const Checkout = () => {
                                                             <p className="text-vanilla-800/60 text-xs">Qty: {item.quantity}</p>
                                                         </div>
                                                         <span className="font-medium text-vanilla-900 text-sm shrink-0">
-                                                            {formatPrice(item.price * item.quantity)}
+                                                            {formatPrice(getPriceValue(item) * item.quantity)}
                                                         </span>
                                                     </div>
                                                 ))}
@@ -879,6 +918,7 @@ const Checkout = () => {
                                         formatPrice={formatPrice}
                                         selectedShipping={selectedShipping}
                                         getItemKey={getItemKey}
+                                        getPriceValue={getPriceValue}
                                     />
                                 </div>
                                 <div className="p-5 bg-vanilla-50 border-t border-vanilla-100">

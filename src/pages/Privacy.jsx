@@ -19,10 +19,6 @@ import {
     ArrowUp,
     CheckCircle,
     AlertCircle,
-    ExternalLink,
-    Phone,
-    MapPin,
-    Printer,
     Download
 } from 'lucide-react'
 import { lastUpdated, privacyPolicy } from '../data/privacyPolicy'
@@ -137,17 +133,12 @@ const Privacy = () => {
         return icons[index % icons.length]
     }
 
-    // Print page
-    const handlePrint = () => {
-        window.print()
-    }
-
     return (
-        <div className="pt-24">
+        <div className="pt-24 bg-vanilla-50 min-h-screen">
 
             <Navbar />
 
-            <section className="relative bg-dark text-white py-16 lg:py-20 overflow-hidden">
+            <section className="relative bg-vanilla-900 text-white py-16 lg:py-20 overflow-hidden">
                 {/* Background Pattern */}
                 <div className="absolute inset-0 opacity-10">
                     <div
@@ -160,30 +151,30 @@ const Privacy = () => {
                 </div>
 
                 {/* Decorative Elements */}
-                <div className="absolute top-0 right-0 w-96 h-96 bg-vanilla-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                <div className="absolute bottom-0 left-0 w-80 h-80 bg-vanilla-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+                <div className="absolute top-0 right-0 w-96 h-96 bg-gold-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                <div className="absolute bottom-0 left-0 w-80 h-80 bg-vanilla-400/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
                     {/* Breadcrumbs */}
                     <nav className="flex items-center gap-2 text-sm mb-8">
-                        <Link to="/" className="text-white/60 hover:text-vanilla-400 transition-colors flex items-center gap-1">
+                        <Link to="/" className="text-white/60 hover:text-gold-500 transition-colors flex items-center gap-1">
                             <Home className="w-4 h-4" />
                             <span>Home</span>
                         </Link>
                         <ChevronRight className="w-4 h-4 text-white/30" />
-                        <span className="text-vanilla-400">Privacy Policy</span>
+                        <span className="text-gold-500">Privacy Policy</span>
                     </nav>
 
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                         <div>
                             <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
-                                <Shield className="w-4 h-4 text-vanilla-400" />
-                                <span className="text-vanilla-300 text-sm font-medium tracking-wide uppercase">
+                                <Shield className="w-4 h-4 text-gold-500" />
+                                <span className="text-vanilla-100 text-sm font-medium tracking-wide uppercase">
                                     Your Privacy Matters
                                 </span>
                             </div>
 
-                            <h1 className="font-serif text-4xl sm:text-5xl font-semibold leading-tight mb-4">
+                            <h1 className="font-serif text-4xl sm:text-5xl font-semibold leading-tight mb-4 text-white">
                                 Privacy Policy
                             </h1>
 
@@ -197,7 +188,7 @@ const Privacy = () => {
                             <a
                                 href="/pdf/privacy-policy.pdf"
                                 download
-                                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-vanilla-400 text-dark rounded-xl font-medium hover:bg-vanilla-500 transition-colors print:hidden"
+                                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gold-500 text-white rounded-xl font-medium hover:bg-gold-600 transition-colors print:hidden shadow-lg shadow-gold-500/20"
                             >
                                 <Download className="w-4 h-4" />
                                 Download PDF
@@ -231,24 +222,24 @@ const Privacy = () => {
                             <div className="lg:sticky lg:top-28">
                                 <div className="bg-white rounded-2xl border border-vanilla-100 shadow-sm overflow-hidden">
                                     <div className="p-4 bg-vanilla-50 border-b border-vanilla-100">
-                                        <h3 className="font-semibold text-dark flex items-center gap-2">
-                                            <FileText className="w-4 h-4 text-vanilla-600" />
+                                        <h3 className="font-semibold text-vanilla-900 flex items-center gap-2">
+                                            <FileText className="w-4 h-4 text-gold-500" />
                                             Table of Contents
                                         </h3>
                                     </div>
-                                    <nav className="p-2 max-h-[60vh] overflow-y-auto">
+                                    <nav className="p-2 max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-vanilla-200">
                                         {privacyPolicy.map((section, index) => (
                                             <button
                                                 key={section.id}
                                                 onClick={() => scrollToSection(`section-${section.id}`)}
                                                 className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all duration-200 flex items-center gap-3 ${activeSection === `section-${section.id}`
-                                                        ? 'bg-vanilla-100 text-dark font-medium'
-                                                        : 'text-charcoal/70 hover:bg-vanilla-50 hover:text-dark'
+                                                        ? 'bg-vanilla-100 text-vanilla-900 font-medium'
+                                                        : 'text-vanilla-800/70 hover:bg-vanilla-50 hover:text-vanilla-900'
                                                     }`}
                                             >
                                                 <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium shrink-0 ${activeSection === `section-${section.id}`
-                                                        ? 'bg-vanilla-400 text-dark'
-                                                        : 'bg-vanilla-100 text-charcoal/60'
+                                                        ? 'bg-gold-500 text-white'
+                                                        : 'bg-vanilla-100 text-vanilla-800/60'
                                                     }`}>
                                                     {section.id}
                                                 </span>
@@ -259,9 +250,9 @@ const Privacy = () => {
                                 </div>
 
                                 {/* Quick Contact */}
-                                <div className="mt-6 bg-dark rounded-2xl p-5 text-white">
-                                    <h4 className="font-semibold mb-3 flex items-center gap-2">
-                                        <AlertCircle className="w-4 h-4 text-vanilla-400" />
+                                <div className="mt-6 bg-vanilla-900 rounded-2xl p-5 text-white shadow-lg">
+                                    <h4 className="font-semibold mb-3 flex items-center gap-2 text-white">
+                                        <AlertCircle className="w-4 h-4 text-gold-500" />
                                         Have Questions?
                                     </h4>
                                     <p className="text-white/60 text-sm mb-4">
@@ -269,7 +260,7 @@ const Privacy = () => {
                                     </p>
                                     <a
                                         href="mailto:info@thevanillashop.lk"
-                                        className="flex items-center gap-2 text-vanilla-400 text-sm hover:text-vanilla-300 transition-colors"
+                                        className="flex items-center gap-2 text-gold-500 text-sm hover:text-gold-400 transition-colors font-medium"
                                     >
                                         <Mail className="w-4 h-4" />
                                         info@thevanillashop.lk
@@ -281,22 +272,22 @@ const Privacy = () => {
 
                         <div className="flex-1 min-w-0">
                             {/* Introduction Card */}
-                            <div className="bg-linear-to-br from-vanilla-100 to-vanilla-50 rounded-2xl p-6 lg:p-8 mb-8 border border-vanilla-200">
+                            <div className="bg-white rounded-2xl p-6 lg:p-8 mb-8 border border-vanilla-100 shadow-sm">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 bg-vanilla-400 rounded-xl flex items-center justify-center shrink-0">
-                                        <Shield className="w-6 h-6 text-dark" />
+                                    <div className="w-12 h-12 bg-vanilla-100 rounded-xl flex items-center justify-center shrink-0">
+                                        <Shield className="w-6 h-6 text-gold-500" />
                                     </div>
                                     <div>
-                                        <h2 className="text-lg font-semibold text-dark mb-2">
+                                        <h2 className="text-lg font-semibold text-vanilla-900 mb-2 font-serif">
                                             About This Policy
                                         </h2>
-                                        <p className="text-charcoal/70 leading-relaxed">
+                                        <p className="text-vanilla-800/70 leading-relaxed font-sans">
                                             The Vanilla Shop is operated by <strong>Agro Ventures Exports (Pvt) Ltd</strong>,
                                             located at No. 48, Sir Marcus Fernando Mawatha, Colombo 07, Sri Lanka.
                                             We are committed to protecting your privacy and handling your personal
                                             information responsibly. This Privacy Policy explains how we collect, use,
                                             disclose, and safeguard your information when you visit or make a purchase from{' '}
-                                            <Link to="/" className="text-vanilla-600 font-semibold hover:text-vanilla-700 transition-colors">
+                                            <Link to="/" className="text-gold-500 font-semibold hover:text-gold-600 transition-colors">
                                                 www.thevanillashop.lk
                                             </Link>.
                                         </p>
@@ -319,16 +310,16 @@ const Privacy = () => {
                                     >
                                         {/* Section Header */}
                                         <div className="flex items-center gap-4 p-5 lg:p-6 border-b border-vanilla-100 bg-vanilla-50/50">
-                                            <div className="w-10 h-10 bg-vanilla-400 rounded-xl flex items-center justify-center text-dark shrink-0">
+                                            <div className="w-10 h-10 bg-vanilla-100 rounded-xl flex items-center justify-center text-gold-500 shrink-0">
                                                 {getSectionIcon(index)}
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center gap-2">
-                                                    <span className="text-vanilla-600 text-sm font-medium">
+                                                    <span className="text-gold-500 text-sm font-bold uppercase tracking-wider">
                                                         Section {section.id}
                                                     </span>
                                                 </div>
-                                                <h2 className="text-lg lg:text-xl font-semibold text-dark">
+                                                <h2 className="text-lg lg:text-xl font-semibold text-vanilla-900 font-serif mt-1">
                                                     {section.title}
                                                 </h2>
                                             </div>
@@ -336,7 +327,7 @@ const Privacy = () => {
 
                                         {/* Section Content */}
                                         <div className="p-5 lg:p-6">
-                                            <div className="prose prose-vanilla max-w-none text-charcoal/70 leading-relaxed">
+                                            <div className="prose prose-vanilla max-w-none text-vanilla-800/70 leading-relaxed font-sans">
                                                 {/* Render description - handle both string and JSX */}
                                                 {typeof section.description === 'string' ? (
                                                     <p>{section.description}</p>
@@ -352,16 +343,16 @@ const Privacy = () => {
                             </div>
 
                             {/* Acceptance Notice */}
-                            <div className="mt-8 bg-vanilla-100 rounded-2xl p-6 lg:p-8 border border-vanilla-200">
+                            <div className="mt-8 bg-green-50 rounded-2xl p-6 lg:p-8 border border-green-100">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center shrink-0">
+                                    <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center shrink-0 shadow-lg shadow-green-500/20">
                                         <CheckCircle className="w-5 h-5 text-white" />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-semibold text-dark mb-2">
+                                        <h3 className="text-lg font-semibold text-green-900 mb-2 font-serif">
                                             Your Acceptance
                                         </h3>
-                                        <p className="text-charcoal/70 leading-relaxed">
+                                        <p className="text-green-800/80 leading-relaxed font-sans">
                                             By using our website and services, you acknowledge that you have read,
                                             understood, and agree to be bound by this Privacy Policy. If you do not
                                             agree with this policy, please do not use our services.
@@ -383,7 +374,7 @@ const Privacy = () => {
             {/* Scroll to Top Button */}
             <button
                 onClick={scrollToTop}
-                className={`fixed bottom-6 right-6 w-12 h-12 bg-vanilla-400 text-dark rounded-full flex items-center justify-center shadow-lg hover:bg-vanilla-500 transition-all duration-300 z-40 print:hidden ${showScrollTop
+                className={`fixed bottom-6 right-6 w-12 h-12 bg-vanilla-900 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-gold-500 transition-all duration-300 z-40 print:hidden ${showScrollTop
                         ? 'opacity-100 translate-y-0'
                         : 'opacity-0 translate-y-4 pointer-events-none'
                     }`}

@@ -18,17 +18,14 @@ const Socials = () => {
 
         {/* Social Icons */}
         <div className="flex justify-center gap-6 mb-12">
-          <a href="#" className="w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center text-vanilla-900 hover:text-white hover:bg-[#1877F2] transition text-xl">
+          <a href="https://www.facebook.com/thevanillashopsl" target="_blank" className="w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center text-vanilla-900 hover:text-white hover:bg-[#1877F2] transition text-xl">
             <i className="fa-brands fa-facebook-f"></i>
           </a>
-          <a href="#" className="w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center text-vanilla-900 hover:text-white hover:bg-[#E4405F] transition text-xl">
+          <a href="https://www.instagram.com/the_vanillashop" target="_blank" className="w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center text-vanilla-900 hover:text-white hover:bg-[#E4405F] transition text-xl">
             <i className="fa-brands fa-instagram"></i>
           </a>
-          <a href="#" className="w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center text-vanilla-900 hover:text-white hover:bg-[#000000] transition text-xl">
+          <a href="https:://www.tiktok.com/@the_vanillashop" target="_blank" className="w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center text-vanilla-900 hover:text-white hover:bg-[#000000] transition text-xl">
             <i className="fa-brands fa-tiktok"></i>
-          </a>
-          <a href="#" className="w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center text-vanilla-900 hover:text-white hover:bg-[#FF0000] transition text-xl">
-            <i className="fa-brands fa-youtube"></i>
           </a>
         </div>
 

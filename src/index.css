@@ -28,5 +28,5 @@
   border-radius: 5px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #b59026; /* Slightly darker gold manually calculated */
+  background: #b59026;
 }

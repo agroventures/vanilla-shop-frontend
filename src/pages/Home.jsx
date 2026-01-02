@@ -4,12 +4,8 @@ import Hero from '../components/Hero'
 import Welcome from '../components/Welcome'
 import Products from '../components/Products'
 import History from '../components/History'
-import Visit from '../components/Visit'
-import Contact from '../components/Contact'
 import Footer from '../components/Footer'
 import Features from '../components/Featurs'
-import Wholesale from '../components/Wholesale'
-import Socials from '../components/Socials'
 import useSEO from '../hooks/useSEO'
 
 function Home() {
@@ -31,10 +27,6 @@ function Home() {
       <History />
       <Products />
       <Features />
-      <Visit />
-      <Wholesale />
-      <Contact />
-      <Socials />
       <Footer />
     </div>
   )

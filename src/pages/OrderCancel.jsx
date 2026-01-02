@@ -304,7 +304,7 @@ const OrderCancel = () => {
                                     </a>
 
                                     <a
-                                        href="tel:+94771234567"
+                                        href="tel:+94705200900"
                                         className="flex items-center gap-3 p-4 bg-vanilla-50 rounded-xl hover:bg-vanilla-100 transition-colors border border-vanilla-100"
                                     >
                                         <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm">

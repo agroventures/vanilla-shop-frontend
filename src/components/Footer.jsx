@@ -36,10 +36,9 @@ const Footer = () => {
             <button className="bg-gold-500 px-4 py-2 rounded-r-md hover:bg-yellow-600 text-white font-bold">Go</button>
           </div>
           <div className="flex space-x-4 mt-6">
-            <Link to="#" className="hover:text-gold-500"><i className="fa-brands fa-facebook"></i></Link>
-            <Link to="#" className="hover:text-gold-500"><i className="fa-brands fa-instagram"></i></Link>
-            <Link to="#" className="hover:text-gold-500"><i className="fa-brands fa-tiktok"></i></Link>
-            <Link to="#" className="hover:text-gold-500"><i className="fa-brands fa-youtube"></i></Link>
+            <a href="https://www.facebook.com/thevanillashopsl" target="_blank" className="hover:text-gold-500"><i className="fa-brands fa-facebook"></i></a>
+            <a href="https://www.instagram.com/the_vanillashop" target="_blank" className="hover:text-gold-500"><i className="fa-brands fa-instagram"></i></a>
+            <a href="https:://www.tiktok.com/@the_vanillashop" target="_blank" className="hover:text-gold-500"><i className="fa-brands fa-tiktok"></i></a>
           </div>
         </div>
       </div>

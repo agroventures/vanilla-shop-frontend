@@ -133,7 +133,7 @@ const OrderSuccess = () => {
             <Navbar />
 
             {/* Hero Section */}
-            <section className="pt-32 pb-12 bg-gradient-to-b from-vanilla-100 to-vanilla-50">
+            <section className="pt-32 pb-12 bg-linear-to-b from-vanilla-100 to-vanilla-50">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     {/* Success Icon */}
                     <div className="relative inline-block mb-8">

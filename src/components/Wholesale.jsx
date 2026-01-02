@@ -34,8 +34,8 @@ const Wholesale = () => {
           </div>
 
           <div className="md:w-1/3 text-center">
-            <a href="#contact" className="inline-block bg-vanilla-900 text-white px-8 py-4 rounded-md font-bold hover:bg-gold-500 transition shadow-lg w-full md:w-auto">
-              Contact Business Team
+            <a href="mailto:info@thevanillashop.lk" className="inline-block bg-vanilla-900 text-white px-8 py-4 rounded-md font-bold hover:bg-gold-500 transition shadow-lg w-full md:w-auto">
+              Contact Our Team
             </a>
           </div>
 
