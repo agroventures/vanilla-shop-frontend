@@ -21,23 +21,41 @@ export default function Admin() {
     const [admin, setAdmin] = useState(null);
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) window.location.href = "/login";
+    // useEffect(() => {
+    //     const token = localStorage.getItem("token");
+    //     if (!token) window.location.href = "/login";
 
+    //     axios
+    //         .get(`${import.meta.env.VITE_API_URL}/admin`, {
+    //             headers: { Authorization: `Bearer ${token}` },
+    //         })
+    //         .then((res) => {
+    //             if (res.data.admin.userRole === "admin") {
+    //                 setAdmin(res.data.admin);
+    //             } else {
+    //                 window.location.href = "/";
+    //             }
+    //         })
+    //         .catch(() => {
+    //             window.location.href = "/";
+    //         });
+    // }, []);
+
+    //new
+    useEffect(() => {
         axios
-            .get(`${import.meta.env.VITE_API_URL}/admin`, {
-                headers: { Authorization: `Bearer ${token}` },
+            .get(`${import.meta.env.VITE_API_URL}/admin/me`, {
+                withCredentials: true
             })
             .then((res) => {
-                if (res.data.admin.userRole === "admin") {
-                    setAdmin(res.data.admin);
+                if (res.data.role === "admin") {
+                    setAdmin(res.data);
                 } else {
                     window.location.href = "/";
                 }
             })
             .catch(() => {
-                window.location.href = "/";
+                window.location.href = "/login";
             });
     }, []);
 
