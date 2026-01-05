@@ -118,16 +118,6 @@ const Cart = () => {
         return item.priceInLKR || item.price || 0;
     }
 
-    // Constants for Shipping
-    const SHIPPING_THRESHOLD_LKR = 5000;
-    const SHIPPING_THRESHOLD_USD = 20; // Approximate USD threshold
-    const SHIPPING_COST_LKR = 350;
-    const SHIPPING_COST_USD = 5;
-
-    // Dynamic Thresholds
-    const shippingThreshold = currency === 'USD' ? SHIPPING_THRESHOLD_USD : SHIPPING_THRESHOLD_LKR;
-    const baseShippingCost = currency === 'USD' ? SHIPPING_COST_USD : SHIPPING_COST_LKR;
-
     // Calculations
     const subtotal = cartItems.reduce((sum, item) => sum + (getPriceValue(item) * item.quantity), 0)
     
@@ -141,9 +131,8 @@ const Cart = () => {
         return sum
     }, 0)
 
-    const shippingCost = subtotal >= shippingThreshold ? 0 : baseShippingCost
     const promoDiscount = appliedPromo ? (subtotal * appliedPromo.discount / 100) : 0
-    const total = subtotal + shippingCost - promoDiscount
+    const total = subtotal - promoDiscount
 
     // Format currency
     const formatPrice = (price) => {
@@ -250,7 +239,7 @@ const Cart = () => {
                         </div>
                         
                         {/* Currency Selector */}
-                        <div className="relative">
+                        {/* <div className="relative">
                             <select 
                                 value={currency} 
                                 onChange={(e) => setCurrency(e.target.value)} 
@@ -260,7 +249,7 @@ const Cart = () => {
                                 <option value="USD">USD ($)</option>
                             </select>
                             <Globe className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-vanilla-400 pointer-events-none" />
-                        </div>
+                        </div> */}
                     </nav>
                 </div>
             </div>
@@ -286,24 +275,6 @@ const Cart = () => {
                             Clear Cart
                         </button>
                     </div>
-
-                    {/* Free Shipping Progress */}
-                    {subtotal < shippingThreshold && (
-                        <div className="bg-vanilla-100 rounded-xl p-4 mb-8 border border-vanilla-200">
-                            <div className="flex items-center gap-3 mb-2">
-                                <Truck className="w-5 h-5 text-gold-500" />
-                                <span className="text-vanilla-900 font-medium">
-                                    Add <span className="text-gold-500 font-bold">{formatPrice(shippingThreshold - subtotal)}</span> more for FREE shipping!
-                                </span>
-                            </div>
-                            <div className="h-2 bg-white rounded-full overflow-hidden border border-vanilla-200">
-                                <div
-                                    className="h-full bg-gold-500 rounded-full transition-all duration-500"
-                                    style={{ width: `${Math.min((subtotal / shippingThreshold) * 100, 100)}%` }}
-                                />
-                            </div>
-                        </div>
-                    )}
 
                     <div className="flex flex-col lg:flex-row gap-8">
                         {/* Cart Items List (Left Side) */}
@@ -520,20 +491,6 @@ const Cart = () => {
                                                 <span className="font-medium">-{formatPrice(promoDiscount)}</span>
                                             </div>
                                         )}
-
-                                        <div className="flex justify-between text-vanilla-800/70">
-                                            <span className="flex items-center gap-1">
-                                                Shipping
-                                                <button className="text-vanilla-800/40 hover:text-gold-500 transition-colors">
-                                                    <Info className="w-3 h-3" />
-                                                </button>
-                                            </span>
-                                            {shippingCost === 0 ? (
-                                                <span className="text-green-700 font-bold bg-green-50 px-2 py-0.5 rounded text-xs">FREE</span>
-                                            ) : (
-                                                <span className="font-medium text-vanilla-900">{formatPrice(shippingCost)}</span>
-                                            )}
-                                        </div>
                                     </div>
 
                                     <div className="h-px bg-vanilla-100" />
@@ -572,27 +529,6 @@ const Cart = () => {
                                     </div>
                                 </div>
                             </div>
-
-                            {/* Help Card */}
-                            <div className="mt-6 bg-vanilla-100 rounded-xl p-5 border border-vanilla-200">
-                                <div className="flex items-start gap-3">
-                                    <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shrink-0 shadow-sm">
-                                        <Gift className="w-5 h-5 text-gold-500" />
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-vanilla-900 mb-1">Need Help?</h3>
-                                        <p className="text-vanilla-800/60 text-sm mb-3">
-                                            Our support team is here to assist you.
-                                        </p>
-                                        <Link
-                                            to="/contact"
-                                            className="text-gold-500 hover:text-vanilla-900 font-bold text-sm transition-colors"
-                                        >
-                                            Contact Us →
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -601,16 +537,7 @@ const Cart = () => {
             {/* Features Bar */}
             <section className="py-12 bg-white border-t border-vanilla-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-vanilla-50 rounded-full flex items-center justify-center border border-vanilla-100">
-                                <Truck className="w-6 h-6 text-gold-500" />
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-vanilla-900 text-sm">Free Shipping</h3>
-                                <p className="text-vanilla-800/60 text-xs mt-0.5">On orders over {currency === 'USD' ? '$20' : 'LKR 5,000'}</p>
-                            </div>
-                        </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 bg-vanilla-50 rounded-full flex items-center justify-center border border-vanilla-100">
                                 <RefreshCcw className="w-6 h-6 text-gold-500" />

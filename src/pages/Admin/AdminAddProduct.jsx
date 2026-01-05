@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import useSEO from "../../hooks/useSEO";
 
 // --- Shared Styles ---
 const INPUT_CLASSES = "w-full px-4 py-2.5 rounded-lg bg-white border border-vanilla-200 text-vanilla-900 placeholder-vanilla-400 focus:outline-none focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition text-sm";
@@ -294,6 +295,16 @@ export default function AdminAddProduct() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
+  const url = window.location.href;
+
+  useSEO({
+    title: "Add Product - The Vanilla Shop",
+    description: "The Vanilla Shop is more than a café — it’s Sri Lanka’s first dedicated vanilla boutique.",
+    url,
+    image_alt: "Add Product",
+    twitter_card: "summary_large_image",
+  });
+
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -434,9 +445,9 @@ export default function AdminAddProduct() {
       variants: prev.variants.map((v, i) =>
         i === variantIndex
           ? {
-              ...v,
-              highlights: v.highlights.filter((_, j) => j !== highlightIndex),
-            }
+            ...v,
+            highlights: v.highlights.filter((_, j) => j !== highlightIndex),
+          }
           : v
       ),
     }));
@@ -465,8 +476,8 @@ export default function AdminAddProduct() {
 
     // Check base price if no variants
     if (formData.variants.length === 0) {
-      if (!formData.priceInLKR || !formData.priceInUSD) {
-        setError("Please add both LKR and USD prices or create variants");
+      if (!formData.priceInLKR) {
+        setError("Please add LKR price or create variants");
         setLoading(false);
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
@@ -690,8 +701,8 @@ export default function AdminAddProduct() {
                 )}
               </div>
 
-               {/* Price USD */}
-               <div>
+              {/* Price USD */}
+              <div>
                 <label className={LABEL_CLASSES}>
                   Price (USD){" "}
                   {!hasVariants && <span className="text-red-500">*</span>}

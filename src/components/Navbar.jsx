@@ -2,7 +2,7 @@ import { ShoppingBagIcon } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ onShopClick }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [cartCount, setCartCount] = useState(0);
@@ -86,6 +86,10 @@ const Navbar = () => {
               <Link
                 key={link.name}
                 to={link.href}
+                onClick={() => {
+                  setIsOpen(false); // close mobile menu
+                  if (link.href === '/shop' && onShopClick) onShopClick();
+                }}
                 className={`${isScrolled ? "text-vanilla-900" : "text-white"
                   } hover:text-gold-500 transition font-semibold`}
               >
@@ -143,7 +147,10 @@ const Navbar = () => {
             <Link
               key={link.name}
               to={link.href}
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                if (link.href === '/shop' && onShopClick) onShopClick();
+              }}
               className="block py-4 px-6 text-vanilla-900 font-medium hover:bg-vanilla-50 transition-colors border-b border-vanilla-50"
             >
               {link.name}

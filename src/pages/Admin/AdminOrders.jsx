@@ -30,6 +30,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import PageTitle from "../../components/admin/PageTitle";
 import { getOrders } from "../../api/data.api";
+import useSEO from "../../hooks/useSEO";
 
 // Order Status Configuration
 const ORDER_STATUSES = {
@@ -108,6 +109,16 @@ export default function AdminOrders() {
 
     // Expanded mobile cards
     const [expandedOrderId, setExpandedOrderId] = useState(null);
+
+    const url = window.location.href;
+
+    useSEO({
+        title: "Orders - The Vanilla Shop",
+        description: "The Vanilla Shop is more than a café — it’s Sri Lanka’s first dedicated vanilla boutique.",
+        url,
+        image_alt: "Orders",
+        twitter_card: "summary_large_image",
+    });
 
     // Fetch orders
     useEffect(() => {
@@ -204,11 +215,11 @@ export default function AdminOrders() {
 
     // Helper Functions
     const formatPrice = (price) => `LKR ${(price || 0).toLocaleString()}`;
-    
+
     const formatDate = (dateString, short = false) => {
         if (!dateString) return 'N/A';
         const date = new Date(dateString);
-        return short 
+        return short
             ? date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
             : date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
     };
@@ -227,7 +238,13 @@ export default function AdminOrders() {
     const handleUpdateStatus = async (orderId, newStatus) => {
         setIsUpdating(true);
         try {
-            await axios.put(`${import.meta.env.VITE_API_URL}/orders/${orderId}`, { status: newStatus });
+            await axios.put(`${import.meta.env.VITE_API_URL}/orders/${orderId}`, { status: newStatus },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                }
+            );
             setOrders(prev => prev.map(order => order._id === orderId ? { ...order, status: newStatus } : order));
             toast.success(`Order status updated to ${ORDER_STATUSES[newStatus]?.label}`);
             setShowStatusModal(false);
@@ -382,8 +399,8 @@ export default function AdminOrders() {
                                     </tbody>
                                 </table>
                             </div>
-                             {/* Mobile Items List */}
-                             <div className="sm:hidden space-y-3">
+                            {/* Mobile Items List */}
+                            <div className="sm:hidden space-y-3">
                                 {order.orderItems?.map((item, index) => (
                                     <div key={index} className="bg-white border border-vanilla-200 rounded-xl p-3 flex gap-3 shadow-sm">
                                         {item.image ? <img src={item.image} className="w-16 h-16 rounded-lg object-cover bg-vanilla-100 shrink-0" /> : <div className="w-16 h-16 bg-vanilla-100 rounded-lg flex items-center justify-center shrink-0"><Package className="w-6 h-6 text-vanilla-400" /></div>}
@@ -419,7 +436,7 @@ export default function AdminOrders() {
                     </div>
                     {/* Footer */}
                     <div className="flex-none p-4 bg-white border-t border-vanilla-200 sm:rounded-b-2xl flex gap-3">
-                         <button onClick={() => { setShowViewModal(false); setShowStatusModal(true); }} className="flex-1 px-4 py-2.5 bg-vanilla-900 text-white rounded-lg hover:bg-vanilla-800 transition-colors text-sm font-medium shadow-md">Update Status</button>
+                        <button onClick={() => { setShowViewModal(false); setShowStatusModal(true); }} className="flex-1 px-4 py-2.5 bg-vanilla-900 text-white rounded-lg hover:bg-vanilla-800 transition-colors text-sm font-medium shadow-md">Update Status</button>
                         <button onClick={onClose} className="flex-1 px-4 py-2.5 border border-vanilla-200 bg-white text-vanilla-900 rounded-lg hover:bg-vanilla-50 transition-colors text-sm">Close</button>
                     </div>
                 </div>
@@ -592,7 +609,7 @@ export default function AdminOrders() {
 
                 <div className={`${showFilters ? 'grid' : 'hidden'} lg:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-3 pt-3 border-t border-vanilla-100 lg:border-0 lg:pt-0`}>
                     <div className="relative">
-                         <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="w-full px-3 py-2.5 border border-vanilla-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 text-sm bg-white text-vanilla-900 appearance-none">
+                        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="w-full px-3 py-2.5 border border-vanilla-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 text-sm bg-white text-vanilla-900 appearance-none">
                             <option value="all">All Statuses</option>
                             {Object.entries(ORDER_STATUSES).map(([key, config]) => (<option key={key} value={key}>{config.label}</option>))}
                         </select>

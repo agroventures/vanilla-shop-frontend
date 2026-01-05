@@ -69,7 +69,7 @@ export function addToCart(product, quantityToAdd = null) {
                 toast.error(`Only ${maxStock} available in stock`)
             } else {
                 cart[index].quantity = newQuantity
-                toast.success(`${displayName} quantity updated to ${newQuantity}`)
+                toast.success(`${displayName} quantity updated in cart`)
             }
         } else {
             cart.splice(index, 1)

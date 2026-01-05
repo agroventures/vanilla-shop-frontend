@@ -3,6 +3,7 @@ import { Eye, EyeOff } from "lucide-react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+import useSEO from "../../hooks/useSEO";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -12,6 +13,16 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
+    const url = window.location.href;
+
+    useSEO({
+        title: "Login - The Vanilla Shop",
+        description:
+            "The Vanilla Shop is more than a café — it’s Sri Lanka’s first dedicated vanilla boutique.",
+        url,
+        image_alt: "Login",
+        twitter_card: "summary_large_image",
+    });
 
     const validate = () => {
         const newErrors = {};
@@ -32,7 +43,10 @@ export default function Login() {
         return Object.keys(newErrors).length === 0;
     };
 
-    async function login() {
+    const login = async (e) => {
+        e.preventDefault();
+        if (loading) return;
+
         if (!validate()) {
             toast.error("Please fix the errors");
             return;
@@ -42,8 +56,11 @@ export default function Login() {
             setLoading(true);
 
             const res = await axios.post(
-                import.meta.env.VITE_API_URL + "/admin/login",
-                { email, password }
+                `${import.meta.env.VITE_API_URL}/admin/login`,
+                {
+                    email: email.trim(),
+                    password,
+                }
             );
 
             localStorage.setItem("token", res.data.token);
@@ -51,11 +68,7 @@ export default function Login() {
 
             toast.success("Login successful");
 
-            if (res.data.role === "admin") {
-                navigate("/admin");
-            } else {
-                navigate("/");
-            }
+            navigate(res.data.role === "admin" ? "/admin" : "/");
         } catch (err) {
             toast.error(
                 err?.response?.data?.message || "Invalid email or password"
@@ -63,125 +76,105 @@ export default function Login() {
         } finally {
             setLoading(false);
         }
-    }
-
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter") login();
     };
 
     return (
         <div className="min-h-screen w-full bg-white/50 flex items-center justify-center px-4">
-            <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 bg-white backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden">
-
-                {/* LEFT SIDE */}
-                <div className="hidden lg:flex flex-col items-center justify-center p-12 bg-dark">
-                    <img
-                        src="/logo.png"
-                        alt="logo"
-                        className="w-48 mb-6 brightness-100 invert-0 drop-shadow-xl"
-                    />
-                    <p className="text-white/70 text-center text-lg max-w-sm">
-                        Welcome back!
-                        <span className="block">
-                            Please login to access your account.
-                        </span>
-                    </p>
+            <form
+                onSubmit={login}
+                className="w-full max-w-md bg-white backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-6"
+            >
+                <div className="flex flex-col items-center mb-8">
+                    <img src="/logo.png" alt="logo" className="w-30 mb-4" />
+                    <h1 className="text-xl font-bold text-dark">Login</h1>
                 </div>
 
-                {/* RIGHT SIDE */}
-                <div className="flex flex-col justify-center items-center p-8 sm:p-12">
-                    <h1 className="text-3xl sm:text-4xl font-bold text-dark mb-10">
-                        Login
-                    </h1>
+                <div className="space-y-6">
 
-                    <div className="w-full max-w-sm space-y-6">
+                    {/* Email */}
+                    <div>
+                        <input
+                            type="email"
+                            placeholder="Email address"
+                            value={email}
+                            onChange={(e) => {
+                                setEmail(e.target.value);
+                                setErrors({ ...errors, email: "" });
+                            }}
+                            className={`w-full h-12 bg-transparent border-b text-dark placeholder:text-dark/40 focus:outline-none transition
+                                ${errors.email
+                                    ? "border-red-500"
+                                    : "border-dark/30 focus:border-gold"
+                                }`}
+                        />
+                        {errors.email && (
+                            <p className="text-red-500 text-xs mt-1">
+                                {errors.email}
+                            </p>
+                        )}
+                    </div>
 
-                        {/* Email */}
-                        <div>
+                    {/* Password */}
+                    <div>
+                        <div className="relative">
                             <input
-                                type="email"
-                                placeholder="Email address"
-                                value={email}
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Password"
+                                value={password}
                                 onChange={(e) => {
-                                    setEmail(e.target.value);
-                                    setErrors({ ...errors, email: "" });
+                                    setPassword(e.target.value);
+                                    setErrors({ ...errors, password: "" });
                                 }}
-                                onKeyDown={handleKeyDown}
                                 className={`w-full h-12 bg-transparent border-b text-dark placeholder:text-dark/40 focus:outline-none transition
-                                    ${errors.email
+                                    ${errors.password
                                         ? "border-red-500"
                                         : "border-dark/30 focus:border-gold"
                                     }`}
                             />
-                            {errors.email && (
-                                <p className="text-red-500 text-xs mt-1">
-                                    {errors.email}
-                                </p>
-                            )}
-                        </div>
-
-                        {/* Password */}
-                        <div>
-                            <div className="relative">
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    placeholder="Password"
-                                    value={password}
-                                    onChange={(e) => {
-                                        setPassword(e.target.value);
-                                        setErrors({ ...errors, password: "" });
-                                    }}
-                                    onKeyDown={handleKeyDown}
-                                    className={`w-full h-12 bg-transparent border-b text-dark placeholder:text-dark/40 focus:outline-none transition
-                                        ${errors.password
-                                            ? "border-red-500"
-                                            : "border-dark/30 focus:border-gold"
-                                        }`}
-                                />
-                                <div
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-0 top-3 cursor-pointer"
-                                >
-                                    {showPassword ? (
-                                        <Eye className="w-6 h-6 text-dark/30" />
-                                    ) : (
-                                        <EyeOff className="w-6 h-6 text-dark/30" />
-                                    )}
-                                </div>
-                            </div>
-
-                            {errors.password && (
-                                <p className="text-red-500 text-xs mt-1">
-                                    {errors.password}
-                                </p>
-                            )}
-                        </div>
-
-                        {/* Forgot */}
-                        <div className="flex justify-end">
-                            <Link
-                                to="/forgot-password"
-                                className="text-sm text-dark hover:underline"
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-0 top-3"
                             >
-                                Forgot password?
-                            </Link>
+                                {showPassword ? (
+                                    <Eye className="w-6 h-6 text-dark/30" />
+                                ) : (
+                                    <EyeOff className="w-6 h-6 text-dark/30" />
+                                )}
+                            </button>
                         </div>
 
-                        {/* Button */}
-                        <button
-                            onClick={login}
-                            disabled={loading}
-                            className={`w-full h-12 border border-dark font-semibold rounded-xl transition-all duration-300
-                                ${loading
-                                    ? "opacity-50 cursor-not-allowed"
-                                    : "hover:bg-dark/80 hover:text-white"
-                                }`}
-                        >
-                            {loading ? "Logging in..." : "Login"}
-                        </button>
+                        {errors.password && (
+                            <p className="text-red-500 text-xs mt-1">
+                                {errors.password}
+                            </p>
+                        )}
                     </div>
+
+                    {/* Forgot password */}
+                    <div className="flex justify-end">
+                        <Link
+                            to="/forgot-password"
+                            className="text-sm text-dark hover:underline"
+                        >
+                            Forgot password?
+                        </Link>
+                    </div>
+
+                    {/* Button */}
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className={`w-full h-12 border border-dark font-semibold rounded-xl transition-all duration-300
+                            ${loading
+                                ? "opacity-50 cursor-not-allowed"
+                                : "hover:bg-dark/80 hover:text-white"
+                            }`}
+                    >
+                        {loading ? "Logging in..." : "Login"}
+                    </button>
                 </div>
-            </div>
+            </form>
         </div>
     );
 }

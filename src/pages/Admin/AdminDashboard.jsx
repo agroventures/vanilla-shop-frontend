@@ -19,6 +19,7 @@ import { Link } from "react-router-dom";
 import { StatCard } from "../../components/admin/StatCard";
 import PageTitle from "../../components/admin/PageTitle";
 import { getOrders, getProducts, getTodayOrders, getTotalRevenue } from "../../api/data.api";
+import useSEO from "../../hooks/useSEO";
 
 // --- Helper Functions ---
 const formatPrice = (price) => {
@@ -50,35 +51,35 @@ const PAYMENT_METHODS = {
 // --- Status Badge Component ---
 const StatusBadge = ({ status }) => {
   const statusConfig = {
-    pending: { 
-      bg: "bg-amber-100", 
-      text: "text-amber-800", 
+    pending: {
+      bg: "bg-amber-100",
+      text: "text-amber-800",
       border: "border-amber-200",
-      icon: Clock 
+      icon: Clock
     },
-    processing: { 
-      bg: "bg-blue-50", 
-      text: "text-blue-800", 
+    processing: {
+      bg: "bg-blue-50",
+      text: "text-blue-800",
       border: "border-blue-200",
-      icon: Package 
+      icon: Package
     },
-    cancelled: { 
-      bg: "bg-red-50", 
-      text: "text-red-800", 
+    cancelled: {
+      bg: "bg-red-50",
+      text: "text-red-800",
       border: "border-red-200",
-      icon: XCircle 
+      icon: XCircle
     },
-    delivered: { 
-      bg: "bg-emerald-50", 
-      text: "text-emerald-800", 
+    delivered: {
+      bg: "bg-emerald-50",
+      text: "text-emerald-800",
       border: "border-emerald-200",
-      icon: CheckCircle 
+      icon: CheckCircle
     },
-    shipped: { 
-      bg: "bg-purple-50", 
-      text: "text-purple-800", 
+    shipped: {
+      bg: "bg-purple-50",
+      text: "text-purple-800",
       border: "border-purple-200",
-      icon: Truck 
+      icon: Truck
     },
   };
 
@@ -103,6 +104,16 @@ function AdminDashboard() {
 
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
+
+  const url = window.location.href;
+
+  useSEO({
+    title: "Dashboard - The Vanilla Shop",
+    description: "The Vanilla Shop is more than a café — it’s Sri Lanka’s first dedicated vanilla boutique.",
+    url,
+    image_alt: "Dashboard",
+    twitter_card: "summary_large_image",
+  });
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -181,7 +192,7 @@ function AdminDashboard() {
 
         {/* Modal Content */}
         <div className="relative bg-vanilla-50 w-full h-[90vh] sm:h-auto sm:max-w-3xl sm:max-h-[85vh] rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col font-sans border border-vanilla-200">
-          
+
           {/* Fixed Header */}
           <div className="flex-none flex items-center justify-between p-5 border-b border-vanilla-200 bg-white sm:rounded-t-2xl">
             <div className="min-w-0 flex-1">
@@ -418,7 +429,7 @@ function AdminDashboard() {
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        
+
         {/* Recent Orders Table */}
         <div className="xl:col-span-2 bg-vanilla-50 rounded-2xl border border-vanilla-200 shadow-xl overflow-hidden flex flex-col">
           <div className="p-6 border-b border-vanilla-200 flex items-center justify-between bg-white">
@@ -469,8 +480,8 @@ function AdminDashboard() {
                       <span className="font-medium text-vanilla-900">LKR {new Intl.NumberFormat().format(order.totalPrice)}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <button 
-                        onClick={() => handleViewOrder(order)} 
+                      <button
+                        onClick={() => handleViewOrder(order)}
                         className="p-2 text-vanilla-400 hover:text-gold-500 hover:bg-vanilla-100 rounded-lg transition-all"
                         title="View Details"
                       >
@@ -501,8 +512,8 @@ function AdminDashboard() {
                     className="flex items-center gap-4 p-3 rounded-xl hover:bg-vanilla-50 border border-transparent hover:border-vanilla-200 transition-all group"
                   >
                     {product.image ? (
-                      <img 
-                        src={product.image} 
+                      <img
+                        src={product.image}
                         alt={product.name}
                         className="w-12 h-12 rounded-lg object-cover bg-vanilla-100 shadow-sm"
                       />

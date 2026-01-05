@@ -123,14 +123,14 @@ const OrderSummaryContent = ({
                                         <Package className="w-6 h-6 text-vanilla-200" />
                                     </div>
                                 )}
-                                <span className="absolute -top-2 -right-2 w-5 h-5 bg-vanilla-900 text-white rounded-full text-xs flex items-center justify-center shadow-sm">
+                                {/* <span className="absolute -top-2 -right-2 w-5 h-5 bg-vanilla-900 text-white rounded-full text-xs flex items-center justify-center shadow-sm">
                                     {item.quantity}
-                                </span>
+                                </span> */}
                             </div>
                             <div className="flex-1 min-w-0">
                                 <h4 className="font-bold text-vanilla-900 text-sm line-clamp-1 font-serif">{item.name}</h4>
                                 {item.variantLabel && (
-                                    <p className="text-vanilla-800/60 text-xs">{item.variantLabel}</p>
+                                    <p className="text-vanilla-800/60 text-xs">{item.variantLabel}{" "} * {item.quantity}</p>
                                 )}
                                 {item.weight && (
                                     <p className="text-vanilla-800/50 text-xs">{item.weight}</p>
@@ -317,9 +317,9 @@ const Checkout = () => {
                 ]
             }
             return [
-                { id: 'standard', name: 'Standard Delivery', description: '3-5 business days', price: 350, freeOver: 5000 },
-                { id: 'express', name: 'Express Delivery', description: '1-2 business days', price: 750, freeOver: null },
-                { id: 'pickup', name: 'Store Pickup', description: 'Pick up from our Colombo store', price: 0, freeOver: null }
+                { id: 'standard', name: 'Standard Delivery', description: '3-5 business days', price: 350, /* freeOver: 5000 */ },
+                // { id: 'express', name: 'Express Delivery', description: '1-2 business days', price: 750, freeOver: null },
+                // { id: 'pickup', name: 'Store Pickup', description: 'Pick up from our Colombo store', price: 0, freeOver: null }
             ]
         } else {
             // International
@@ -495,7 +495,7 @@ const Checkout = () => {
     }
 
     return (
-        <div className="min-h-screen bg-vanilla-50 font-sans text-vanilla-800">
+        <div className="pt-24 min-h-screen bg-vanilla-50 font-sans text-vanilla-800">
             <Navbar />
 
             {/* Breadcrumbs */}
@@ -517,7 +517,7 @@ const Checkout = () => {
             </div>
 
             {/* Steps Indicator */}
-            <div className="bg-white border-b border-vanilla-100 sticky top-20 z-30">
+            <div className="bg-white border-b border-vanilla-100 sticky top-25 z-30">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div className="flex items-center justify-center">
                         {STEPS.map((step, index) => (

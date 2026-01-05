@@ -274,6 +274,7 @@ const Shop = () => {
         setSortBy('featured')
         setSelectedCategory('all')
         setVisibleCount(9)
+        setCurrency('LKR')
     }
 
     // --- FORMATTERS ---
@@ -502,7 +503,7 @@ const Shop = () => {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                 <div className="absolute inset-0 bg-vanilla-900/60 backdrop-blur-sm" onClick={onClose} />
-                <div className="relative bg-white rounded-3xl max-w-5xl w-full max-h-[90vh] overflow-hidden shadow-2xl flex flex-col md:flex-row">
+                <div className="relative bg-white rounded-3xl max-w-6xl w-full max-h-[90vh] overflow-hidden shadow-2xl flex flex-col md:flex-row">
                     <button onClick={onClose} className="absolute top-4 right-4 z-20 w-10 h-10 bg-vanilla-100 rounded-full flex items-center justify-center hover:bg-vanilla-200"><X className="w-5 h-5" /></button>
                     
                     {/* Image Section */}
@@ -561,7 +562,7 @@ const Shop = () => {
 
     return (
         <div className="min-h-screen bg-vanilla-50">
-            <Navbar />
+            <Navbar onShopClick={resetFilters} />
 
             <div className="bg-vanilla-900 text-white pt-32 pb-16 mb-10">
                 <div className="max-w-7xl mx-auto px-4 text-center">
@@ -614,13 +615,13 @@ const Shop = () => {
                         </div>
                         
                         {/* Currency Selector (ADDED) */}
-                        <div className="relative">
+                        {/* <div className="relative">
                             <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="appearance-none w-full lg:w-32 px-4 py-3.5 pr-10 bg-vanilla-50 border border-vanilla-200 rounded-xl text-vanilla-900 font-medium focus:outline-none focus:border-vanilla-400 cursor-pointer">
                                 <option value="LKR">LKR (Rs)</option>
                                 <option value="USD">USD ($)</option>
                             </select>
                             <Globe className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-charcoal/40 pointer-events-none" />
-                        </div>
+                        </div> */}
 
                         {/* View Toggle */}
                         <div className="hidden sm:flex items-center bg-vanilla-100 rounded-xl p-1">

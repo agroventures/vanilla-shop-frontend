@@ -21,6 +21,7 @@ import { Link } from "react-router-dom";
 import { getProducts } from "../../api/data.api";
 import DeleteConfirmModal from "./AdminProductDeleteModal";
 import toast from "react-hot-toast";
+import useSEO from "../../hooks/useSEO";
 
 export default function AdminProducts() {
     const [products, setProducts] = useState([]);
@@ -34,6 +35,16 @@ export default function AdminProducts() {
 
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [selectedProductId, setSelectedProductId] = useState(null);
+
+    const url = window.location.href;
+
+    useSEO({
+        title: "Products - The Vanilla Shop",
+        description: "The Vanilla Shop is more than a café — it’s Sri Lanka’s first dedicated vanilla boutique.",
+        url,
+        image_alt: "Products",
+        twitter_card: "summary_large_image",
+    });
 
     useEffect(() => {
         getProducts()

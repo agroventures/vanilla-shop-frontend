@@ -25,7 +25,7 @@ import {
     X,
     Scale,
     AlertCircle,
-    Globe // Added Globe icon for currency selector
+    Globe
 } from 'lucide-react'
 import axios from 'axios'
 import Footer from '../components/Footer'
@@ -48,8 +48,6 @@ const ProductDetail = () => {
     const [addedToCart, setAddedToCart] = useState(false)
     const [relatedProducts, setRelatedProducts] = useState([])
     const [isImageZoomed, setIsImageZoomed] = useState(false)
-    
-    // New Currency State
     const [currency, setCurrency] = useState('LKR')
 
     // Fetch product
@@ -58,6 +56,7 @@ const ProductDetail = () => {
         setError(null)
         setSelectedVariantIndex(null)
         setQuantity(1)
+        setCurrentImageIndex(0)
 
         axios
             .get(`${import.meta.env.VITE_API_URL}/products/${slug}`)
@@ -65,7 +64,6 @@ const ProductDetail = () => {
                 if (response.data && response.data.isActive !== false) {
                     setProduct(response.data)
 
-                    // Auto-select first in-stock variant if variants exist
                     if (response.data.variants && response.data.variants.length > 0) {
                         const firstInStockIndex = response.data.variants.findIndex(v => v.stock > 0)
                         if (firstInStockIndex !== -1) {
@@ -73,7 +71,6 @@ const ProductDetail = () => {
                         }
                     }
 
-                    // Fetch related products
                     fetchRelatedProducts(response.data.category, response.data._id)
                 } else {
                     setError('Product not found')
@@ -87,17 +84,21 @@ const ProductDetail = () => {
             })
     }, [slug])
 
+    // Reset image index when variant changes
+    useEffect(() => {
+        setCurrentImageIndex(0)
+    }, [selectedVariantIndex])
+
     const url = window.location.href;
 
     useSEO({
         title: product ? product.name : "Loading...",
-        description: product ? product.description : "The Vanilla Shop is more than a café — it’s Sri Lanka’s first dedicated vanilla boutique.",
+        description: product ? product.description : "The Vanilla Shop is more than a café — it's Sri Lanka's first dedicated vanilla boutique.",
         url,
         image_alt: product ? product.name : "Loading...",
         twitter_card: "summary_large_image",
     });
 
-    // Fetch related products
     const fetchRelatedProducts = (category, currentProductId) => {
         axios
             .get(`${import.meta.env.VITE_API_URL}/products`)
@@ -112,7 +113,6 @@ const ProductDetail = () => {
             })
     }
 
-    // Scroll to top on page load
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [slug])
@@ -123,11 +123,41 @@ const ProductDetail = () => {
 
     const hasVariants = () => product?.variants && product.variants.length > 0
 
+    // Get product-level images
     const getProductImages = () => {
         if (product?.images && Array.isArray(product.images) && product.images.length > 0) {
             return product.images
         }
         return []
+    }
+
+    // Get variant images if available, otherwise fall back to product images
+    const getVariantImages = (variantIndex) => {
+        if (variantIndex !== null && variantIndex !== undefined && product?.variants?.[variantIndex]) {
+            const variant = product.variants[variantIndex]
+            if (variant.images && Array.isArray(variant.images) && variant.images.length > 0) {
+                return variant.images
+            }
+        }
+        // Fallback to product images
+        return getProductImages()
+    }
+
+    // Get images to display based on current selection
+    const getDisplayImages = () => {
+        if (hasVariants() && selectedVariantIndex !== null) {
+            return getVariantImages(selectedVariantIndex)
+        }
+        return getProductImages()
+    }
+
+    // Check if currently showing variant-specific images
+    const isShowingVariantImages = () => {
+        if (selectedVariantIndex !== null && product?.variants?.[selectedVariantIndex]) {
+            const variant = product.variants[selectedVariantIndex]
+            return variant.images && Array.isArray(variant.images) && variant.images.length > 0
+        }
+        return false
     }
 
     const getSelectedVariant = () => {
@@ -168,8 +198,6 @@ const ProductDetail = () => {
     }
 
     // --- Price Helpers ---
-
-    // Get value based on currency
     const getPriceValue = (item) => {
         if (!item) return 0;
         if (currency === 'USD') {
@@ -192,10 +220,7 @@ const ProductDetail = () => {
         if (!product) return { hasPrice: false, min: 0, max: 0, single: 0, hasRange: false }
 
         if (hasVariants()) {
-            // Map variants to specific currency price
             const prices = product.variants.map(v => getPriceValue(v)).filter(p => p > 0)
-            
-            // Fallback to base product price if no variant prices
             const basePrice = getPriceValue(product)
 
             if (prices.length === 0) {
@@ -240,7 +265,7 @@ const ProductDetail = () => {
     // IMAGE NAVIGATION
     // ============================================
 
-    const images = getProductImages()
+    const images = getDisplayImages()
     const hasMultipleImages = images.length > 1
 
     const nextImage = () => {
@@ -282,8 +307,8 @@ const ProductDetail = () => {
             productId: product._id,
             name: product.name,
             slug: product.slug,
-            price: itemPrice, // Specific currency price
-            currency: currency, // Track currency
+            price: itemPrice,
+            currency: currency,
             stock: getAvailableStock(),
             image: images[0] || null,
             quantity: quantity,
@@ -445,6 +470,7 @@ const ProductDetail = () => {
     const inStock = isProductInStock()
     const availableStock = getAvailableStock()
     const currentPrice = getCurrentPrice()
+    const productImages = getProductImages()
 
     return (
         <div className='bg-vanilla-50'>
@@ -474,7 +500,7 @@ const ProductDetail = () => {
                         </div>
 
                         {/* Currency Selector (Top Right) */}
-                        <div className="hidden sm:block relative">
+                        {/* <div className="hidden sm:block relative">
                             <select 
                                 value={currency} 
                                 onChange={(e) => setCurrency(e.target.value)} 
@@ -484,7 +510,7 @@ const ProductDetail = () => {
                                 <option value="USD">USD ($)</option>
                             </select>
                             <Globe className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-vanilla-400 pointer-events-none" />
-                        </div>
+                        </div> */}
                     </nav>
 
                     {/* Main Product Section */}
@@ -539,6 +565,15 @@ const ProductDetail = () => {
                                         </span>
                                     </div>
 
+                                    {/* Variant Image Indicator */}
+                                    {isShowingVariantImages() && (
+                                        <div className="absolute top-4 right-4">
+                                            <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-gold-500 text-white shadow-lg">
+                                                {selectedVariant?.label}
+                                            </span>
+                                        </div>
+                                    )}
+
                                     {/* Out of Stock Overlay */}
                                     {!inStock && (
                                         <div className="absolute inset-0 bg-vanilla-900/40 flex items-center justify-center">
@@ -556,25 +591,63 @@ const ProductDetail = () => {
                                     )}
                                 </div>
 
-                                {/* Thumbnail Strip */}
-                                {hasMultipleImages && (
-                                    <div className="flex gap-3 mt-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gold-500">
-                                        {images.map((image, index) => (
-                                            <button
-                                                key={index}
-                                                onClick={() => setCurrentImageIndex(index)}
-                                                className={`w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all duration-300 ${index === currentImageIndex
-                                                    ? 'border-gold-500 shadow-md ring-2 ring-gold-500/20'
-                                                    : 'border-transparent hover:border-vanilla-200'
+                                {/* Thumbnail Strip - Shows current display images */}
+                                {images.length > 0 && (
+                                    <div className="mt-4">
+                                        {/* Section Label */}
+                                        {isShowingVariantImages() && productImages.length > 0 && (
+                                            <p className="text-xs text-vanilla-500 mb-2 font-medium uppercase tracking-wide">
+                                                {selectedVariant?.label} Images
+                                            </p>
+                                        )}
+                                        
+                                        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gold-500">
+                                            {images.map((image, index) => (
+                                                <button
+                                                    key={`current-${index}`}
+                                                    onClick={() => setCurrentImageIndex(index)}
+                                                    className={`w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all duration-300 ${
+                                                        index === currentImageIndex
+                                                            ? 'border-gold-500 shadow-md ring-2 ring-gold-500/20'
+                                                            : 'border-transparent hover:border-vanilla-300'
                                                     }`}
-                                            >
-                                                <img
-                                                    src={image}
-                                                    alt={`Thumbnail ${index + 1}`}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            </button>
-                                        ))}
+                                                >
+                                                    <img
+                                                        src={image}
+                                                        alt={`Thumbnail ${index + 1}`}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Product Images Section - Only show when viewing variant images */}
+                                {isShowingVariantImages() && productImages.length > 0 && (
+                                    <div className="mt-4 pt-4 border-t border-vanilla-200">
+                                        <p className="text-xs text-vanilla-500 mb-2 font-medium uppercase tracking-wide">
+                                            All Product Images
+                                        </p>
+                                        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-vanilla-300">
+                                            {productImages.map((image, index) => (
+                                                <button
+                                                    key={`product-${index}`}
+                                                    onClick={() => {
+                                                        // Switch to product images view
+                                                        setSelectedVariantIndex(null)
+                                                        setCurrentImageIndex(index)
+                                                    }}
+                                                    className="w-16 h-16 rounded-lg overflow-hidden shrink-0 border-2 border-vanilla-200 hover:border-vanilla-400 transition-all duration-300 opacity-70 hover:opacity-100"
+                                                >
+                                                    <img
+                                                        src={image}
+                                                        alt={`Product image ${index + 1}`}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -590,7 +663,7 @@ const ProductDetail = () => {
                                             {product.name}
                                         </h1>
                                         <div className="flex items-center gap-2 shrink-0">
-                                            {/* Mobile Currency Selector (Only visible on small screens) */}
+                                            {/* Mobile Currency Selector */}
                                             <div className="sm:hidden relative mr-2">
                                                 <select 
                                                     value={currency} 
@@ -612,7 +685,6 @@ const ProductDetail = () => {
                                                     <Share2 className="w-5 h-5" />
                                                 </button>
 
-                                                {/* Share Menu Dropdown */}
                                                 {showShareMenu && (
                                                     <>
                                                         <div
@@ -706,7 +778,7 @@ const ProductDetail = () => {
                                     </div>
                                 )}
 
-                                {/* Variant Selection (only if has variants) */}
+                                {/* Variant Selection */}
                                 {hasVariants() && (
                                     <div className="mb-6">
                                         <label className="block text-sm font-bold text-vanilla-900 mb-3 tracking-wide uppercase">
@@ -716,6 +788,7 @@ const ProductDetail = () => {
                                             {product.variants.map((variant, index) => {
                                                 const variantInStock = isVariantInStock(variant)
                                                 const isSelected = selectedVariantIndex === index
+                                                const hasVariantImages = variant.images && variant.images.length > 0
 
                                                 return (
                                                     <button
@@ -727,18 +800,26 @@ const ProductDetail = () => {
                                                             }
                                                         }}
                                                         disabled={!variantInStock}
-                                                        className={`p-4 rounded-xl text-left transition-all duration-200 border-2 ${isSelected
-                                                            ? 'border-gold-500 bg-vanilla-100 shadow-sm'
-                                                            : !variantInStock
-                                                                ? 'border-vanilla-100 bg-gray-50 opacity-60 cursor-not-allowed'
-                                                                : 'border-vanilla-100 hover:border-gold-500/50 hover:bg-vanilla-50'
-                                                            }`}
+                                                        className={`p-4 rounded-xl text-left transition-all duration-200 border-2 ${
+                                                            isSelected
+                                                                ? 'border-gold-500 bg-vanilla-100 shadow-sm'
+                                                                : !variantInStock
+                                                                    ? 'border-vanilla-100 bg-gray-50 opacity-60 cursor-not-allowed'
+                                                                    : 'border-vanilla-100 hover:border-gold-500/50 hover:bg-vanilla-50'
+                                                        }`}
                                                     >
                                                         <div className="flex items-center justify-between mb-1">
-                                                            <span className={`font-semibold font-serif ${!variantInStock ? 'text-vanilla-800/40 line-through' : 'text-vanilla-900'
+                                                            <div className="flex items-center gap-2">
+                                                                <span className={`font-semibold font-serif ${
+                                                                    !variantInStock ? 'text-vanilla-800/40 line-through' : 'text-vanilla-900'
                                                                 }`}>
-                                                                {variant.label}
-                                                            </span>
+                                                                    {variant.label}
+                                                                </span>
+                                                                {/* Variant has images indicator */}
+                                                                {hasVariantImages && (
+                                                                    <ImageIcon className="w-3.5 h-3.5 text-gold-500" />
+                                                                )}
+                                                            </div>
                                                             {isSelected && (
                                                                 <Check className="w-5 h-5 text-gold-500" />
                                                             )}
@@ -756,7 +837,9 @@ const ProductDetail = () => {
                                                             )}
                                                         </div>
 
-                                                        <div className={`text-xs mt-2 font-medium ${variantInStock ? 'text-green-700' : 'text-red-500'}`}>
+                                                        <div className={`text-xs mt-2 font-medium ${
+                                                            variantInStock ? 'text-green-700' : 'text-red-500'
+                                                        }`}>
                                                             {variantInStock ? `${variant.stock} in stock` : 'Out of stock'}
                                                         </div>
                                                     </button>
@@ -769,7 +852,7 @@ const ProductDetail = () => {
                                 {/* Quantity & Add to Cart */}
                                 <div className="flex flex-col sm:flex-row gap-4 mb-6">
                                     {/* Quantity Selector */}
-                                    <div className="flex items-center border-2 border-vanilla-200 rounded-xl overflow-hidden bg-white">
+                                    <div className="flex items-center justify-center border-2 border-vanilla-200 rounded-xl overflow-hidden bg-white">
                                         <button
                                             onClick={decrementQuantity}
                                             disabled={quantity <= 1 || !inStock}
@@ -793,12 +876,13 @@ const ProductDetail = () => {
                                     <button
                                         onClick={handleAddToCart}
                                         disabled={!canAddToCart()}
-                                        className={`flex-1 py-4 px-8 rounded-xl font-bold tracking-wide flex items-center justify-center gap-2 transition-all duration-300 shadow-md ${addedToCart
-                                            ? 'bg-green-600 text-white'
-                                            : !canAddToCart()
-                                                ? 'bg-vanilla-200 text-vanilla-800/50 cursor-not-allowed'
-                                                : 'bg-vanilla-900 text-white hover:bg-gold-500 hover:shadow-lg hover:-translate-y-0.5'
-                                            }`}
+                                        className={`flex-1 py-4 px-8 rounded-xl font-bold tracking-wide flex items-center justify-center gap-2 transition-all duration-300 shadow-md ${
+                                            addedToCart
+                                                ? 'bg-green-600 text-white'
+                                                : !canAddToCart()
+                                                    ? 'bg-vanilla-200 text-vanilla-800/50 cursor-not-allowed'
+                                                    : 'bg-vanilla-900 text-white hover:bg-gold-500 hover:shadow-lg hover:-translate-y-0.5'
+                                        }`}
                                     >
                                         {addedToCart ? (
                                             <>
@@ -844,6 +928,15 @@ const ProductDetail = () => {
                                             <span className="text-green-700">
                                                 {selectedVariant.stock} in stock
                                             </span>
+                                            {isShowingVariantImages() && (
+                                                <>
+                                                    {' • '}
+                                                    <span className="text-vanilla-600 inline-flex items-center gap-1">
+                                                        <ImageIcon className="w-3 h-3" />
+                                                        {selectedVariant.images.length} image{selectedVariant.images.length > 1 ? 's' : ''}
+                                                    </span>
+                                                </>
+                                            )}
                                         </p>
                                     </div>
                                 )}
@@ -897,10 +990,11 @@ const ProductDetail = () => {
                                 <button
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
-                                    className={`flex items-center gap-2 px-6 py-4 font-bold font-serif text-lg transition-all duration-300 whitespace-nowrap ${activeTab === tab.id
-                                        ? 'text-vanilla-900 border-b-2 border-gold-500 bg-vanilla-50'
-                                        : 'text-vanilla-800/50 hover:text-vanilla-900 hover:bg-vanilla-50/50'
-                                        }`}
+                                    className={`flex items-center gap-2 px-6 py-4 font-bold font-serif text-lg transition-all duration-300 whitespace-nowrap ${
+                                        activeTab === tab.id
+                                            ? 'text-vanilla-900 border-b-2 border-gold-500 bg-vanilla-50'
+                                            : 'text-vanilla-800/50 hover:text-vanilla-900 hover:bg-vanilla-50/50'
+                                    }`}
                                 >
                                     <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-gold-500' : ''}`} />
                                     {tab.label}
@@ -917,7 +1011,6 @@ const ProductDetail = () => {
                                         {product.description}
                                     </p>
 
-                                    {/* Highlights */}
                                     {product.highlights && product.highlights.length > 0 && (
                                         <div className="mb-8">
                                             <h3 className="text-xl font-serif font-bold text-vanilla-900 mb-4 flex items-center gap-2">
@@ -937,7 +1030,6 @@ const ProductDetail = () => {
                                         </div>
                                     )}
 
-                                    {/* Variants Summary */}
                                     {hasVariants() && (
                                         <div className="mt-8">
                                             <h3 className="text-xl font-serif font-bold text-vanilla-900 mb-4 flex items-center gap-2">
@@ -950,8 +1042,16 @@ const ProductDetail = () => {
                                                         key={index}
                                                         className="p-4 bg-vanilla-50 rounded-xl border border-vanilla-100"
                                                     >
-                                                        <div className="font-serif font-bold text-vanilla-900 mb-1">
-                                                            {variant.label}
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <span className="font-serif font-bold text-vanilla-900">
+                                                                {variant.label}
+                                                            </span>
+                                                            {variant.images && variant.images.length > 0 && (
+                                                                <span className="text-xs text-gold-500 flex items-center gap-1">
+                                                                    <ImageIcon className="w-3 h-3" />
+                                                                    {variant.images.length}
+                                                                </span>
+                                                            )}
                                                         </div>
                                                         <div className="text-gold-500 font-bold">
                                                             {formatPrice(getPriceValue(variant))}
@@ -1120,8 +1220,9 @@ const ProductDetail = () => {
                                     <button
                                         key={index}
                                         onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(index); }}
-                                        className={`h-2 rounded-full transition-all duration-300 ${index === currentImageIndex ? 'bg-gold-500 w-8' : 'bg-white/40 hover:bg-white/60 w-2'
-                                            }`}
+                                        className={`h-2 rounded-full transition-all duration-300 ${
+                                            index === currentImageIndex ? 'bg-gold-500 w-8' : 'bg-white/40 hover:bg-white/60 w-2'
+                                        }`}
                                     />
                                 ))}
                             </div>
@@ -1141,14 +1242,12 @@ const ProductDetail = () => {
 const RelatedProductCard = ({ product, currency }) => {
     const images = product.images && product.images.length > 0 ? product.images : []
 
-    // Helper to get price based on currency prop
     const getPriceValue = (item) => {
         if (!item) return 0;
         if (currency === 'USD') return item.priceInUSD || 0;
         return item.priceInLKR || item.price || 0;
     }
 
-    // Get price info - check variants first, then product price
     const getPriceInfo = () => {
         if (product.variants && product.variants.length > 0) {
             const prices = product.variants.map(v => getPriceValue(v)).filter(p => p > 0)
@@ -1173,7 +1272,6 @@ const RelatedProductCard = ({ product, currency }) => {
         return { min: 0, max: 0, hasPrice: false }
     }
 
-    // Check stock
     const isInStock = () => {
         if (product.variants && product.variants.length > 0) {
             return product.variants.some(v => v.stock > 0)
@@ -1196,7 +1294,6 @@ const RelatedProductCard = ({ product, currency }) => {
             to={`/products/${product.slug}`}
             className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-vanilla-100 transition-all duration-500 hover:-translate-y-1"
         >
-            {/* Image */}
             <div className="relative aspect-square overflow-hidden bg-vanilla-50">
                 {images.length > 0 ? (
                     <img
@@ -1212,14 +1309,12 @@ const RelatedProductCard = ({ product, currency }) => {
 
                 <div className="absolute inset-0 bg-vanilla-900/0 group-hover:bg-vanilla-900/10 transition-colors duration-300" />
 
-                {/* Category */}
                 <div className="absolute top-3 left-3">
                     <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-white text-vanilla-900 shadow-sm opacity-90">
                         {product.category}
                     </span>
                 </div>
 
-                {/* Out of Stock */}
                 {!inStock && (
                     <div className="absolute inset-0 bg-vanilla-900/50 flex items-center justify-center">
                         <span className="bg-white text-vanilla-900 px-3 py-1 rounded-full text-xs font-serif font-bold">
@@ -1229,7 +1324,6 @@ const RelatedProductCard = ({ product, currency }) => {
                 )}
             </div>
 
-            {/* Content */}
             <div className="p-5">
                 <h3 className="font-serif font-bold text-lg text-vanilla-900 mb-2 line-clamp-1 group-hover:text-gold-500 transition-colors">
                     {product.name}

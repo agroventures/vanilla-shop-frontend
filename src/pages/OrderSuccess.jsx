@@ -252,7 +252,7 @@ const OrderSuccess = () => {
                         {/* Right Column - Order Summary */}
                         <div className="space-y-6">
                             {/* Order Total */}
-                            <div className="bg-white rounded-3xl border border-vanilla-100 shadow-sm overflow-hidden sticky top-24">
+                            <div className="bg-white rounded-3xl border border-vanilla-100 shadow-sm overflow-hidden">
                                 <div className="p-6 bg-vanilla-50 border-b border-vanilla-100">
                                     <h2 className="font-serif font-bold text-xl text-vanilla-900">Order Summary</h2>
                                 </div>

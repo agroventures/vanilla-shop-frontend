@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url>
+    <loc>https://thevanillashop.lk/</loc>
+    <lastmod>2025-12-18</lastmod>
+    <priority>1.00</priority>
+  </url>
+
+  <url>
+    <loc>https://thevanillashop.lk/about</loc>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://thevanillashop.lk/shop</loc>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://thevanillashop.lk/contact</loc>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://thevanillashop.lk/cart</loc>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://thevanillashop.lk/checkout</loc>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://thevanillashop.lk/order-success</loc>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://thevanillashop.lk/order-cancel</loc>
+    <priority>0.50</priority>
+  </url>
+
+  <url>
+    <loc>https://thevanillashop.lk/login</loc>
+    <priority>0.60</priority>
+  </url>
+
+  <url>
+    <loc>https://thevanillashop.lk/register</loc>
+    <priority>0.60</priority>
+  </url>
+
+  <url>
+    <loc>https://thevanillashop.lk/terms</loc>
+    <priority>0.50</priority>
+  </url>
+
+  <url>
+    <loc>https://thevanillashop.lk/privacy</loc>
+    <priority>0.50</priority>
+  </url>
+
+  <url>
+    <loc>https://thevanillashop.lk/refund</loc>
+    <priority>0.50</priority>
+  </url>
+
+</urlset>
