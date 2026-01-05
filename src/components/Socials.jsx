@@ -3,10 +3,9 @@ import React from 'react';
 const Socials = () => {
   // Placeholder images for the social feed
   const feedImages = [
-    "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?auto=format&fit=crop&q=80&w=300",
-    "https://images.unsplash.com/photo-1626202097279-b7b5c3e61895?auto=format&fit=crop&q=80&w=300",
-    "https://images.unsplash.com/photo-1559563362-c667ba5f5480?auto=format&fit=crop&q=80&w=300",
-    "https://images.unsplash.com/photo-1610632380989-680fe40816c6?auto=format&fit=crop&q=80&w=300"
+    "/images/contact/instagram-1.png",
+    "/images/contact/instagram-2.png",
+    "/images/contact/instagram-3.png",
   ];
 
   return (
@@ -39,6 +38,9 @@ const Socials = () => {
               </div>
             </div>
           ))}
+          <div className='group relative overflow-hidden rounded-lg cursor-pointer h-64'>
+            <video src="/videos/instagram_video.mp4" controls className="w-full h-full object-cover"></video>
+          </div>
         </div>
         
       </div>

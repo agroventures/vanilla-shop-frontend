@@ -5,7 +5,7 @@ const Welcome = () => {
     <section className="py-20 px-4 md:px-12 max-w-7xl mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         <div>
-          <img src="https://images.unsplash.com/photo-1517522509177-3a95d7f1d446?q=80&w=1000&auto=format&fit=crop" alt="Vanilla Shop Interior" className="rounded-lg shadow-xl w-full h-96 object-cover" />
+          <img src="/images/vanilla-shop.png" alt="Vanilla Shop Interior" className="rounded-lg shadow-xl w-full h-96 object-cover" />
         </div>
         <div>
           <h2 className="text-4xl font-serif font-bold text-vanilla-900 mb-6">Welcome to The Vanilla Shop</h2>
