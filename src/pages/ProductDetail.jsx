@@ -131,7 +131,7 @@ const ProductDetail = () => {
         return []
     }
 
-    // Get variant images if available, otherwise fall back to product images
+    // Get variant images if available
     const getVariantImages = (variantIndex) => {
         if (variantIndex !== null && variantIndex !== undefined && product?.variants?.[variantIndex]) {
             const variant = product.variants[variantIndex]
@@ -139,20 +139,64 @@ const ProductDetail = () => {
                 return variant.images
             }
         }
-        // Fallback to product images
-        return getProductImages()
+        return []
     }
 
-    // Get images to display based on current selection
-    const getDisplayImages = () => {
-        if (hasVariants() && selectedVariantIndex !== null) {
-            return getVariantImages(selectedVariantIndex)
+    // NEW: Get ALL images with selected variant images first (no duplicates)
+    const getAllProductImages = () => {
+        if (!product) return []
+        
+        let allImages = []
+        const addedImages = new Set()
+
+        // Helper to add unique images
+        const addImages = (images, source = null) => {
+            if (images && Array.isArray(images)) {
+                images.forEach(img => {
+                    if (img && !addedImages.has(img)) {
+                        addedImages.add(img)
+                        allImages.push({ url: img, source })
+                    }
+                })
+            }
         }
-        return getProductImages()
+
+        // 1. If a variant is selected, add its images FIRST
+        if (selectedVariantIndex !== null && product.variants && product.variants[selectedVariantIndex]) {
+            const selectedVariant = product.variants[selectedVariantIndex]
+            if (selectedVariant.images && selectedVariant.images.length > 0) {
+                addImages(selectedVariant.images, { type: 'variant', label: selectedVariant.label, index: selectedVariantIndex })
+            }
+        }
+
+        // 2. Add base product images
+        addImages(product.images, { type: 'product', label: 'Product' })
+
+        // 3. Add other variants' images (not the selected one)
+        if (product.variants && Array.isArray(product.variants)) {
+            product.variants.forEach((variant, index) => {
+                if (index !== selectedVariantIndex && variant.images && variant.images.length > 0) {
+                    addImages(variant.images, { type: 'variant', label: variant.label, index })
+                }
+            })
+        }
+
+        return allImages
     }
 
-    // Check if currently showing variant-specific images
-    const isShowingVariantImages = () => {
+    // Get just the image URLs for display
+    const getDisplayImages = () => {
+        return getAllProductImages().map(img => img.url)
+    }
+
+    // Check which variant an image belongs to (for visual indicator)
+    const getImageSource = (imageIndex) => {
+        const allImages = getAllProductImages()
+        return allImages[imageIndex]?.source || null
+    }
+
+    // Check if currently showing variant-specific images first
+    const isShowingVariantImagesFirst = () => {
         if (selectedVariantIndex !== null && product?.variants?.[selectedVariantIndex]) {
             const variant = product.variants[selectedVariantIndex]
             return variant.images && Array.isArray(variant.images) && variant.images.length > 0
@@ -470,7 +514,7 @@ const ProductDetail = () => {
     const inStock = isProductInStock()
     const availableStock = getAvailableStock()
     const currentPrice = getCurrentPrice()
-    const productImages = getProductImages()
+    const allImagesWithSource = getAllProductImages()
 
     return (
         <div className='bg-vanilla-50'>
@@ -498,19 +542,6 @@ const ProductDetail = () => {
                             <ChevronRight className="w-4 h-4 text-vanilla-200 shrink-0" />
                             <span className="text-vanilla-900 font-medium truncate">{product.name}</span>
                         </div>
-
-                        {/* Currency Selector (Top Right) */}
-                        {/* <div className="hidden sm:block relative">
-                            <select 
-                                value={currency} 
-                                onChange={(e) => setCurrency(e.target.value)} 
-                                className="appearance-none pl-3 pr-8 py-1.5 bg-white border border-vanilla-200 rounded-lg text-vanilla-900 font-medium text-xs focus:outline-none focus:border-gold-500 cursor-pointer shadow-sm"
-                            >
-                                <option value="LKR">LKR (Rs)</option>
-                                <option value="USD">USD ($)</option>
-                            </select>
-                            <Globe className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-vanilla-400 pointer-events-none" />
-                        </div> */}
                     </nav>
 
                     {/* Main Product Section */}
@@ -565,11 +596,11 @@ const ProductDetail = () => {
                                         </span>
                                     </div>
 
-                                    {/* Variant Image Indicator */}
-                                    {isShowingVariantImages() && (
+                                    {/* Current Image Source Indicator */}
+                                    {allImagesWithSource[currentImageIndex]?.source?.type === 'variant' && (
                                         <div className="absolute top-4 right-4">
                                             <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-gold-500 text-white shadow-lg">
-                                                {selectedVariant?.label}
+                                                {allImagesWithSource[currentImageIndex].source.label}
                                             </span>
                                         </div>
                                     )}
@@ -591,63 +622,100 @@ const ProductDetail = () => {
                                     )}
                                 </div>
 
-                                {/* Thumbnail Strip - Shows current display images */}
+                                {/* ==================== */}
+                                {/* THUMBNAIL GALLERY - All Images */}
+                                {/* ==================== */}
                                 {images.length > 0 && (
                                     <div className="mt-4">
-                                        {/* Section Label */}
-                                        {isShowingVariantImages() && productImages.length > 0 && (
-                                            <p className="text-xs text-vanilla-500 mb-2 font-medium uppercase tracking-wide">
-                                                {selectedVariant?.label} Images
-                                            </p>
+                                        {/* Show label if variant is selected and has images */}
+                                        {isShowingVariantImagesFirst() && (
+                                            <div className="flex items-center gap-2 mb-3">
+                                                <span className="text-xs text-vanilla-500 font-medium uppercase tracking-wide">
+                                                    Showing: {selectedVariant?.label} images first
+                                                </span>
+                                                <div className="flex-1 h-px bg-vanilla-200" />
+                                            </div>
                                         )}
                                         
                                         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gold-500">
-                                            {images.map((image, index) => (
-                                                <button
-                                                    key={`current-${index}`}
-                                                    onClick={() => setCurrentImageIndex(index)}
-                                                    className={`w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all duration-300 ${
-                                                        index === currentImageIndex
-                                                            ? 'border-gold-500 shadow-md ring-2 ring-gold-500/20'
-                                                            : 'border-transparent hover:border-vanilla-300'
-                                                    }`}
-                                                >
-                                                    <img
-                                                        src={image}
-                                                        alt={`Thumbnail ${index + 1}`}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
+                                            {allImagesWithSource.map((imageData, index) => {
+                                                const isSelected = index === currentImageIndex
+                                                const isVariantImage = imageData.source?.type === 'variant'
+                                                const isCurrentVariantImage = isVariantImage && imageData.source?.index === selectedVariantIndex
+                                                
+                                                return (
+                                                    <button
+                                                        key={index}
+                                                        onClick={() => setCurrentImageIndex(index)}
+                                                        className={`relative w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all duration-300 group ${
+                                                            isSelected
+                                                                ? 'border-gold-500 shadow-md ring-2 ring-gold-500/20'
+                                                                : 'border-transparent hover:border-vanilla-300'
+                                                        }`}
+                                                    >
+                                                        <img
+                                                            src={imageData.url}
+                                                            alt={`Thumbnail ${index + 1}`}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                        
+                                                        {/* Variant indicator badge */}
+                                                        {isVariantImage && (
+                                                            <div className={`absolute bottom-0 left-0 right-0 py-0.5 text-center text-[10px] font-medium truncate px-1 ${
+                                                                isCurrentVariantImage 
+                                                                    ? 'bg-gold-500 text-white' 
+                                                                    : 'bg-vanilla-900/70 text-white'
+                                                            }`}>
+                                                                {imageData.source.label}
+                                                            </div>
+                                                        )}
+                                                        
+                                                        {/* Product image indicator */}
+                                                        {imageData.source?.type === 'product' && hasVariants() && (
+                                                            <div className="absolute bottom-0 left-0 right-0 py-0.5 bg-vanilla-600/70 text-white text-center text-[10px] font-medium">
+                                                                Base
+                                                            </div>
+                                                        )}
 
-                                {/* Product Images Section - Only show when viewing variant images */}
-                                {isShowingVariantImages() && productImages.length > 0 && (
-                                    <div className="mt-4 pt-4 border-t border-vanilla-200">
-                                        <p className="text-xs text-vanilla-500 mb-2 font-medium uppercase tracking-wide">
-                                            All Product Images
-                                        </p>
-                                        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-vanilla-300">
-                                            {productImages.map((image, index) => (
-                                                <button
-                                                    key={`product-${index}`}
-                                                    onClick={() => {
-                                                        // Switch to product images view
-                                                        setSelectedVariantIndex(null)
-                                                        setCurrentImageIndex(index)
-                                                    }}
-                                                    className="w-16 h-16 rounded-lg overflow-hidden shrink-0 border-2 border-vanilla-200 hover:border-vanilla-400 transition-all duration-300 opacity-70 hover:opacity-100"
-                                                >
-                                                    <img
-                                                        src={image}
-                                                        alt={`Product image ${index + 1}`}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                </button>
-                                            ))}
+                                                        {/* Hover overlay */}
+                                                        <div className={`absolute inset-0 transition-opacity duration-200 ${
+                                                            isSelected ? 'opacity-0' : 'opacity-0 group-hover:opacity-100 bg-vanilla-900/10'
+                                                        }`} />
+                                                    </button>
+                                                )
+                                            })}
                                         </div>
+
+                                        {/* Image count summary */}
+                                        {hasVariants() && (
+                                            <div className="mt-3 flex flex-wrap gap-2 text-xs text-vanilla-500">
+                                                {getProductImages().length > 0 && (
+                                                    <span className="px-2 py-1 bg-vanilla-100 rounded-full">
+                                                        {getProductImages().length} base image{getProductImages().length > 1 ? 's' : ''}
+                                                    </span>
+                                                )}
+                                                {product.variants.map((variant, idx) => {
+                                                    const variantImgCount = variant.images?.length || 0
+                                                    if (variantImgCount === 0) return null
+                                                    return (
+                                                        <span 
+                                                            key={idx}
+                                                            className={`px-2 py-1 rounded-full cursor-pointer transition-colors ${
+                                                                idx === selectedVariantIndex 
+                                                                    ? 'bg-gold-500 text-white' 
+                                                                    : 'bg-vanilla-100 hover:bg-vanilla-200'
+                                                            }`}
+                                                            onClick={() => {
+                                                                setSelectedVariantIndex(idx)
+                                                                setQuantity(1)
+                                                            }}
+                                                        >
+                                                            {variant.label}: {variantImgCount}
+                                                        </span>
+                                                    )
+                                                })}
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
@@ -663,19 +731,6 @@ const ProductDetail = () => {
                                             {product.name}
                                         </h1>
                                         <div className="flex items-center gap-2 shrink-0">
-                                            {/* Mobile Currency Selector */}
-                                            <div className="sm:hidden relative mr-2">
-                                                <select 
-                                                    value={currency} 
-                                                    onChange={(e) => setCurrency(e.target.value)} 
-                                                    className="appearance-none pl-3 pr-7 py-2 bg-vanilla-50 border border-vanilla-200 rounded-lg text-vanilla-900 font-medium text-xs focus:outline-none focus:border-gold-500"
-                                                >
-                                                    <option value="LKR">LKR</option>
-                                                    <option value="USD">USD</option>
-                                                </select>
-                                                <Globe className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-vanilla-400 pointer-events-none" />
-                                            </div>
-
                                             {/* Share Button */}
                                             <div className="relative">
                                                 <button
@@ -810,15 +865,21 @@ const ProductDetail = () => {
                                                     >
                                                         <div className="flex items-center justify-between mb-1">
                                                             <div className="flex items-center gap-2">
+                                                                {/* Variant thumbnail preview */}
+                                                                {hasVariantImages && (
+                                                                    <div className="w-8 h-8 rounded-lg overflow-hidden border border-vanilla-200 shrink-0">
+                                                                        <img 
+                                                                            src={variant.images[0]} 
+                                                                            alt={variant.label}
+                                                                            className="w-full h-full object-cover"
+                                                                        />
+                                                                    </div>
+                                                                )}
                                                                 <span className={`font-semibold font-serif ${
                                                                     !variantInStock ? 'text-vanilla-800/40 line-through' : 'text-vanilla-900'
                                                                 }`}>
                                                                     {variant.label}
                                                                 </span>
-                                                                {/* Variant has images indicator */}
-                                                                {hasVariantImages && (
-                                                                    <ImageIcon className="w-3.5 h-3.5 text-gold-500" />
-                                                                )}
                                                             </div>
                                                             {isSelected && (
                                                                 <Check className="w-5 h-5 text-gold-500" />
@@ -837,10 +898,18 @@ const ProductDetail = () => {
                                                             )}
                                                         </div>
 
-                                                        <div className={`text-xs mt-2 font-medium ${
-                                                            variantInStock ? 'text-green-700' : 'text-red-500'
-                                                        }`}>
-                                                            {variantInStock ? `${variant.stock} in stock` : 'Out of stock'}
+                                                        <div className="flex items-center justify-between mt-2">
+                                                            <span className={`text-xs font-medium ${
+                                                                variantInStock ? 'text-green-700' : 'text-red-500'
+                                                            }`}>
+                                                                {variantInStock ? `${variant.stock} in stock` : 'Out of stock'}
+                                                            </span>
+                                                            {hasVariantImages && (
+                                                                <span className="text-xs text-vanilla-500 flex items-center gap-1">
+                                                                    <ImageIcon className="w-3 h-3" />
+                                                                    {variant.images.length}
+                                                                </span>
+                                                            )}
                                                         </div>
                                                     </button>
                                                 )
@@ -928,7 +997,7 @@ const ProductDetail = () => {
                                             <span className="text-green-700">
                                                 {selectedVariant.stock} in stock
                                             </span>
-                                            {isShowingVariantImages() && (
+                                            {selectedVariant.images && selectedVariant.images.length > 0 && (
                                                 <>
                                                     {' • '}
                                                     <span className="text-vanilla-600 inline-flex items-center gap-1">
@@ -1040,18 +1109,39 @@ const ProductDetail = () => {
                                                 {product.variants.map((variant, index) => (
                                                     <div
                                                         key={index}
-                                                        className="p-4 bg-vanilla-50 rounded-xl border border-vanilla-100"
+                                                        className={`p-4 bg-vanilla-50 rounded-xl border transition-colors cursor-pointer ${
+                                                            selectedVariantIndex === index 
+                                                                ? 'border-gold-500 bg-vanilla-100' 
+                                                                : 'border-vanilla-100 hover:border-vanilla-300'
+                                                        }`}
+                                                        onClick={() => {
+                                                            if (isVariantInStock(variant)) {
+                                                                setSelectedVariantIndex(index)
+                                                                setQuantity(1)
+                                                            }
+                                                        }}
                                                     >
                                                         <div className="flex items-center gap-2 mb-1">
-                                                            <span className="font-serif font-bold text-vanilla-900">
-                                                                {variant.label}
-                                                            </span>
                                                             {variant.images && variant.images.length > 0 && (
-                                                                <span className="text-xs text-gold-500 flex items-center gap-1">
-                                                                    <ImageIcon className="w-3 h-3" />
-                                                                    {variant.images.length}
-                                                                </span>
+                                                                <div className="w-10 h-10 rounded-lg overflow-hidden border border-vanilla-200">
+                                                                    <img 
+                                                                        src={variant.images[0]} 
+                                                                        alt={variant.label}
+                                                                        className="w-full h-full object-cover"
+                                                                    />
+                                                                </div>
                                                             )}
+                                                            <div>
+                                                                <span className="font-serif font-bold text-vanilla-900">
+                                                                    {variant.label}
+                                                                </span>
+                                                                {variant.images && variant.images.length > 0 && (
+                                                                    <span className="text-xs text-gold-500 flex items-center gap-1 mt-0.5">
+                                                                        <ImageIcon className="w-3 h-3" />
+                                                                        {variant.images.length} image{variant.images.length > 1 ? 's' : ''}
+                                                                    </span>
+                                                                )}
+                                                            </div>
                                                         </div>
                                                         <div className="text-gold-500 font-bold">
                                                             {formatPrice(getPriceValue(variant))}
@@ -1210,21 +1300,40 @@ const ProductDetail = () => {
                         <img
                             src={images[currentImageIndex]}
                             alt={product.name}
-                            className="max-w-[90vw] max-h-[90vh] object-contain shadow-2xl rounded-lg"
+                            className="max-w-[90vw] max-h-[80vh] object-contain shadow-2xl rounded-lg"
                             onClick={(e) => e.stopPropagation()}
                         />
 
+                        {/* Thumbnails in zoom modal */}
                         {hasMultipleImages && (
-                            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3">
-                                {images.map((_, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(index); }}
-                                        className={`h-2 rounded-full transition-all duration-300 ${
-                                            index === currentImageIndex ? 'bg-gold-500 w-8' : 'bg-white/40 hover:bg-white/60 w-2'
-                                        }`}
-                                    />
-                                ))}
+                            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 max-w-[90vw] overflow-x-auto pb-2 px-4">
+                                {allImagesWithSource.map((imageData, index) => {
+                                    const isSelected = index === currentImageIndex
+                                    const isVariantImage = imageData.source?.type === 'variant'
+                                    
+                                    return (
+                                        <button
+                                            key={index}
+                                            onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(index); }}
+                                            className={`relative w-16 h-16 rounded-lg overflow-hidden shrink-0 border-2 transition-all ${
+                                                isSelected 
+                                                    ? 'border-gold-500 ring-2 ring-gold-500/50' 
+                                                    : 'border-white/20 hover:border-white/50'
+                                            }`}
+                                        >
+                                            <img
+                                                src={imageData.url}
+                                                alt={`Thumbnail ${index + 1}`}
+                                                className="w-full h-full object-cover"
+                                            />
+                                            {isVariantImage && (
+                                                <div className="absolute bottom-0 left-0 right-0 py-0.5 bg-gold-500/90 text-white text-center text-[8px] font-medium truncate px-1">
+                                                    {imageData.source.label}
+                                                </div>
+                                            )}
+                                        </button>
+                                    )
+                                })}
                             </div>
                         )}
                     </div>
@@ -1232,6 +1341,24 @@ const ProductDetail = () => {
             </main>
 
             <Footer />
+
+            {/* Custom scrollbar styles */}
+            <style jsx>{`
+                .scrollbar-thin::-webkit-scrollbar {
+                    height: 6px;
+                }
+                .scrollbar-thin::-webkit-scrollbar-track {
+                    background: #f5f5f0;
+                    border-radius: 3px;
+                }
+                .scrollbar-thin::-webkit-scrollbar-thumb {
+                    background: #d4a574;
+                    border-radius: 3px;
+                }
+                .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+                    background: #c49664;
+                }
+            `}</style>
         </div>
     )
 }

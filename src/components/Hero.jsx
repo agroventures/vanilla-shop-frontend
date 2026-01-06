@@ -2,8 +2,8 @@ import React from 'react';
 
 const Hero = () => {
   return (
-    <section id="home" className="relative h-screen flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')" }}>
-    {/* // <section id="home" className="relative h-screen flex items-center justify-center object-cover bg-center" style={{ backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/images/vanilla-shop.png')" }}> */}
+    // <section id="home" className="relative h-screen flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')" }}>
+    <section id="home" className="relative h-screen flex items-center justify-center object-cover bg-center" style={{ backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/images/hero.webp')" }}>
       <div className="text-center text-white px-4 max-w-4xl mx-auto">
         <span className="block text-gold-500 font-serif italic text-xl mb-4 tracking-widest">Est. 2025 • Colombo</span>
         <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight">From Bean to Bliss</h1>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const products = [
   {
@@ -6,21 +7,21 @@ const products = [
     name: "Pure Vanilla Extract",
     desc: "Pure, concentrated, and ideal for baking or beverages.",
     price: "$18.00",
-    img: "/images/products/alcoholic-vanilla-extracts.jpg",
+    img: "/images/products/non-alcoholic-extract.webp",
   },
   {
     id: 2,
     name: "Gourmet Vanilla Syrup",
     desc: "Smooth sweetness for lattes, cocktails, and desserts.",
     price: "$12.50",
-    img: "/images/products/vanilla-syrup.jpg",
+    img: "/images/products/vanilla_syrup_500ml.webp",
   },
   {
     id: 3,
     name: "Vanilla Infused Tea",
     desc: "A calming blend of Ceylon tea and natural vanilla.",
     price: "$15.00",
-    img: "/images/products/vanilla-tea.jpg",
+    img: "/images/products/Vanilla_Tea_Powder_100g.webp",
   },
   {
     id: 4,
@@ -31,17 +32,17 @@ const products = [
   },
   {
     id: 5,
-    name: "Café Pastries",
+    name: "Vanilla Paste",
     desc: "Deliciously infused creations from our café kitchen.",
     price: "From $3.00",
-    img: "/images/products/vanilla-paste.jpg",
+    img: "/images/products/vanilla_paste.webp",
   },
   {
     id: 6,
-    name: "Vanilla Bean Powder",
+    name: "Vanilla Beans",
     desc: "Fine, aromatic ingredient for baking.",
     price: "$22.00",
-    img: "/images/products/vanilla-powder.png",
+    img: "/images/products/vanilla_pod_3.webp",
   },
 ];
 
@@ -76,9 +77,10 @@ const Products = () => {
         </div>
 
         <div className="text-center mt-12">
-          <button className="bg-vanilla-900 text-white px-8 py-3 rounded-full hover:bg-gold-500 transition shadow-lg">
-            View Full Catalog
-          </button>
+          <Link to="/shop">
+            <button className="bg-vanilla-900 text-white px-8 py-3 rounded-full cursor-pointer hover:bg-gold-500 transition shadow-lg">
+              View Full Catalog
+            </button></Link>
         </div>
       </div>
     </section>

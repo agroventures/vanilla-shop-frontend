@@ -39,7 +39,7 @@ const Socials = () => {
             </div>
           ))}
           <div className='group relative overflow-hidden rounded-lg cursor-pointer h-64'>
-            <video src="/videos/instagram_video.mp4" controls className="w-full h-full object-cover"></video>
+            <video src="/videos/instagram_video.mp4" autoPlay loop playsinline controls className="w-full h-full object-cover"></video>
           </div>
         </div>
         
