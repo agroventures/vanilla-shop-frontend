@@ -3,7 +3,7 @@ import logo from "/logo.png";
 
 const Loader = () => {
   useEffect(() => {
-        document.title = 'ELEVARE Magazine'
+        document.title = 'The Vanilla Shop'
       })
       
   return (
