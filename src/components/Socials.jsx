@@ -34,7 +34,7 @@ const Socials = () => {
             <div key={index} className="group relative overflow-hidden rounded-lg cursor-pointer h-64">
               <img src={img} alt="Social Feed" className="w-full h-full object-cover transform group-hover:scale-110 transition duration-500" />
               <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
-                <i className="fa-brands fa-instagram text-white text-3xl"></i>
+                <a href="https://www.instagram.com/the_vanillashop" target="_blank"><i className="fa-brands fa-instagram text-white text-3xl"></i></a>
               </div>
             </div>
           ))}

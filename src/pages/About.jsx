@@ -20,7 +20,7 @@ const About = () => {
 
       {/* Hero Section */}
       <div className="relative h-[60vh] flex items-center justify-center bg-cover bg-center" 
-           style={{ backgroundImage: "linear-gradient(rgba(62, 39, 35, 0.7), rgba(62, 39, 35, 0.7)), url('https://images.unsplash.com/photo-1506368249639-73a05d6f6488?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')" }}>
+           style={{ backgroundImage: "linear-gradient(rgba(62, 39, 35, 0.7), rgba(62, 39, 35, 0.7)), url('/images/about/hero.jpg')" }}>
         <div className="text-center text-white px-4 max-w-4xl mx-auto">
           <h1 className="text-5xl md:text-7xl font-serif font-bold mb-4">Our Story</h1>
           <p className="text-xl md:text-2xl font-light opacity-90 font-serif italic text-gold-500">

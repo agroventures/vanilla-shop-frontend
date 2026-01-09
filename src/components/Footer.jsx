@@ -43,7 +43,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="border-t border-vanilla-800 pt-8 text-center text-xs opacity-50">
-        <p>&copy; {new Date().getFullYear()} The Vanilla Shop (Pvt) Ltd. – All Rights Reserved.</p>
+        <p>&copy; {new Date().getFullYear()} <a href="https://ventrax.lk">Ventrax.lk</a>. – All Rights Reserved.</p>
       </div>
     </footer>
   );
