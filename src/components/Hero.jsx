@@ -16,7 +16,7 @@ const Hero = () => {
         aria-hidden="true"
         className="absolute inset-0 w-full h-full object-cover object-center"
       >
-        <source src="/videos/vanilla_shop.mp4" type="video/mp4" />
+        <source src="https://res.cloudinary.com/dyvixdh7n/video/upload/v1767938712/vanilla_shop_lzb8pc.mp4" type="video/mp4" />
       </video>
 
       {/* Overlay */}
