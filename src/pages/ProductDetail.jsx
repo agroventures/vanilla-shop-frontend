@@ -48,7 +48,19 @@ const ProductDetail = () => {
     const [addedToCart, setAddedToCart] = useState(false)
     const [relatedProducts, setRelatedProducts] = useState([])
     const [isImageZoomed, setIsImageZoomed] = useState(false)
-    const [currency, setCurrency] = useState('LKR')
+    
+    // Currency state - load from localStorage or default to LKR
+    const [currency, setCurrency] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('preferredCurrency') || 'LKR'
+        }
+        return 'LKR'
+    })
+
+    // Save currency preference to localStorage
+    useEffect(() => {
+        localStorage.setItem('preferredCurrency', currency)
+    }, [currency])
 
     // Fetch product
     useEffect(() => {
@@ -142,14 +154,13 @@ const ProductDetail = () => {
         return []
     }
 
-    // NEW: Get ALL images with selected variant images first (no duplicates)
+    // Get ALL images with selected variant images first (no duplicates)
     const getAllProductImages = () => {
         if (!product) return []
         
         let allImages = []
         const addedImages = new Set()
 
-        // Helper to add unique images
         const addImages = (images, source = null) => {
             if (images && Array.isArray(images)) {
                 images.forEach(img => {
@@ -184,18 +195,15 @@ const ProductDetail = () => {
         return allImages
     }
 
-    // Get just the image URLs for display
     const getDisplayImages = () => {
         return getAllProductImages().map(img => img.url)
     }
 
-    // Check which variant an image belongs to (for visual indicator)
     const getImageSource = (imageIndex) => {
         const allImages = getAllProductImages()
         return allImages[imageIndex]?.source || null
     }
 
-    // Check if currently showing variant-specific images first
     const isShowingVariantImagesFirst = () => {
         if (selectedVariantIndex !== null && product?.variants?.[selectedVariantIndex]) {
             const variant = product.variants[selectedVariantIndex]
@@ -241,7 +249,7 @@ const ProductDetail = () => {
         }
     }
 
-    // --- Price Helpers ---
+    // --- Price Helpers with Currency Support ---
     const getPriceValue = (item) => {
         if (!item) return 0;
         if (currency === 'USD') {
@@ -254,10 +262,14 @@ const ProductDetail = () => {
         if (currency === 'USD') {
             return new Intl.NumberFormat('en-US', { 
                 style: 'currency', 
-                currency: 'USD' 
+                currency: 'USD',
+                minimumFractionDigits: 2
             }).format(price)
         }
-        return 'LKR ' + new Intl.NumberFormat('en-LK').format(price)
+        return 'LKR ' + new Intl.NumberFormat('en-LK', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(price)
     }
 
     const getPriceInfo = () => {
@@ -291,6 +303,17 @@ const ProductDetail = () => {
             return selectedVariant ? getPriceValue(selectedVariant) : 0
         } else {
             return getPriceValue(product)
+        }
+    }
+
+    // Check if product has price in current currency
+    const hasPriceInCurrentCurrency = () => {
+        if (!product) return false
+        
+        if (hasVariants()) {
+            return product.variants.some(v => getPriceValue(v) > 0)
+        } else {
+            return getPriceValue(product) > 0
         }
     }
 
@@ -352,6 +375,8 @@ const ProductDetail = () => {
             name: product.name,
             slug: product.slug,
             price: itemPrice,
+            priceInLKR: hasVariants() ? selectedVariant?.priceInLKR : product.priceInLKR,
+            priceInUSD: hasVariants() ? selectedVariant?.priceInUSD : product.priceInUSD,
             currency: currency,
             stock: getAvailableStock(),
             image: images[0] || null,
@@ -361,6 +386,8 @@ const ProductDetail = () => {
             variant: hasVariants() ? {
                 label: selectedVariant.label,
                 weight: selectedVariant.weight,
+                priceInLKR: selectedVariant.priceInLKR,
+                priceInUSD: selectedVariant.priceInUSD,
                 price: itemPrice,
                 stock: selectedVariant.stock
             } : null
@@ -394,6 +421,25 @@ const ProductDetail = () => {
     }
 
     // ============================================
+    // CURRENCY SELECTOR COMPONENT
+    // ============================================
+
+    const CurrencySelector = ({ className = "" }) => (
+        <div className={`relative ${className}`}>
+            <select 
+                value={currency} 
+                onChange={(e) => setCurrency(e.target.value)} 
+                className="appearance-none pl-8 pr-8 py-2 bg-white border border-vanilla-200 rounded-full text-vanilla-900 font-medium text-sm focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 cursor-pointer shadow-sm hover:border-vanilla-300 transition-colors"
+            >
+                <option value="LKR">🇱🇰 LKR (Rs)</option>
+                <option value="USD">🇺🇸 USD ($)</option>
+            </select>
+            <Globe className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-vanilla-500 pointer-events-none" />
+            <ChevronRight className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-vanilla-400 pointer-events-none rotate-90" />
+        </div>
+    )
+
+    // ============================================
     // RENDER PRICE
     // ============================================
 
@@ -401,11 +447,34 @@ const ProductDetail = () => {
         const priceInfo = getPriceInfo()
         const selectedVariant = getSelectedVariant()
 
+        // Show message if no price in current currency
+        if (!hasPriceInCurrentCurrency()) {
+            return (
+                <div className="flex items-center gap-2 text-vanilla-800/50">
+                    <AlertCircle className="w-5 h-5" />
+                    <span className="italic text-lg font-sans">
+                        Price not available in {currency}
+                    </span>
+                </div>
+            )
+        }
+
         if (hasVariants() && selectedVariant) {
+            const variantPrice = getPriceValue(selectedVariant)
+            if (variantPrice <= 0) {
+                return (
+                    <div className="flex items-center gap-2 text-vanilla-800/50">
+                        <AlertCircle className="w-5 h-5" />
+                        <span className="italic text-lg font-sans">
+                            Price not available in {currency}
+                        </span>
+                    </div>
+                )
+            }
             return (
                 <div className="flex items-baseline gap-3 flex-wrap">
                     <span className="font-serif text-4xl font-bold text-gold-500">
-                        {formatPrice(getPriceValue(selectedVariant))}
+                        {formatPrice(variantPrice)}
                     </span>
                     {selectedVariant.weight && (
                         <span className="text-vanilla-800/60 font-sans text-lg">
@@ -522,15 +591,15 @@ const ProductDetail = () => {
 
             <main className="pt-24 pb-16 min-h-screen bg-vanilla-50 font-sans text-vanilla-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* Breadcrumbs */}
-                    <nav className="flex items-center justify-between text-sm py-6 overflow-x-auto">
-                        <div className="flex items-center gap-2">
+                    {/* Breadcrumbs with Currency Selector */}
+                    <nav className="flex items-center justify-between text-sm py-6 gap-4">
+                        <div className="flex items-center gap-2 overflow-x-auto">
                             <Link
                                 to="/"
                                 className="text-vanilla-800/60 hover:text-gold-500 transition-colors flex items-center gap-1 shrink-0"
                             >
                                 <Home className="w-4 h-4" />
-                                <span>Home</span>
+                                <span className="hidden sm:inline">Home</span>
                             </Link>
                             <ChevronRight className="w-4 h-4 text-vanilla-200 shrink-0" />
                             <Link
@@ -540,8 +609,13 @@ const ProductDetail = () => {
                                 Products
                             </Link>
                             <ChevronRight className="w-4 h-4 text-vanilla-200 shrink-0" />
-                            <span className="text-vanilla-900 font-medium truncate">{product.name}</span>
+                            <span className="text-vanilla-900 font-medium truncate max-w-37.5 sm:max-w-none">
+                                {product.name}
+                            </span>
                         </div>
+                        
+                        {/* Currency Selector in Breadcrumb Area */}
+                        <CurrencySelector className="shrink-0" />
                     </nav>
 
                     {/* Main Product Section */}
@@ -622,12 +696,9 @@ const ProductDetail = () => {
                                     )}
                                 </div>
 
-                                {/* ==================== */}
-                                {/* THUMBNAIL GALLERY - All Images */}
-                                {/* ==================== */}
+                                {/* Thumbnail Gallery */}
                                 {images.length > 0 && (
                                     <div className="mt-4">
-                                        {/* Show label if variant is selected and has images */}
                                         {isShowingVariantImagesFirst() && (
                                             <div className="flex items-center gap-2 mb-3">
                                                 <span className="text-xs text-vanilla-500 font-medium uppercase tracking-wide">
@@ -659,7 +730,6 @@ const ProductDetail = () => {
                                                             className="w-full h-full object-cover"
                                                         />
                                                         
-                                                        {/* Variant indicator badge */}
                                                         {isVariantImage && (
                                                             <div className={`absolute bottom-0 left-0 right-0 py-0.5 text-center text-[10px] font-medium truncate px-1 ${
                                                                 isCurrentVariantImage 
@@ -670,14 +740,12 @@ const ProductDetail = () => {
                                                             </div>
                                                         )}
                                                         
-                                                        {/* Product image indicator */}
                                                         {imageData.source?.type === 'product' && hasVariants() && (
                                                             <div className="absolute bottom-0 left-0 right-0 py-0.5 bg-vanilla-600/70 text-white text-center text-[10px] font-medium">
                                                                 Base
                                                             </div>
                                                         )}
 
-                                                        {/* Hover overlay */}
                                                         <div className={`absolute inset-0 transition-opacity duration-200 ${
                                                             isSelected ? 'opacity-0' : 'opacity-0 group-hover:opacity-100 bg-vanilla-900/10'
                                                         }`} />
@@ -686,7 +754,6 @@ const ProductDetail = () => {
                                             })}
                                         </div>
 
-                                        {/* Image count summary */}
                                         {hasVariants() && (
                                             <div className="mt-3 flex flex-wrap gap-2 text-xs text-vanilla-500">
                                                 {getProductImages().length > 0 && (
@@ -782,9 +849,14 @@ const ProductDetail = () => {
                                         </div>
                                     </div>
 
-                                    {/* Price Display */}
+                                    {/* Price Display with Currency Info */}
                                     <div className="mb-4">
                                         {renderPrice()}
+                                        {/* Currency indicator */}
+                                        <p className="text-xs text-vanilla-500 mt-1 flex items-center gap-1">
+                                            <Globe className="w-3 h-3" />
+                                            Showing prices in {currency === 'LKR' ? 'Sri Lankan Rupees' : 'US Dollars'}
+                                        </p>
                                     </div>
 
                                     {/* Stock Status */}
@@ -844,6 +916,8 @@ const ProductDetail = () => {
                                                 const variantInStock = isVariantInStock(variant)
                                                 const isSelected = selectedVariantIndex === index
                                                 const hasVariantImages = variant.images && variant.images.length > 0
+                                                const variantPrice = getPriceValue(variant)
+                                                const hasPrice = variantPrice > 0
 
                                                 return (
                                                     <button
@@ -865,7 +939,6 @@ const ProductDetail = () => {
                                                     >
                                                         <div className="flex items-center justify-between mb-1">
                                                             <div className="flex items-center gap-2">
-                                                                {/* Variant thumbnail preview */}
                                                                 {hasVariantImages && (
                                                                     <div className="w-8 h-8 rounded-lg overflow-hidden border border-vanilla-200 shrink-0">
                                                                         <img 
@@ -887,9 +960,15 @@ const ProductDetail = () => {
                                                         </div>
 
                                                         <div className="flex items-center justify-between">
-                                                            <span className="text-gold-500 font-bold font-serif">
-                                                                {formatPrice(getPriceValue(variant))}
-                                                            </span>
+                                                            {hasPrice ? (
+                                                                <span className="text-gold-500 font-bold font-serif">
+                                                                    {formatPrice(variantPrice)}
+                                                                </span>
+                                                            ) : (
+                                                                <span className="text-vanilla-400 text-sm italic">
+                                                                    No {currency} price
+                                                                </span>
+                                                            )}
                                                             {variant.weight && (
                                                                 <span className="text-vanilla-800/50 text-sm flex items-center gap-1">
                                                                     <Scale className="w-3 h-3" />
@@ -971,7 +1050,7 @@ const ProductDetail = () => {
                                         ) : currentPrice <= 0 ? (
                                             <>
                                                 <AlertCircle className="w-5 h-5" />
-                                                Price Unavailable
+                                                No {currency} Price
                                             </>
                                         ) : (
                                             <>
@@ -989,10 +1068,14 @@ const ProductDetail = () => {
                                             <span className="font-bold text-vanilla-900">Selected:</span>{' '}
                                             {selectedVariant.label}
                                             {selectedVariant.weight && ` (${selectedVariant.weight})`}
-                                            {' • '}
-                                            <span className="text-gold-500 font-bold">
-                                                {formatPrice(getPriceValue(selectedVariant))}
-                                            </span>
+                                            {getPriceValue(selectedVariant) > 0 && (
+                                                <>
+                                                    {' • '}
+                                                    <span className="text-gold-500 font-bold">
+                                                        {formatPrice(getPriceValue(selectedVariant))}
+                                                    </span>
+                                                </>
+                                            )}
                                             {' • '}
                                             <span className="text-green-700">
                                                 {selectedVariant.stock} in stock
@@ -1016,7 +1099,9 @@ const ProductDetail = () => {
                                         <Truck className="w-5 h-5 text-gold-500" />
                                         <div>
                                             <p className="text-sm font-bold text-vanilla-900">Free Shipping</p>
-                                            <p className="text-xs text-vanilla-800/60">Orders over LKR 5,000</p>
+                                            <p className="text-xs text-vanilla-800/60">
+                                                Orders over {currency === 'USD' ? '$25' : 'LKR 5,000'}
+                                            </p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3 p-3 bg-vanilla-50 rounded-xl">
@@ -1106,53 +1191,62 @@ const ProductDetail = () => {
                                                 Available Options
                                             </h3>
                                             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                                {product.variants.map((variant, index) => (
-                                                    <div
-                                                        key={index}
-                                                        className={`p-4 bg-vanilla-50 rounded-xl border transition-colors cursor-pointer ${
-                                                            selectedVariantIndex === index 
-                                                                ? 'border-gold-500 bg-vanilla-100' 
-                                                                : 'border-vanilla-100 hover:border-vanilla-300'
-                                                        }`}
-                                                        onClick={() => {
-                                                            if (isVariantInStock(variant)) {
-                                                                setSelectedVariantIndex(index)
-                                                                setQuantity(1)
-                                                            }
-                                                        }}
-                                                    >
-                                                        <div className="flex items-center gap-2 mb-1">
-                                                            {variant.images && variant.images.length > 0 && (
-                                                                <div className="w-10 h-10 rounded-lg overflow-hidden border border-vanilla-200">
-                                                                    <img 
-                                                                        src={variant.images[0]} 
-                                                                        alt={variant.label}
-                                                                        className="w-full h-full object-cover"
-                                                                    />
+                                                {product.variants.map((variant, index) => {
+                                                    const variantPrice = getPriceValue(variant)
+                                                    return (
+                                                        <div
+                                                            key={index}
+                                                            className={`p-4 bg-vanilla-50 rounded-xl border transition-colors cursor-pointer ${
+                                                                selectedVariantIndex === index 
+                                                                    ? 'border-gold-500 bg-vanilla-100' 
+                                                                    : 'border-vanilla-100 hover:border-vanilla-300'
+                                                            }`}
+                                                            onClick={() => {
+                                                                if (isVariantInStock(variant)) {
+                                                                    setSelectedVariantIndex(index)
+                                                                    setQuantity(1)
+                                                                }
+                                                            }}
+                                                        >
+                                                            <div className="flex items-center gap-2 mb-1">
+                                                                {variant.images && variant.images.length > 0 && (
+                                                                    <div className="w-10 h-10 rounded-lg overflow-hidden border border-vanilla-200">
+                                                                        <img 
+                                                                            src={variant.images[0]} 
+                                                                            alt={variant.label}
+                                                                            className="w-full h-full object-cover"
+                                                                        />
+                                                                    </div>
+                                                                )}
+                                                                <div>
+                                                                    <span className="font-serif font-bold text-vanilla-900">
+                                                                        {variant.label}
+                                                                    </span>
+                                                                    {variant.images && variant.images.length > 0 && (
+                                                                        <span className="text-xs text-gold-500 flex items-center gap-1 mt-0.5">
+                                                                            <ImageIcon className="w-3 h-3" />
+                                                                            {variant.images.length} image{variant.images.length > 1 ? 's' : ''}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                            {variantPrice > 0 ? (
+                                                                <div className="text-gold-500 font-bold">
+                                                                    {formatPrice(variantPrice)}
+                                                                </div>
+                                                            ) : (
+                                                                <div className="text-vanilla-400 text-sm italic">
+                                                                    No {currency} price
                                                                 </div>
                                                             )}
-                                                            <div>
-                                                                <span className="font-serif font-bold text-vanilla-900">
-                                                                    {variant.label}
-                                                                </span>
-                                                                {variant.images && variant.images.length > 0 && (
-                                                                    <span className="text-xs text-gold-500 flex items-center gap-1 mt-0.5">
-                                                                        <ImageIcon className="w-3 h-3" />
-                                                                        {variant.images.length} image{variant.images.length > 1 ? 's' : ''}
-                                                                    </span>
-                                                                )}
-                                                            </div>
+                                                            {variant.weight && (
+                                                                <div className="text-vanilla-800/50 text-sm mt-1">
+                                                                    {variant.weight}
+                                                                </div>
+                                                            )}
                                                         </div>
-                                                        <div className="text-gold-500 font-bold">
-                                                            {formatPrice(getPriceValue(variant))}
-                                                        </div>
-                                                        {variant.weight && (
-                                                            <div className="text-vanilla-800/50 text-sm mt-1">
-                                                                {variant.weight}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                ))}
+                                                    )
+                                                })}
                                             </div>
                                         </div>
                                     )}
@@ -1411,9 +1505,16 @@ const RelatedProductCard = ({ product, currency }) => {
     
     const formatPrice = (price) => {
         if (currency === 'USD') {
-            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price)
+            return new Intl.NumberFormat('en-US', { 
+                style: 'currency', 
+                currency: 'USD',
+                minimumFractionDigits: 2 
+            }).format(price)
         }
-        return 'LKR ' + new Intl.NumberFormat('en-LK').format(price)
+        return 'LKR ' + new Intl.NumberFormat('en-LK', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(price)
     }
 
     return (
@@ -1469,7 +1570,9 @@ const RelatedProductCard = ({ product, currency }) => {
                         )}
                     </div>
                 ) : (
-                    <span className="text-vanilla-800/40 text-sm italic">Price not available</span>
+                    <span className="text-vanilla-800/40 text-sm italic">
+                        No {currency} price
+                    </span>
                 )}
             </div>
         </Link>

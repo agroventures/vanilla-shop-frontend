@@ -907,8 +907,8 @@ const Shop = () => {
                                 onChange={(e) => setCurrency(e.target.value)} 
                                 className="appearance-none w-full lg:w-32 px-4 py-3.5 pr-10 bg-vanilla-50 border border-vanilla-200 rounded-xl text-vanilla-900 font-medium focus:outline-none focus:border-vanilla-400 cursor-pointer"
                             >
-                                <option value="LKR">LKR (Rs)</option>
-                                <option value="USD">USD ($)</option>
+                                <option value="LKR">🇱🇰 LKR (Rs)</option>
+                                <option value="USD">🇺🇸 USD ($)</option>
                             </select>
                             <Globe className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-charcoal/40 pointer-events-none" />
                         </div>

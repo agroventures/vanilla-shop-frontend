@@ -241,8 +241,8 @@ const Cart = () => {
                                 onChange={(e) => setCurrency(e.target.value)} 
                                 className="appearance-none pl-3 pr-8 py-1.5 bg-vanilla-50 border border-vanilla-200 rounded-lg text-vanilla-900 font-medium text-xs focus:outline-none focus:border-gold-500 cursor-pointer shadow-sm"
                             >
-                                <option value="LKR">LKR (Rs)</option>
-                                <option value="USD">USD ($)</option>
+                                <option value="LKR">🇱🇰 LKR (Rs)</option>
+                                <option value="USD">🇺🇸 USD ($)</option>
                             </select>
                             <Globe className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-vanilla-400 pointer-events-none" />
                         </div>

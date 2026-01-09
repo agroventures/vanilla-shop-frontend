@@ -35,7 +35,16 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
-import { getCart, emptyCart } from '../utils/Cart'
+import { 
+    getCart, 
+    emptyCart, 
+    getPreferredCurrency, 
+    setPreferredCurrency,
+    formatPrice as formatPriceUtil,
+    getItemPrice,
+    getItemsMissingPrice,
+    canCheckoutInCurrency
+} from '../utils/Cart'
 import useSEO from '../hooks/useSEO'
 
 // ============================================
@@ -90,6 +99,84 @@ const Select = ({ label, error, name, children, ...props }) => (
     </div>
 )
 
+// Currency Selector Component
+const CurrencySelector = ({ currency, onCurrencyChange, className = "", compact = false }) => {
+    if (compact) {
+        return (
+            <div className={`relative ${className}`}>
+                <select 
+                    value={currency} 
+                    onChange={(e) => onCurrencyChange(e.target.value)} 
+                    className="appearance-none pl-7 pr-6 py-1.5 bg-white border border-vanilla-200 rounded-lg text-vanilla-900 font-medium text-xs focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 cursor-pointer shadow-sm hover:border-vanilla-300 transition-colors"
+                >
+                    <option value="LKR">LKR</option>
+                    <option value="USD">USD</option>
+                </select>
+                <Globe className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-vanilla-500 pointer-events-none" />
+                <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-vanilla-400 pointer-events-none" />
+            </div>
+        )
+    }
+
+    return (
+        <div className={`relative ${className}`}>
+            <select 
+                value={currency} 
+                onChange={(e) => onCurrencyChange(e.target.value)} 
+                className="appearance-none pl-9 pr-8 py-2.5 bg-white border border-vanilla-200 rounded-xl text-vanilla-900 font-medium text-sm focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 cursor-pointer shadow-sm hover:border-vanilla-300 transition-colors"
+            >
+                <option value="LKR">🇱🇰 LKR (Rs)</option>
+                <option value="USD">🇺🇸 USD ($)</option>
+            </select>
+            <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-vanilla-500 pointer-events-none" />
+            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-vanilla-400 pointer-events-none" />
+        </div>
+    )
+}
+
+// Missing Price Warning Component
+const MissingPriceWarning = ({ missingItems, currency, onChangeCurrency }) => {
+    if (missingItems.length === 0) return null
+
+    return (
+        <div className="mb-4 sm:mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+            <div className="flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                <div className="flex-1">
+                    <h4 className="font-bold text-amber-800 text-sm sm:text-base">
+                        Price Not Available in {currency}
+                    </h4>
+                    <p className="text-amber-700 text-xs sm:text-sm mt-1">
+                        The following items don't have prices in {currency === 'USD' ? 'US Dollars' : 'Sri Lankan Rupees'}:
+                    </p>
+                    <ul className="mt-2 space-y-1">
+                        {missingItems.map((item, index) => (
+                            <li key={index} className="text-amber-800 text-xs sm:text-sm flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-amber-500 rounded-full" />
+                                {item.name} {item.variantLabel && `(${item.variantLabel})`}
+                            </li>
+                        ))}
+                    </ul>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                        <button
+                            onClick={() => onChangeCurrency(currency === 'USD' ? 'LKR' : 'USD')}
+                            className="px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-800 text-xs font-bold rounded-lg transition-colors"
+                        >
+                            Switch to {currency === 'USD' ? 'LKR' : 'USD'}
+                        </button>
+                        <Link
+                            to="/cart"
+                            className="px-3 py-1.5 bg-white hover:bg-amber-50 text-amber-800 text-xs font-bold rounded-lg border border-amber-300 transition-colors"
+                        >
+                            Edit Cart
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 const OrderSummaryContent = ({
     cartItems,
     subtotal,
@@ -98,15 +185,35 @@ const OrderSummaryContent = ({
     formatPrice,
     selectedShipping,
     getItemKey,
-    getPriceValue
+    getPriceValue,
+    currency,
+    onCurrencyChange,
+    showCurrencySelector = false
 }) => {
     return (
         <div className="font-sans">
+            {/* Currency Selector in Summary */}
+            {showCurrencySelector && (
+                <div className="flex items-center justify-between mb-4 pb-4 border-b border-vanilla-100">
+                    <span className="text-sm text-vanilla-800/70 flex items-center gap-1.5">
+                        <Globe className="w-4 h-4" />
+                        Currency
+                    </span>
+                    <CurrencySelector 
+                        currency={currency} 
+                        onCurrencyChange={onCurrencyChange}
+                        compact
+                    />
+                </div>
+            )}
+
             {/* Cart Items */}
             <div className="space-y-4 mb-6 max-h-64 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-vanilla-200">
                 {cartItems.map((item) => {
-                     const itemPrice = getPriceValue(item);
-                     return (
+                    const itemPrice = getPriceValue(item);
+                    const hasPrice = itemPrice > 0;
+                    
+                    return (
                         <div key={getItemKey(item)} className="flex gap-3">
                             <div className="relative w-16 h-16 bg-vanilla-50 rounded-lg shrink-0 overflow-hidden border border-vanilla-100">
                                 {item.image ? (
@@ -123,21 +230,21 @@ const OrderSummaryContent = ({
                                         <Package className="w-6 h-6 text-vanilla-200" />
                                     </div>
                                 )}
-                                {/* <span className="absolute -top-2 -right-2 w-5 h-5 bg-vanilla-900 text-white rounded-full text-xs flex items-center justify-center shadow-sm">
-                                    {item.quantity}
-                                </span> */}
                             </div>
                             <div className="flex-1 min-w-0">
                                 <h4 className="font-bold text-vanilla-900 text-sm line-clamp-1 font-serif">{item.name}</h4>
                                 {item.variantLabel && (
-                                    <p className="text-vanilla-800/60 text-xs">{item.variantLabel}{" "} * {item.quantity}</p>
+                                    <p className="text-vanilla-800/60 text-xs">{item.variantLabel} × {item.quantity}</p>
+                                )}
+                                {!item.variantLabel && (
+                                    <p className="text-vanilla-800/60 text-xs">Qty: {item.quantity}</p>
                                 )}
                                 {item.weight && (
                                     <p className="text-vanilla-800/50 text-xs">{item.weight}</p>
                                 )}
                             </div>
-                            <span className="font-medium text-vanilla-900 text-sm shrink-0">
-                                {formatPrice(itemPrice * item.quantity)}
+                            <span className={`font-medium text-sm shrink-0 ${hasPrice ? 'text-vanilla-900' : 'text-red-500'}`}>
+                                {hasPrice ? formatPrice(itemPrice * item.quantity) : 'N/A'}
                             </span>
                         </div>
                     )
@@ -167,7 +274,10 @@ const OrderSummaryContent = ({
             {/* Total */}
             <div className="flex justify-between items-center">
                 <span className="text-lg font-serif font-bold text-vanilla-900">Total</span>
-                <span className="text-2xl font-serif font-bold text-vanilla-900">{formatPrice(total)}</span>
+                <div className="text-right">
+                    <span className="text-2xl font-serif font-bold text-vanilla-900">{formatPrice(total)}</span>
+                    <p className="text-xs text-vanilla-500 mt-0.5">{currency === 'USD' ? 'US Dollars' : 'Sri Lankan Rupees'}</p>
+                </div>
             </div>
 
             {/* Shipping Method */}
@@ -218,28 +328,32 @@ const PAYMENT_METHODS = [
         name: 'Cash on Delivery',
         description: 'Pay when you receive (Sri Lanka only)',
         icon: <Banknote className="w-5 h-5" />,
-        localOnly: true
+        localOnly: true,
+        lkrOnly: true
     },
     {
         id: 'card',
         name: 'Credit / Debit Card',
         description: 'Visa, Mastercard, Amex',
         icon: <CreditCard className="w-5 h-5" />,
-        localOnly: false
+        localOnly: false,
+        lkrOnly: false
     },
     {
         id: 'bank',
         name: 'Bank Transfer',
         description: 'Direct bank transfer',
         icon: <Building className="w-5 h-5" />,
-        localOnly: false
+        localOnly: false,
+        lkrOnly: false
     },
     {
         id: 'mobile',
         name: 'Mobile Payment',
         description: 'FriMi, eZ Cash, mCash',
         icon: <Smartphone className="w-5 h-5" />,
-        localOnly: true
+        localOnly: true,
+        lkrOnly: true
     }
 ]
 
@@ -270,8 +384,15 @@ const Checkout = () => {
     const [agreedToTerms, setAgreedToTerms] = useState(false)
     const [shippingMethod, setShippingMethod] = useState('standard')
     
-    // Currency State (default to LKR, or retrieve from state)
-    const [currency, setCurrency] = useState(location.state?.currency || 'LKR')
+    // Currency State - Initialize from localStorage or location state
+    const [currency, setCurrency] = useState(() => {
+        // Check location state first (passed from cart page)
+        if (location.state?.currency) {
+            return location.state.currency
+        }
+        // Fall back to stored preference
+        return getPreferredCurrency()
+    })
 
     const [formData, setFormData] = useState({
         firstName: '', lastName: '', email: '', phone: '',
@@ -283,48 +404,71 @@ const Checkout = () => {
 
     useSEO({
         title: "Checkout - The Vanilla Shop",
-        description: "The Vanilla Shop is more than a café — it’s Sri Lanka’s first dedicated vanilla boutique.",
+        description: "The Vanilla Shop is more than a café — it's Sri Lanka's first dedicated vanilla boutique.",
         url,
         image_alt: "Checkout",
         twitter_card: "summary_large_image",
     });
 
+    // Currency change handler
+    const handleCurrencyChange = (newCurrency) => {
+        setCurrency(newCurrency)
+        setPreferredCurrency(newCurrency)
+        
+        // Update payment method if switching to USD and using LKR-only method
+        if (newCurrency === 'USD' && (formData.paymentMethod === 'cod' || formData.paymentMethod === 'mobile')) {
+            setFormData(prev => ({ ...prev, paymentMethod: 'card' }))
+        }
+    }
+
     // Helper: Price Formatter
     const formatPrice = (price) => {
         if (currency === 'USD') {
-            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price)
+            return new Intl.NumberFormat('en-US', { 
+                style: 'currency', 
+                currency: 'USD',
+                minimumFractionDigits: 2
+            }).format(price)
         }
-        return `LKR ${price.toLocaleString('en-LK')}`
+        return `LKR ${new Intl.NumberFormat('en-LK', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(price)}`
     }
 
     // Helper: Get Price Value based on Currency
     const getPriceValue = (item) => {
         if (currency === 'USD') {
-            return item.priceInUSD || item.price || 0
+            return item.priceInUSD || 0
         }
         return item.priceInLKR || item.price || 0
     }
 
-    // Shipping Logic
+    // Get items missing price in current currency
+    const missingPriceItems = cartItems.filter(item => getPriceValue(item) <= 0)
+    const canCheckout = missingPriceItems.length === 0
+
+    // Shipping Logic with Currency Support
     const getShippingMethods = () => {
         const isLocal = formData.country === 'Sri Lanka'
+        
         if (isLocal) {
             if (currency === 'USD') {
                 return [
-                    { id: 'standard', name: 'Standard Delivery', description: '3-5 business days', price: 2, freeOver: 20 },
-                    { id: 'express', name: 'Express Delivery', description: '1-2 business days', price: 4, freeOver: null },
+                    { id: 'standard', name: 'Standard Delivery', description: '3-5 business days', price: 2, freeOver: 25 },
+                    { id: 'express', name: 'Express Delivery', description: '1-2 business days', price: 5, freeOver: null },
                     { id: 'pickup', name: 'Store Pickup', description: 'Pick up from our Colombo store', price: 0, freeOver: null }
                 ]
             }
             return [
-                { id: 'standard', name: 'Standard Delivery', description: '3-5 business days', price: 350, /* freeOver: 5000 */ },
-                // { id: 'express', name: 'Express Delivery', description: '1-2 business days', price: 750, freeOver: null },
-                // { id: 'pickup', name: 'Store Pickup', description: 'Pick up from our Colombo store', price: 0, freeOver: null }
+                { id: 'standard', name: 'Standard Delivery', description: '3-5 business days', price: 350, freeOver: 5000 },
+                { id: 'express', name: 'Express Delivery', description: '1-2 business days', price: 750, freeOver: null },
+                { id: 'pickup', name: 'Store Pickup', description: 'Pick up from our Colombo store', price: 0, freeOver: null }
             ]
         } else {
             // International
             if (currency === 'USD') {
-                 return [
+                return [
                     { id: 'international-standard', name: 'International Standard', description: '10-15 business days', price: 15, freeOver: 100 },
                     { id: 'international-express', name: 'International Express', description: '5-7 business days', price: 30, freeOver: null }
                 ]
@@ -337,9 +481,15 @@ const Checkout = () => {
     }
 
     const shippingMethods = getShippingMethods()
-    const availablePaymentMethods = formData.country === 'Sri Lanka'
-        ? PAYMENT_METHODS
-        : PAYMENT_METHODS.filter(m => !m.localOnly)
+    
+    // Filter payment methods based on country and currency
+    const availablePaymentMethods = PAYMENT_METHODS.filter(m => {
+        // Filter out local-only methods for international
+        if (formData.country !== 'Sri Lanka' && m.localOnly) return false
+        // Filter out LKR-only methods when using USD
+        if (currency === 'USD' && m.lkrOnly) return false
+        return true
+    })
 
     // Load Cart
     useEffect(() => {
@@ -356,23 +506,37 @@ const Checkout = () => {
             setCartItems(items)
             if (items.length === 0) navigate('/cart')
         }
+
+        const handleCurrencyUpdate = () => {
+            setCurrency(getPreferredCurrency())
+        }
+
         window.addEventListener('cartUpdated', handleCartUpdate)
-        return () => window.removeEventListener('cartUpdated', handleCartUpdate)
+        window.addEventListener('currencyUpdated', handleCurrencyUpdate)
+        
+        return () => {
+            window.removeEventListener('cartUpdated', handleCartUpdate)
+            window.removeEventListener('currencyUpdated', handleCurrencyUpdate)
+        }
     }, [navigate])
 
-    // Effect: Update shipping/payment on country change
+    // Effect: Update shipping/payment on country or currency change
     useEffect(() => {
         const methods = getShippingMethods()
         if (!methods.find(m => m.id === shippingMethod)) {
             setShippingMethod(methods[0]?.id || 'standard')
         }
-        if (formData.country !== 'Sri Lanka' && (formData.paymentMethod === 'cod' || formData.paymentMethod === 'mobile')) {
-            setFormData(prev => ({ ...prev, paymentMethod: 'card' }))
+        
+        // Reset payment method if current one is not available
+        const currentPaymentAvailable = availablePaymentMethods.find(m => m.id === formData.paymentMethod)
+        if (!currentPaymentAvailable && availablePaymentMethods.length > 0) {
+            setFormData(prev => ({ ...prev, paymentMethod: availablePaymentMethods[0].id }))
         }
+        
         if (formData.country !== 'Sri Lanka') {
             setFormData(prev => ({ ...prev, state: '' }))
         }
-    }, [formData.country])
+    }, [formData.country, currency])
 
     // Scroll top on step change
     useEffect(() => {
@@ -391,6 +555,17 @@ const Checkout = () => {
     const shippingCost = getShippingCost()
     const total = subtotal + shippingCost
 
+    // Free shipping progress
+    const getFreeShippingProgress = () => {
+        if (!selectedShipping?.freeOver) return null
+        const threshold = selectedShipping.freeOver
+        const remaining = Math.max(0, threshold - subtotal)
+        const progress = Math.min(100, (subtotal / threshold) * 100)
+        return { threshold, remaining, progress, qualifies: remaining === 0 }
+    }
+
+    const freeShippingProgress = getFreeShippingProgress()
+
     // Handlers
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -400,6 +575,12 @@ const Checkout = () => {
 
     const validateStep = (step) => {
         const newErrors = {}
+        
+        // Always check for missing prices
+        if (!canCheckout) {
+            newErrors.currency = `Some items don't have prices in ${currency}. Please switch currency or remove those items.`
+        }
+        
         if (step === 1) {
             if (!formData.firstName.trim()) newErrors.firstName = 'First name is required'
             if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required'
@@ -434,6 +615,11 @@ const Checkout = () => {
 
     const handlePlaceOrder = async () => {
         if (!validateStep(3)) return
+        if (!canCheckout) {
+            toast.error(`Some items don't have prices in ${currency}`)
+            return
+        }
+        
         setIsProcessing(true)
         try {
             const orderData = {
@@ -441,12 +627,14 @@ const Checkout = () => {
                 lastName: formData.lastName.trim(),
                 email: formData.email.trim().toLowerCase(),
                 phone: formData.phone.trim(),
-                currency: currency, // Send currency
+                currency: currency,
                 orderItems: cartItems.map(item => ({
                     name: item.variantLabel ? `${item.name} (${item.variantLabel})` : item.name,
                     quantity: item.quantity,
                     image: item.image || '/images/placeholder.jpg',
-                    price: getPriceValue(item), // Send currency-specific price
+                    price: getPriceValue(item),
+                    priceInLKR: item.priceInLKR || item.price || null,
+                    priceInUSD: item.priceInUSD || null,
                     product: item.productId
                 })),
                 shippingAddress: {
@@ -498,26 +686,35 @@ const Checkout = () => {
         <div className="pt-24 min-h-screen bg-vanilla-50 font-sans text-vanilla-800">
             <Navbar />
 
-            {/* Breadcrumbs */}
+            {/* Breadcrumbs with Currency Selector */}
             <div className="bg-white border-b border-vanilla-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <nav className="flex items-center gap-2 text-sm">
-                        <Link to="/" className="text-vanilla-800/60 hover:text-gold-500 transition-colors flex items-center gap-1">
-                            <Home className="w-4 h-4" />
-                            <span className="hidden sm:inline">Home</span>
-                        </Link>
-                        <ChevronRight className="w-4 h-4 text-vanilla-200" />
-                        <Link to="/cart" className="text-vanilla-800/60 hover:text-gold-500 transition-colors">
-                            Cart
-                        </Link>
-                        <ChevronRight className="w-4 h-4 text-vanilla-200" />
-                        <span className="text-vanilla-900 font-medium">Checkout</span>
+                    <nav className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-2 text-sm overflow-x-auto">
+                            <Link to="/" className="text-vanilla-800/60 hover:text-gold-500 transition-colors flex items-center gap-1 shrink-0">
+                                <Home className="w-4 h-4" />
+                                <span className="hidden sm:inline">Home</span>
+                            </Link>
+                            <ChevronRight className="w-4 h-4 text-vanilla-200 shrink-0" />
+                            <Link to="/cart" className="text-vanilla-800/60 hover:text-gold-500 transition-colors shrink-0">
+                                Cart
+                            </Link>
+                            <ChevronRight className="w-4 h-4 text-vanilla-200 shrink-0" />
+                            <span className="text-vanilla-900 font-medium shrink-0">Checkout</span>
+                        </div>
+                        
+                        {/* Currency Selector */}
+                        <CurrencySelector 
+                            currency={currency} 
+                            onCurrencyChange={handleCurrencyChange}
+                            className="shrink-0"
+                        />
                     </nav>
                 </div>
             </div>
 
             {/* Steps Indicator */}
-            <div className="bg-white border-b border-vanilla-100 sticky top-25 z-30">
+            <div className="bg-white border-b border-vanilla-100 sticky top-24 z-30">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div className="flex items-center justify-center">
                         {STEPS.map((step, index) => (
@@ -591,10 +788,20 @@ const Checkout = () => {
                                             getItemKey={getItemKey}
                                             selectedShipping={selectedShipping}
                                             getPriceValue={getPriceValue}
+                                            currency={currency}
+                                            onCurrencyChange={handleCurrencyChange}
+                                            showCurrencySelector={true}
                                         />
                                     </div>
                                 )}
                             </div>
+
+                            {/* Missing Price Warning */}
+                            <MissingPriceWarning 
+                                missingItems={missingPriceItems}
+                                currency={currency}
+                                onChangeCurrency={handleCurrencyChange}
+                            />
 
                             {/* Global Error */}
                             {errors.submit && (
@@ -604,6 +811,14 @@ const Checkout = () => {
                                         <h4 className="font-bold text-red-800 text-sm sm:text-base">Order Failed</h4>
                                         <p className="text-red-600 text-xs sm:text-sm">{errors.submit}</p>
                                     </div>
+                                </div>
+                            )}
+
+                            {/* Currency Error */}
+                            {errors.currency && (
+                                <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3">
+                                    <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                                    <p className="text-amber-800 text-sm">{errors.currency}</p>
                                 </div>
                             )}
 
@@ -661,6 +876,28 @@ const Checkout = () => {
                                             </div>
                                         </div>
                                     </div>
+
+                                    {/* Currency Notice */}
+                                    <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-start gap-3">
+                                        <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+                                        <div>
+                                            <p className="text-blue-800 text-sm">
+                                                You're checking out in <span className="font-bold">{currency === 'USD' ? 'US Dollars ($)' : 'Sri Lankan Rupees (LKR)'}</span>.
+                                                {formData.country !== 'Sri Lanka' && currency === 'LKR' && (
+                                                    <span className="block mt-1 text-blue-700">
+                                                        For international orders, you may prefer to 
+                                                        <button 
+                                                            onClick={() => handleCurrencyChange('USD')}
+                                                            className="mx-1 text-blue-600 hover:text-blue-800 font-bold underline"
+                                                        >
+                                                            switch to USD
+                                                        </button>
+                                                        for easier payment.
+                                                    </span>
+                                                )}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             )}
 
@@ -673,13 +910,42 @@ const Checkout = () => {
                                                 <Truck className="w-5 h-5 text-gold-500" />
                                                 Shipping Method
                                             </h2>
-                                            {formData.country !== 'Sri Lanka' && (
-                                                <p className="text-vanilla-800/60 text-xs sm:text-sm mt-1 flex items-center gap-1">
-                                                    <Globe className="w-4 h-4" />
-                                                    Shipping to {formData.country}
+                                            <div className="flex items-center gap-4 mt-1">
+                                                {formData.country !== 'Sri Lanka' && (
+                                                    <p className="text-vanilla-800/60 text-xs sm:text-sm flex items-center gap-1">
+                                                        <Globe className="w-4 h-4" />
+                                                        Shipping to {formData.country}
+                                                    </p>
+                                                )}
+                                                <p className="text-vanilla-800/60 text-xs sm:text-sm flex items-center gap-1">
+                                                    <Wallet className="w-4 h-4" />
+                                                    Prices in {currency}
                                                 </p>
-                                            )}
+                                            </div>
                                         </div>
+                                        
+                                        {/* Free Shipping Progress */}
+                                        {freeShippingProgress && !freeShippingProgress.qualifies && (
+                                            <div className="px-4 sm:px-5 lg:px-6 pt-4">
+                                                <div className="p-3 bg-green-50 border border-green-100 rounded-lg">
+                                                    <div className="flex items-center justify-between text-sm mb-2">
+                                                        <span className="text-green-800 font-medium">
+                                                            🚚 Add {formatPrice(freeShippingProgress.remaining)} for free shipping!
+                                                        </span>
+                                                        <span className="text-green-600 text-xs">
+                                                            {Math.round(freeShippingProgress.progress)}%
+                                                        </span>
+                                                    </div>
+                                                    <div className="w-full bg-green-100 rounded-full h-2">
+                                                        <div 
+                                                            className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                                                            style={{ width: `${freeShippingProgress.progress}%` }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                        
                                         <div className="p-4 sm:p-5 lg:p-6 space-y-3">
                                             {shippingMethods.map((method) => {
                                                 const isFree = method.freeOver && subtotal >= method.freeOver
@@ -715,10 +981,15 @@ const Checkout = () => {
                                                                     <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
                                                                     {method.description}
                                                                 </p>
+                                                                {method.freeOver && !isFree && (
+                                                                    <p className="text-green-600 text-xs mt-1">
+                                                                        Free on orders over {formatPrice(method.freeOver)}
+                                                                    </p>
+                                                                )}
                                                             </div>
                                                         </div>
-                                                        <span className={`font-bold text-sm sm:text-base ml-2 ${isFree && method.price > 0 ? 'text-green-600' : 'text-vanilla-900'}`}>
-                                                            {method.price === 0 || isFree ? 'Free' : formatPrice(method.price)}
+                                                        <span className={`font-bold text-sm sm:text-base ml-2 ${isFree && method.price > 0 ? 'text-green-600 line-through decoration-2' : 'text-vanilla-900'}`}>
+                                                            {method.price === 0 ? 'Free' : formatPrice(method.price)}
                                                         </span>
                                                     </label>
                                                 )
@@ -756,6 +1027,10 @@ const Checkout = () => {
                                                 <Wallet className="w-5 h-5 text-gold-500" />
                                                 Payment Method
                                             </h2>
+                                            <p className="text-vanilla-800/60 text-xs sm:text-sm mt-1 flex items-center gap-1">
+                                                <Globe className="w-4 h-4" />
+                                                Paying in {currency === 'USD' ? 'US Dollars' : 'Sri Lankan Rupees'}
+                                            </p>
                                         </div>
                                         <div className="p-4 sm:p-5 lg:p-6 space-y-3">
                                             {availablePaymentMethods.map((method) => (
@@ -787,47 +1062,77 @@ const Checkout = () => {
                                                     </div>
                                                 </label>
                                             ))}
+                                            
+                                            {/* Note about available payment methods */}
+                                            {(currency === 'USD' || formData.country !== 'Sri Lanka') && (
+                                                <div className="mt-4 p-3 bg-vanilla-50 rounded-lg border border-vanilla-100">
+                                                    <p className="text-vanilla-800/70 text-xs flex items-start gap-2">
+                                                        <Info className="w-4 h-4 shrink-0 mt-0.5 text-vanilla-500" />
+                                                        <span>
+                                                            {currency === 'USD' 
+                                                                ? 'Cash on Delivery and Mobile Payment are only available for LKR orders within Sri Lanka.'
+                                                                : 'Cash on Delivery and Mobile Payment are only available within Sri Lanka.'}
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 
                                     {/* Order Review */}
                                     <div className="bg-white rounded-xl sm:rounded-2xl border border-vanilla-100 shadow-sm overflow-hidden">
-                                        <div className="p-4 sm:p-5 bg-vanilla-50 border-b border-vanilla-100">
+                                        <div className="p-4 sm:p-5 bg-vanilla-50 border-b border-vanilla-100 flex items-center justify-between">
                                             <h2 className="font-bold text-base sm:text-lg text-vanilla-900 flex items-center gap-2 font-serif">
                                                 <Package className="w-5 h-5 text-gold-500" />
                                                 Order Review
                                             </h2>
+                                            <span className="text-vanilla-800/60 text-xs px-2 py-1 bg-vanilla-100 rounded-full">
+                                                {currency}
+                                            </span>
                                         </div>
                                         <div className="p-4 sm:p-5 lg:p-6">
                                             <div className="space-y-3 sm:space-y-4">
-                                                {cartItems.map((item) => (
-                                                    <div key={getItemKey(item)} className="flex gap-3 sm:gap-4">
-                                                        <div className="w-14 h-14 sm:w-16 sm:h-16 bg-vanilla-50 rounded-lg shrink-0 overflow-hidden border border-vanilla-100">
-                                                            {item.image ? (
-                                                                <img
-                                                                    src={item.image}
-                                                                    alt={item.name}
-                                                                    className="w-full h-full object-cover"
-                                                                    onError={(e) => e.target.style.display = 'none'}
-                                                                />
-                                                            ) : (
-                                                                <div className="w-full h-full flex items-center justify-center">
-                                                                    <ImageIcon className="w-5 h-5 sm:w-6 sm:h-6 text-vanilla-200" />
-                                                                </div>
-                                                            )}
+                                                {cartItems.map((item) => {
+                                                    const itemPrice = getPriceValue(item)
+                                                    const hasPrice = itemPrice > 0
+                                                    
+                                                    return (
+                                                        <div key={getItemKey(item)} className="flex gap-3 sm:gap-4">
+                                                            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-vanilla-50 rounded-lg shrink-0 overflow-hidden border border-vanilla-100">
+                                                                {item.image ? (
+                                                                    <img
+                                                                        src={item.image}
+                                                                        alt={item.name}
+                                                                        className="w-full h-full object-cover"
+                                                                        onError={(e) => e.target.style.display = 'none'}
+                                                                    />
+                                                                ) : (
+                                                                    <div className="w-full h-full flex items-center justify-center">
+                                                                        <ImageIcon className="w-5 h-5 sm:w-6 sm:h-6 text-vanilla-200" />
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <h4 className="font-bold text-vanilla-900 text-sm line-clamp-1 font-serif">{item.name}</h4>
+                                                                {item.variantLabel && <p className="text-vanilla-800/60 text-xs">{item.variantLabel}</p>}
+                                                                <p className="text-vanilla-800/60 text-xs">Qty: {item.quantity}</p>
+                                                            </div>
+                                                            <span className={`font-medium text-sm shrink-0 ${hasPrice ? 'text-vanilla-900' : 'text-red-500'}`}>
+                                                                {hasPrice ? formatPrice(itemPrice * item.quantity) : 'N/A'}
+                                                            </span>
                                                         </div>
-                                                        <div className="flex-1 min-w-0">
-                                                            <h4 className="font-bold text-vanilla-900 text-sm line-clamp-1 font-serif">{item.name}</h4>
-                                                            {item.variantLabel && <p className="text-vanilla-800/60 text-xs">{item.variantLabel}</p>}
-                                                            <p className="text-vanilla-800/60 text-xs">Qty: {item.quantity}</p>
-                                                        </div>
-                                                        <span className="font-medium text-vanilla-900 text-sm shrink-0">
-                                                            {formatPrice(getPriceValue(item) * item.quantity)}
-                                                        </span>
-                                                    </div>
-                                                ))}
+                                                    )
+                                                })}
                                             </div>
                                             <div className="mt-4 sm:mt-6 pt-4 border-t border-vanilla-100 space-y-2">
+                                                <div className="flex justify-between text-sm text-vanilla-800/70">
+                                                    <span>Subtotal</span>
+                                                    <span>{formatPrice(subtotal)}</span>
+                                                </div>
+                                                <div className="flex justify-between text-sm text-vanilla-800/70">
+                                                    <span>Shipping ({selectedShipping?.name})</span>
+                                                    <span>{shippingCost === 0 ? <span className="text-green-600 font-bold">FREE</span> : formatPrice(shippingCost)}</span>
+                                                </div>
                                                 <div className="flex justify-between font-bold text-base sm:text-lg pt-2 text-vanilla-900">
                                                     <span className="font-serif">Total</span>
                                                     <span className="font-serif">{formatPrice(total)}</span>
@@ -851,6 +1156,8 @@ const Checkout = () => {
                                             <span className="text-vanilla-800/70 text-xs sm:text-sm">
                                                 I agree to the{' '}
                                                 <Link to="/terms" className="text-gold-500 hover:text-vanilla-900 font-bold" target="_blank">Terms & Conditions</Link>
+                                                {' '}and{' '}
+                                                <Link to="/privacy" className="text-gold-500 hover:text-vanilla-900 font-bold" target="_blank">Privacy Policy</Link>
                                             </span>
                                         </label>
                                         {errors.terms && <p className="text-red-500 text-xs sm:text-sm mt-2 ml-8">{errors.terms}</p>}
@@ -879,14 +1186,15 @@ const Checkout = () => {
                                 {currentStep < 3 ? (
                                     <button
                                         onClick={handleNextStep}
-                                        className="order-1 sm:order-2 flex items-center justify-center gap-2 px-8 py-3 bg-vanilla-900 text-white rounded-xl font-bold hover:bg-gold-500 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+                                        disabled={!canCheckout}
+                                        className="order-1 sm:order-2 flex items-center justify-center gap-2 px-8 py-3 bg-vanilla-900 text-white rounded-xl font-bold hover:bg-gold-500 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-vanilla-900 disabled:hover:shadow-none disabled:hover:translate-y-0"
                                     >
                                         Continue <ArrowRight className="w-5 h-5" />
                                     </button>
                                 ) : (
                                     <button
                                         onClick={handlePlaceOrder}
-                                        disabled={isProcessing}
+                                        disabled={isProcessing || !canCheckout}
                                         className="order-1 sm:order-2 flex items-center justify-center gap-2 px-6 sm:px-8 py-3 bg-vanilla-900 text-white rounded-xl font-bold hover:bg-gold-500 hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         {isProcessing ? (
@@ -906,8 +1214,13 @@ const Checkout = () => {
                         {/* RIGHT COLUMN: DESKTOP SUMMARY */}
                         <div className="hidden lg:block lg:w-96">
                             <div className="bg-white rounded-2xl border border-vanilla-100 shadow-sm overflow-hidden sticky top-44">
-                                <div className="p-5 bg-vanilla-50 border-b border-vanilla-100">
+                                <div className="p-5 bg-vanilla-50 border-b border-vanilla-100 flex items-center justify-between">
                                     <h2 className="font-bold text-lg text-vanilla-900 font-serif">Order Summary</h2>
+                                    <CurrencySelector 
+                                        currency={currency} 
+                                        onCurrencyChange={handleCurrencyChange}
+                                        compact
+                                    />
                                 </div>
                                 <div className="p-5">
                                     <OrderSummaryContent
@@ -919,7 +1232,25 @@ const Checkout = () => {
                                         selectedShipping={selectedShipping}
                                         getItemKey={getItemKey}
                                         getPriceValue={getPriceValue}
+                                        currency={currency}
+                                        onCurrencyChange={handleCurrencyChange}
+                                        showCurrencySelector={false}
                                     />
+                                    
+                                    {/* Free Shipping Progress in Summary */}
+                                    {freeShippingProgress && !freeShippingProgress.qualifies && (
+                                        <div className="mt-4 p-3 bg-green-50 border border-green-100 rounded-lg">
+                                            <p className="text-green-800 text-xs font-medium mb-2">
+                                                🚚 {formatPrice(freeShippingProgress.remaining)} away from free shipping!
+                                            </p>
+                                            <div className="w-full bg-green-100 rounded-full h-1.5">
+                                                <div 
+                                                    className="bg-green-500 h-1.5 rounded-full transition-all duration-300"
+                                                    style={{ width: `${freeShippingProgress.progress}%` }}
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="p-5 bg-vanilla-50 border-t border-vanilla-100">
                                     <div className="flex items-center justify-center gap-6">
