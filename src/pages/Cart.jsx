@@ -104,11 +104,7 @@ const Cart = () => {
         window.dispatchEvent(new Event('cartUpdated')); // Update Navbar
         setCartItems([])
     }
-
-    // --- Price Helpers & Calculations ---
-
-    // Get the correct price value based on selected currency
-    // Assumes items in cart object might have priceInUSD/priceInLKR properties attached
+    
     const getPriceValue = (item) => {
         if (currency === 'USD') {
             // Fallback to item.price if priceInUSD isn't explicitly on the cart object
@@ -239,7 +235,7 @@ const Cart = () => {
                         </div>
                         
                         {/* Currency Selector */}
-                        {/* <div className="relative">
+                        <div className="relative">
                             <select 
                                 value={currency} 
                                 onChange={(e) => setCurrency(e.target.value)} 
@@ -249,7 +245,7 @@ const Cart = () => {
                                 <option value="USD">USD ($)</option>
                             </select>
                             <Globe className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-vanilla-400 pointer-events-none" />
-                        </div> */}
+                        </div>
                     </nav>
                 </div>
             </div>

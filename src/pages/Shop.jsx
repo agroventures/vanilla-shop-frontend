@@ -900,6 +900,19 @@ const Shop = () => {
                             <ArrowUpDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-charcoal/40 pointer-events-none" />
                         </div>
 
+                        {/* Currency Selector */}
+                        <div className="relative">
+                            <select 
+                                value={currency} 
+                                onChange={(e) => setCurrency(e.target.value)} 
+                                className="appearance-none w-full lg:w-32 px-4 py-3.5 pr-10 bg-vanilla-50 border border-vanilla-200 rounded-xl text-vanilla-900 font-medium focus:outline-none focus:border-vanilla-400 cursor-pointer"
+                            >
+                                <option value="LKR">LKR (Rs)</option>
+                                <option value="USD">USD ($)</option>
+                            </select>
+                            <Globe className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-charcoal/40 pointer-events-none" />
+                        </div>
+
                         {/* View Toggle */}
                         <div className="hidden sm:flex items-center bg-vanilla-100 rounded-xl p-1">
                             <button onClick={() => setViewMode('grid')} className={`p-2.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-vanilla-900 shadow-sm' : 'text-charcoal/60'}`}><Grid3X3 className="w-5 h-5" /></button>
@@ -923,7 +936,7 @@ const Shop = () => {
                                 ))}
                             </div>
 
-                            {(searchQuery || selectedCategory !== 'all' || sortBy !== 'featured') && (
+                            {(searchQuery || selectedCategory !== 'all' || sortBy !== 'featured' || currency !== 'LKR') && (
                                 <button onClick={resetFilters} className="lg:ml-auto text-sm text-vanilla-600 hover:text-vanilla-700 font-medium underline">Reset Filters</button>
                             )}
                         </div>
@@ -931,8 +944,13 @@ const Shop = () => {
                 </div>
 
                 {/* Results Info */}
-                <div className="mb-6 text-charcoal/70">
-                    Showing <span className="font-semibold text-vanilla-900">{displayedProducts.length}</span> of <span className="font-semibold text-vanilla-900">{filteredProducts.length}</span> products
+                <div className="mb-6 flex items-center justify-between">
+                    <span className="text-charcoal/70">
+                        Showing <span className="font-semibold text-vanilla-900">{displayedProducts.length}</span> of <span className="font-semibold text-vanilla-900">{filteredProducts.length}</span> products
+                    </span>
+                    <span className="text-sm text-charcoal/50">
+                        Prices in {currency === 'USD' ? 'US Dollars ($)' : 'Sri Lankan Rupees (Rs)'}
+                    </span>
                 </div>
 
                 {/* Product Grid/List */}
