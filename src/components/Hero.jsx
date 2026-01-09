@@ -13,10 +13,15 @@ const Hero = () => {
         muted
         loop
         playsInline
+        webkit-playsinline="true"
+        preload="auto"
         aria-hidden="true"
         className="absolute inset-0 w-full h-full object-cover object-center"
       >
-        <source src="https://res.cloudinary.com/dyvixdh7n/video/upload/v1767938712/vanilla_shop_lzb8pc.mp4" type="video/mp4" />
+        <source
+          src="https://res.cloudinary.com/dyvixdh7n/video/upload/v1767938712/vanilla_shop_lzb8pc.mp4"
+          type="video/mp4"
+        />
       </video>
 
       {/* Overlay */}
