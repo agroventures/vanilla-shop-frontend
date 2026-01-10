@@ -296,7 +296,7 @@ const Shop = () => {
 
     const resetFilters = () => {
         setSearchQuery('')
-        setPriceRange({ min: 0, max: 10000 })
+        setPriceRange({ min: 0, max: 50000 })
         setSortBy('featured')
         setSelectedCategory('all')
         setVisibleCount(9)
