@@ -40,7 +40,6 @@ export default function AdminProducts() {
 
     useSEO({
         title: "Products - The Vanilla Shop",
-        description: "The Vanilla Shop is more than a café — it’s Sri Lanka’s first dedicated vanilla boutique.",
         url,
         image_alt: "Products",
         twitter_card: "summary_large_image",

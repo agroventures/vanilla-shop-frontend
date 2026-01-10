@@ -16,8 +16,6 @@ export default function Register() {
 
     useSEO({
         title: "Register - The Vanilla Shop",
-        description:
-            "The Vanilla Shop is more than a café — it’s Sri Lanka’s first dedicated vanilla boutique.",
         url,
         image_alt: "Register",
         twitter_card: "summary_large_image",

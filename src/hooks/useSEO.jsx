@@ -17,7 +17,7 @@ const setMeta = (attr, key, content) => {
 const useSEO = ({
   // Basic
   title,
-  description,
+  description = "Discover The Vanilla Shop — a premium vanilla-centric café & boutique offering delightful vanilla-infused drinks, desserts, artisanal products and sensory experiences that celebrate the rich, aromatic world of vanilla.",
 
   // Open Graph
   locale = "en_US",

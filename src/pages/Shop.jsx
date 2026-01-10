@@ -48,7 +48,6 @@ const Shop = () => {
 
     useSEO({
         title: "Shop - The Vanilla Shop",
-        description: "Discover our complete collection of premium vanilla products.",
         url,
         image_alt: "Products",
         twitter_card: "summary_large_image",

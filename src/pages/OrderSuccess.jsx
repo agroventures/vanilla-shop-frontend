@@ -29,7 +29,6 @@ const OrderSuccess = () => {
 
     useSEO({
         title: "Order Success - The Vanilla Shop",
-        description: "The Vanilla Shop is more than a café — it’s Sri Lanka’s first dedicated vanilla boutique.",
         url,
         image_alt: "Order Success",
         twitter_card: "summary_large_image",
