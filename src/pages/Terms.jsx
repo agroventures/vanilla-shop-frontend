@@ -317,7 +317,7 @@ const Terms = () => {
                                         View our other policies for complete information.
                                     </p>
                                     <Link
-                                        to="/privacy-policy"
+                                        to="/privacy"
                                         className="inline-flex items-center gap-2 px-4 py-2 bg-vanilla-900 text-white rounded-lg text-sm font-medium hover:bg-vanilla-800 transition-colors shadow-sm"
                                     >
                                         Privacy Policy
