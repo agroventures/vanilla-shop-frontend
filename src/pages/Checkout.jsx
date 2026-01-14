@@ -1193,7 +1193,8 @@ const Checkout = () => {
                                 ) : (
                                     <button
                                         onClick={handlePlaceOrder}
-                                        disabled={isProcessing || !canCheckout}
+                                        {/* disabled={isProcessing || !canCheckout} */}
+                                        disabled
                                         className="order-1 sm:order-2 flex items-center justify-center gap-2 px-6 sm:px-8 py-3 bg-vanilla-900 text-white rounded-xl font-bold hover:bg-gold-500 hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         {isProcessing ? (
