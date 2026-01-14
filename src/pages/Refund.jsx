@@ -303,7 +303,7 @@ const Refund = () => {
                                         Calculate shipping costs before you order.
                                     </p>
                                     <Link
-                                        to="/products"
+                                        to="/shop"
                                         className="inline-flex items-center gap-2 px-4 py-2 bg-vanilla-900 text-white rounded-lg text-sm font-medium hover:bg-vanilla-800 transition-colors shadow-sm"
                                     >
                                         Shop Now
