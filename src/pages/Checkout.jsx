@@ -1182,7 +1182,7 @@ const Checkout = () => {
                                     </Link>
                                 )}
 
-                                {currentStep < 3 ? (
+                                {/* {currentStep < 3 ? (
                                     <button
                                         onClick={handleNextStep}
                                         disabled={!canCheckout}
@@ -1193,8 +1193,7 @@ const Checkout = () => {
                                 ) : (
                                     <button
                                         onClick={handlePlaceOrder}
-                                        {/* disabled={isProcessing || !canCheckout} */}
-                                        disabled
+                                        disabled={isProcessing || !canCheckout}
                                         className="order-1 sm:order-2 flex items-center justify-center gap-2 px-6 sm:px-8 py-3 bg-vanilla-900 text-white rounded-xl font-bold hover:bg-gold-500 hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         {isProcessing ? (
@@ -1206,6 +1205,21 @@ const Checkout = () => {
                                                 <Lock className="w-5 h-5" /> Pay {formatPrice(total)}
                                             </>
                                         )}
+                                    </button>
+                                )} */}
+                                {currentStep < 3 ? (
+                                    <button
+                                        disabled
+                                        className="order-1 sm:order-2 flex items-center justify-center gap-2 px-8 py-3 bg-vanilla-900 text-white rounded-xl font-bold opacity-50 cursor-not-allowed"
+                                    >
+                                        Continue <ArrowRight className="w-5 h-5" />
+                                    </button>
+                                ) : (
+                                    <button
+                                        disabled
+                                        className="order-1 sm:order-2 flex items-center justify-center gap-2 px-6 sm:px-8 py-3 bg-vanilla-900 text-white rounded-xl font-bold opacity-50 cursor-not-allowed"
+                                    >
+                                        <Lock className="w-5 h-5" /> Pay {formatPrice(total)}
                                     </button>
                                 )}
                             </div>
