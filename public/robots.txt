@@ -1,4 +1,9 @@
 User-agent: *
-Allow: /
+Disallow: /cart
+Disallow: /checkout
+Disallow: /login
+Disallow: /register
+Disallow: /order-success
+Disallow: /order-cancel
 
 Sitemap: https://thevanillashop.lk/sitemap.xml
