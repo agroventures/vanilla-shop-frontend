@@ -6,4 +6,4 @@ Disallow: /register
 Disallow: /order-success
 Disallow: /order-cancel
 
-Sitemap: https://thevanillashop.lk/sitemap.xml
+Sitemap: https://api.thevanillashop.lk/sitemap.xml
