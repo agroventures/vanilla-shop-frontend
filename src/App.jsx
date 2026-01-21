@@ -20,6 +20,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import NotFound from "./components/NotFound";
 import Loader from "./components/Loader";
 import { useEffect, useState } from "react";
+import PaymentReturn from "./pages/PaymentReturn";
 
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
         <Route path="/products/:slug" element={<ProductDetail />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/payment-return" element={<PaymentReturn />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/refund" element={<Refund />} />
