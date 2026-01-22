@@ -1236,7 +1236,7 @@ const Checkout = () => {
                                             </Link>
                                         )}
 
-                                        {/* {currentStep < 3 ? (
+                                        {currentStep < 3 ? (
                                             <button
                                                 onClick={handleNextStep}
                                                 disabled={!canCheckout}
@@ -1260,7 +1260,7 @@ const Checkout = () => {
                                                     </>
                                                 )}
                                             </button>
-                                        )} */}
+                                        )}
                                     </div>
                                 </>
                             )}
