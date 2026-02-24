@@ -19,7 +19,8 @@ const Hero = () => {
         className="absolute inset-0 w-full h-full object-cover object-center"
       >
         <source
-          src="https://res.cloudinary.com/dyvixdh7n/video/upload/v1767938712/vanilla_shop_lzb8pc.mp4"
+          // src="https://res.cloudinary.com/dyvixdh7n/video/upload/v1767938712/vanilla_shop_lzb8pc.mp4"
+          src="/videos/hero_video.mov"
           type="video/mp4"
         />
       </video>
