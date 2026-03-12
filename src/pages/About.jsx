@@ -40,8 +40,11 @@ const About = () => {
             <p className="text-gray-600 mb-6 leading-relaxed">
               As Sri Lanka’s first premium vanilla boutique café, we have transformed a simple ingredient into an immersive experience that engages all senses. Every detail — from our aromatic brews and desserts to our artisanal retail range — reflects our devotion to authenticity and excellence.
             </p>
-            <p className="text-gray-600 leading-relaxed">
+            <p className="text-gray-600 mb-6 leading-relaxed">
               Our founders collaborated with Sri Lankan vanilla growers, food technologists, and culinary artisans to bring this vision to life. Together, we created a space where the artistry of flavor meets the purity of nature.
+            </p>
+            <p className="text-gray-600 leading-relaxed">
+              We warmly welcome guests to experience our creations in-store, where we accept both <span className='font-semibold'>cash and card payments</span> for your convenience.
             </p>
           </div>
           <div className="relative">
