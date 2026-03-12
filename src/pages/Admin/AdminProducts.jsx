@@ -330,7 +330,7 @@ export default function AdminProducts() {
                                                                 <button onClick={() => toggleExpand(product._id)} className="p-2 rounded-lg hover:bg-vanilla-200 text-vanilla-500 hover:text-vanilla-900 transition">{expandedProduct === product._id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}</button>
                                                             )}
                                                             <Link to={`/admin/products/edit/${product.slug}`}><button className="p-2 rounded-lg hover:bg-blue-50 text-vanilla-400 hover:text-blue-600 transition"><Pencil className="w-4 h-4" /></button></Link>
-                                                            <button onClick={() => { setSelectedProductId(product._id); setDeleteModalOpen(true); }} className="p-2 rounded-lg hover:bg-red-50 text-vanilla-400 hover:text-red-600 transition"><Trash2 className="w-4 h-4" /></button>
+                                                            {/* <button onClick={() => { setSelectedProductId(product._id); setDeleteModalOpen(true); }} className="p-2 rounded-lg hover:bg-red-50 text-vanilla-400 hover:text-red-600 transition"><Trash2 className="w-4 h-4" /></button> */}
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -546,7 +546,7 @@ export default function AdminProducts() {
                         )}
                     </div>
 
-                    <DeleteConfirmModal open={deleteModalOpen} onClose={() => { setDeleteModalOpen(false); setSelectedProductId(null); }} onConfirm={handleDelete} title="Delete Product" description="Are you sure you want to delete this product? This action cannot be undone." />
+                    {/* <DeleteConfirmModal open={deleteModalOpen} onClose={() => { setDeleteModalOpen(false); setSelectedProductId(null); }} onConfirm={handleDelete} title="Delete Product" description="Are you sure you want to delete this product? This action cannot be undone." /> */}
 
                     {/* Pagination */}
                     {totalPages > 1 && (
