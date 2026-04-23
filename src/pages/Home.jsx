@@ -5,7 +5,7 @@ import Welcome from '../components/Welcome'
 import Products from '../components/Products'
 import History from '../components/History'
 import Footer from '../components/Footer'
-import Features from '../components/Featurs'
+import Features from '../components/Features'
 import useSEO from '../hooks/useSEO'
 
 function Home() {
