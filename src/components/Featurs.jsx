@@ -116,16 +116,16 @@ const Features = () => {
                 </p>
 
                 {/* Bottom CTA link */}
-                <div className="mt-6 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-gold-500 opacity-0 transition-all duration-400 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0">
+                {/* <div className="mt-6 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-gold-500 opacity-0 transition-all duration-400 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0">
                   <span>Learn more</span>
                   <i className="fa-solid fa-arrow-right text-[9px] transition-transform duration-300 group-hover:translate-x-1" />
-                </div>
+                </div> */}
 
                 {/* Bottom shimmer */}
                 <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-gold-300/50 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
                 {/* Corner accent dot */}
-                <div className="absolute bottom-5 right-5 h-6 w-6 rounded-full border border-gold-300/20 bg-gold-50/50 opacity-0 transition-all duration-500 group-hover:opacity-100" />
+                {/* <div className="absolute bottom-5 right-5 h-6 w-6 rounded-full border border-gold-300/20 bg-gold-50/50 opacity-0 transition-all duration-500 group-hover:opacity-100" /> */}
               </div>
             </div>
           ))}

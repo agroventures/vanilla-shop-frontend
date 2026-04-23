@@ -120,12 +120,12 @@ const Products = () => {
                   </div>
 
                   {/* Hover quick-view pill */}
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 translate-y-8 opacity-0 transition-all duration-400 group-hover:translate-y-0 group-hover:opacity-100">
+                  {/* <div className="absolute bottom-4 left-1/2 -translate-x-1/2 translate-y-8 opacity-0 transition-all duration-400 group-hover:translate-y-0 group-hover:opacity-100">
                     <div className="flex items-center gap-2 rounded-full border border-white/30 bg-white/20 px-4 py-2 text-xs text-white backdrop-blur-md shadow-lg whitespace-nowrap">
                       <i className="fa-solid fa-eye text-[10px]" />
                       Quick View
                     </div>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* Content area */}
@@ -146,10 +146,10 @@ const Products = () => {
                     <span className="text-[10px] uppercase tracking-[0.3em] text-gold-600 font-semibold">
                       The Vanilla Shop
                     </span>
-                    <button className="flex items-center gap-2 rounded-full border border-vanilla-200 bg-vanilla-50 px-4 py-2 text-xs font-semibold text-vanilla-900 transition-all duration-300 hover:border-gold-400 hover:bg-gold-500 hover:text-white shadow-sm">
+                    {/* <button className="flex items-center gap-2 rounded-full border border-vanilla-200 bg-vanilla-50 px-4 py-2 text-xs font-semibold text-vanilla-900 transition-all duration-300 hover:border-gold-400 hover:bg-gold-500 hover:text-white shadow-sm">
                       Explore
                       <i className="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1" />
-                    </button>
+                    </button> */}
                   </div>
                 </div>
 

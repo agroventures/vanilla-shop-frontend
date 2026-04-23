@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
   return (
@@ -106,25 +107,23 @@ const Hero = () => {
           {/* Primary CTA */}
           <div className="relative group">
             <div className="absolute -inset-1 rounded-full bg-linear-to-r from-gold-400/40 to-amber-400/40 blur-lg opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-            <a
-              href="/shop"
+            <Link to="/shop"
               className="relative flex items-center gap-3 rounded-full bg-linear-to-r from-gold-500 to-amber-600 px-9 py-4 text-sm font-semibold uppercase tracking-[0.25em] text-white shadow-[0_10px_40px_rgba(212,175,55,0.35)] transition-all duration-400 hover:shadow-[0_15px_50px_rgba(212,175,55,0.5)] hover:from-gold-400 hover:to-amber-500"
             >
               <i className="fa-solid fa-bag-shopping text-xs" />
               Shop Collection
               <i className="fa-solid fa-arrow-right text-xs transition-transform duration-300 group-hover:translate-x-1" />
-            </a>
+            </Link>
           </div>
 
           {/* Secondary CTA */}
           <div className="relative group">
-            <a
-              href="/about"
+            <Link to="/about"
               className="relative flex items-center gap-3 rounded-full border border-white/25 bg-white/8 px-9 py-4 text-sm font-semibold uppercase tracking-[0.25em] text-white backdrop-blur-md shadow-[0_10px_40px_rgba(0,0,0,0.15)] transition-all duration-400 hover:border-white/50 hover:bg-white/15 hover:shadow-[0_15px_50px_rgba(0,0,0,0.25)]"
             >
               <i className="fa-solid fa-mug-hot text-xs" />
               Visit Café
-            </a>
+            </Link>
           </div>
         </div>
 
