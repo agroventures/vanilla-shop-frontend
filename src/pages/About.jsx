@@ -52,14 +52,14 @@ const About = () => {
       {/* Hero Section */}
       <div className="relative h-[60vh] flex items-center justify-center bg-cover bg-center"
         style={{ backgroundImage: "linear-gradient(rgba(62, 39, 35, 0.7), rgba(62, 39, 35, 0.7)), url('/images/about/hero.jpg')" }}>
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1 }}
           className="text-center text-white px-4 max-w-4xl mx-auto"
         >
           <h1 className="text-5xl md:text-7xl font-serif font-bold mb-4 text-white">Our Story</h1>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.9 }}
             transition={{ delay: 0.5, duration: 1 }}
@@ -98,7 +98,7 @@ const About = () => {
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={introInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 1, delay: 0.2 }}
@@ -117,7 +117,7 @@ const About = () => {
       {/* Mission & Vision */}
       <section ref={cardsRef} className="bg-vanilla-100 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div 
+          <motion.div
             variants={staggerContainer}
             initial="hidden"
             animate={cardsInView ? "visible" : "hidden"}
@@ -160,7 +160,7 @@ const About = () => {
             transition={{ duration: 2, repeat: Infinity, repeatType: "mirror" }}
             className="inline-block"
           >
-             <i className="fa-solid fa-flask text-gold-500 text-4xl mb-6"></i>
+            <i className="fa-solid fa-flask text-gold-500 text-4xl mb-6"></i>
           </motion.div>
           <h2 className="section-title">Science Meets Artistry</h2>
           <p className="mb-6 text-lg text-gray-700">
@@ -180,11 +180,11 @@ const About = () => {
             animate={ethicalInView ? { opacity: 1, y: 0 } : {}}
             className="text-center mb-16"
           >
-            <h2 className="section-title !text-vanilla-50">Ethical Sourcing & Sustainability</h2>
+            <h2 className="section-title text-vanilla-50!">Ethical Sourcing & Sustainability</h2>
             <p className="opacity-80 max-w-2xl mx-auto">We believe true quality begins at the source. Through our transparent supply chain, we honor both the land and the people behind every pod.</p>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             variants={staggerContainer}
             initial="hidden"
             animate={ethicalInView ? "visible" : "hidden"}
@@ -196,7 +196,7 @@ const About = () => {
               { icon: "fa-scale-balanced", title: "Fair Trade", desc: "We ensure farmers receive fair compensation and long-term support to sustain their livelihoods." },
               { icon: "fa-location-dot", title: "Traceability", desc: "Every bean and extract can be traced to its origin - from plantation to packaging." }
             ].map((item, idx) => (
-              <motion.div 
+              <motion.div
                 key={idx}
                 variants={cardItem}
                 whileHover={{ y: -10 }}
@@ -213,7 +213,7 @@ const About = () => {
 
       {/* Philosophy / Footer Note */}
       <section className="py-24 px-4 bg-white text-center">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 1.5 }}
