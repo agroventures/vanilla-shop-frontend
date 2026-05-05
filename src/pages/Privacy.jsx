@@ -1,5 +1,6 @@
 // src/pages/Privacy.jsx
 import React, { useState, useEffect, useRef } from 'react'
+import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
     Shield,
@@ -31,7 +32,6 @@ import useSEO from '../hooks/useSEO'
 const Privacy = () => {
     const [activeSection, setActiveSection] = useState(null)
     const [showScrollTop, setShowScrollTop] = useState(false)
-    const [isVisible, setIsVisible] = useState({})
     const sectionRefs = useRef({})
 
     // Scroll to top on mount
@@ -71,29 +71,6 @@ const Privacy = () => {
         window.addEventListener('scroll', handleScroll)
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
-
-    // Intersection observer for animations
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        setIsVisible((prev) => ({
-                            ...prev,
-                            [entry.target.id]: true
-                        }))
-                    }
-                })
-            },
-            { threshold: 0.1 }
-        )
-
-        Object.values(sectionRefs.current).forEach((ref) => {
-            if (ref) observer.observe(ref)
-        })
-
-        return () => observer.disconnect()
-    }, [privacyPolicy])
 
     // Scroll to top
     const scrollToTop = () => {
@@ -153,7 +130,12 @@ const Privacy = () => {
                 <div className="absolute top-0 right-0 w-96 h-96 bg-gold-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
                 <div className="absolute bottom-0 left-0 w-80 h-80 bg-vanilla-400/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+                <motion.div
+                    className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                >
                     {/* Breadcrumbs */}
                     <nav className="flex items-center gap-2 text-sm mb-8">
                         <Link to="/" className="text-white/60 hover:text-gold-500 transition-colors flex items-center gap-1">
@@ -196,7 +178,12 @@ const Privacy = () => {
                     </div>
 
                     {/* Last Updated & Quick Info */}
-                    <div className="mt-10 pt-8 border-t border-white/10 flex flex-wrap items-center gap-6 text-sm">
+                    <motion.div
+                        className="mt-10 pt-8 border-t border-white/10 flex flex-wrap items-center gap-6 text-sm"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.4, duration: 0.5 }}
+                    >
                         <div className="flex items-center gap-2 text-white/60">
                             <Calendar className="w-4 h-4" />
                             <span>Last Updated: {lastUpdated}</span>
@@ -209,8 +196,8 @@ const Privacy = () => {
                             <Globe className="w-4 h-4" />
                             <span>Applies Worldwide</span>
                         </div>
-                    </div>
-                </div>
+                    </motion.div>
+                </motion.div>
             </section>
 
             <section className="py-12 lg:py-16">
@@ -297,15 +284,15 @@ const Privacy = () => {
                             {/* Policy Sections */}
                             <div className="space-y-6">
                                 {privacyPolicy.map((section, index) => (
-                                    <div
+                                    <motion.div
                                         key={section.id}
                                         id={`section-${section.id}`}
                                         ref={(el) => (sectionRefs.current[`section-${section.id}`] = el)}
-                                        className={`bg-white rounded-2xl border border-vanilla-100 shadow-sm overflow-hidden transition-all duration-700 ${isVisible[`section-${section.id}`]
-                                                ? 'opacity-100 translate-y-0'
-                                                : 'opacity-0 translate-y-4'
-                                            }`}
-                                        style={{ transitionDelay: `${index * 50}ms` }}
+                                        className="bg-white rounded-2xl border border-vanilla-100 shadow-sm overflow-hidden"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true, margin: '-50px' }}
+                                        transition={{ duration: 0.5, delay: index * 0.05 }}
                                     >
                                         {/* Section Header */}
                                         <div className="flex items-center gap-4 p-5 lg:p-6 border-b border-vanilla-100 bg-vanilla-50/50">
@@ -337,7 +324,7 @@ const Privacy = () => {
                                                 )}
                                             </div>
                                         </div>
-                                    </div>
+                                    </motion.div>
                                 ))}
                             </div>
 

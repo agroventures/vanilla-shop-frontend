@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import {
     ChevronRight,
@@ -690,21 +691,21 @@ const Checkout = () => {
     // Loading & Empty States
     if (isLoadingCart) {
         return (
-            <div className="pt-24 min-h-screen bg-vanilla-50 font-sans">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pt-24 min-h-screen bg-vanilla-50 font-sans">
                 <Navbar />
                 <div className="flex items-center justify-center py-32">
-                    <div className="text-center">
+                    <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center">
                         <Loader2 className="w-12 h-12 text-gold-500 animate-spin mx-auto mb-4" />
                         <p className="text-vanilla-800/60">Loading checkout...</p>
-                    </div>
+                    </motion.div>
                 </div>
                 <Footer />
-            </div>
+            </motion.div>
         )
     }
 
     return (
-        <div className="pt-24 min-h-screen bg-vanilla-50 font-sans text-vanilla-800">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="pt-24 min-h-screen bg-vanilla-50 font-sans text-vanilla-800">
             <Navbar />
 
             {/* Breadcrumbs with Currency Selector */}
@@ -873,8 +874,9 @@ const Checkout = () => {
                                     )}
 
                                     {/* Step 1: Contact & Shipping Information */}
+                                    <AnimatePresence mode="wait">
                                     {currentStep === 1 && (
-                                        <div className="space-y-4 sm:space-y-6">
+                                        <motion.div key="step1" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.25 }} className="space-y-4 sm:space-y-6">
                                             {/* Contact Information */}
                                             <div className="bg-white rounded-xl sm:rounded-2xl border border-vanilla-100 shadow-sm overflow-hidden">
                                                 <div className="p-4 sm:p-5 bg-vanilla-50 border-b border-vanilla-100">
@@ -948,12 +950,12 @@ const Checkout = () => {
                                                     </p>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </motion.div>
                                     )}
 
                                     {/* Step 2: Shipping Method */}
                                     {currentStep === 2 && (
-                                        <div className="space-y-4 sm:space-y-6">
+                                        <motion.div key="step2" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.25 }} className="space-y-4 sm:space-y-6">
                                             <div className="bg-white rounded-xl sm:rounded-2xl border border-vanilla-100 shadow-sm overflow-hidden">
                                                 <div className="p-4 sm:p-5 bg-vanilla-50 border-b border-vanilla-100">
                                                     <h2 className="font-bold text-base sm:text-lg text-vanilla-900 flex items-center gap-2 font-serif">
@@ -1065,12 +1067,12 @@ const Checkout = () => {
                                                     <p className="text-vanilla-800/70 text-sm">{formData.country}</p>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </motion.div>
                                     )}
 
                                     {/* Step 3: Payment */}
                                     {currentStep === 3 && (
-                                        <div className="space-y-4 sm:space-y-6">
+                                        <motion.div key="step3" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.25 }} className="space-y-4 sm:space-y-6">
                                             {/* <div className="bg-white rounded-xl sm:rounded-2xl border border-vanilla-100 shadow-sm overflow-hidden">
                                                 <div className="p-4 sm:p-5 bg-vanilla-50 border-b border-vanilla-100">
                                                     <h2 className="font-bold text-base sm:text-lg text-vanilla-900 flex items-center gap-2 font-serif">
@@ -1211,8 +1213,9 @@ const Checkout = () => {
                                                 </label>
                                                 {errors.terms && <p className="text-red-500 text-xs sm:text-sm mt-2 ml-8">{errors.terms}</p>}
                                             </div>
-                                        </div>
+                                        </motion.div>
                                     )}
+                                    </AnimatePresence>
 
                                     {/* Nav Buttons */}
                                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-vanilla-200">
@@ -1265,7 +1268,7 @@ const Checkout = () => {
                         </div>
 
                         {/* RIGHT COLUMN: DESKTOP SUMMARY */}
-                        <div className="hidden lg:block lg:w-96">
+                        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.1 }} className="hidden lg:block lg:w-96">
                             <div className="bg-white rounded-2xl border border-vanilla-100 shadow-sm overflow-hidden sticky top-44">
                                 <div className="p-5 bg-vanilla-50 border-b border-vanilla-100 flex items-center justify-between">
                                     <h2 className="font-bold text-lg text-vanilla-900 font-serif">Order Summary</h2>
@@ -1325,13 +1328,13 @@ const Checkout = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
                 </div>
             </section>
 
             <Footer />
-        </div>
+        </motion.div>
     )
 }
 

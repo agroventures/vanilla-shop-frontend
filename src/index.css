@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -7,12 +7,17 @@
   --font-sans: "Lato", sans-serif;
 
   /* Custom Colors */
-  --color-vanilla-50: #fdfbf7;
-  --color-vanilla-100: #f7f1e3;
-  --color-vanilla-200: #efead5;
-  --color-vanilla-800: #5d4037;
-  --color-vanilla-900: #3e2723;
-  
+  --color-vanilla-50: #fdfcf8;
+  --color-vanilla-100: #faf7ed;
+  --color-vanilla-200: #f4eed8;
+  --color-vanilla-300: #ebe0bb;
+  --color-vanilla-400: #dfc891;
+  --color-vanilla-500: #d4b271;
+  --color-vanilla-600: #c89d5e;
+  --color-vanilla-700: #a77f4d;
+  --color-vanilla-800: #896745;
+  --color-vanilla-900: #6f553a;
+
   --color-gold-500: #d4af37;
 
   --animate-fade-in: fade-in 0.8s ease-out forwards;
@@ -68,17 +73,53 @@
   }
 }
 
-/* Custom Scrollbar Styles */
+@layer base {
+  html {
+    font-family: theme(--font-sans);
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-vanilla-50 text-gray-900 antialiased;
+  }
+
+  /* Optional: smoother focus styles */
+  :focus-visible {
+    outline: 2px solid theme(--color-vanilla-600);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-vanilla-600 hover:bg-vanilla-700 text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg;
+  }
+
+  .btn-secondary {
+    @apply border-2 border-vanilla-600 text-vanilla-700 hover:bg-vanilla-600 hover:text-white px-8 py-3 rounded-full font-semibold transition-all duration-300;
+  }
+
+  .section-title {
+    @apply font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6;
+  }
+
+  .card-3d {
+    @apply transform transition-all duration-500 hover:scale-105 hover:shadow-2xl;
+  }
+}
+
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-vanilla-50);
+  background: #faf7ed;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-gold-500);
-  border-radius: 5px;
+  background: #c89d5e;
+  border-radius: 9999px;
+  border: 2px solid #faf7ed;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #b59026;
+  background: #a77f4d;
 }

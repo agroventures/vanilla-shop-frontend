@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import {
     ChevronRight,
     Home,
@@ -150,6 +151,21 @@ const Cart = () => {
         return isUpdating === `${item.productId}-${item.variantLabel}`
     }
 
+    const fadeInUp = {
+        hidden: { opacity: 0, y: 40 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: 'easeOut' } }
+    }
+
+    const staggerContainer = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.08 } }
+    }
+
+    const cartItem = {
+        hidden: { opacity: 0, x: -20 },
+        visible: { opacity: 1, x: 0, transition: { duration: 0.4 } }
+    }
+
     // ============================================
     // EMPTY CART STATE
     // ============================================
@@ -174,7 +190,12 @@ const Cart = () => {
 
                 {/* Empty Cart Content */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-                    <div className="text-center max-w-md mx-auto">
+                    <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        variants={fadeInUp}
+                        className="text-center max-w-md mx-auto"
+                    >
                         <div className="w-24 h-24 bg-vanilla-100 rounded-full flex items-center justify-center mx-auto mb-6 border border-vanilla-200">
                             <ShoppingCart className="w-10 h-10 text-gold-500" />
                         </div>
@@ -201,7 +222,7 @@ const Cart = () => {
                                 Back to Home
                             </Link>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
 
                 <Footer />
@@ -253,7 +274,12 @@ const Cart = () => {
             <section className="py-8 lg:py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Header */}
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+                    <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        variants={fadeInUp}
+                        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8"
+                    >
                         <div>
                             <h1 className="text-3xl font-serif font-bold text-vanilla-900">
                                 Shopping Cart
@@ -269,7 +295,7 @@ const Cart = () => {
                             <Trash2 className="w-4 h-4" />
                             Clear Cart
                         </button>
-                    </div>
+                    </motion.div>
 
                     <div className="flex flex-col lg:flex-row gap-8">
                         {/* Cart Items List (Left Side) */}
@@ -284,14 +310,20 @@ const Cart = () => {
                                 </div>
 
                                 {/* Cart Items */}
-                                <div className="divide-y divide-vanilla-100">
+                                <motion.div
+                                    variants={staggerContainer}
+                                    initial="hidden"
+                                    animate="visible"
+                                    className="divide-y divide-vanilla-100"
+                                >
                                     {cartItems.map((item) => {
                                         const unitPrice = getPriceValue(item);
                                         const originalPrice = currency === 'USD' ? item.originalPriceInUSD : item.originalPrice;
                                         
                                         return (
-                                            <div
+                                            <motion.div
                                                 key={getItemKey(item)}
+                                                variants={cartItem}
                                                 className={`p-4 lg:p-6 transition-opacity duration-300 ${isItemUpdating(item) ? 'opacity-50' : 'opacity-100'
                                                     }`}
                                             >
@@ -427,10 +459,10 @@ const Cart = () => {
                                                         </button>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </motion.div>
                                         )
                                     })}
-                                </div>
+                                </motion.div>
                             </div>
 
                             {/* Continue Shopping */}
@@ -456,7 +488,12 @@ const Cart = () => {
                         </div>
 
                         {/* Order Summary (Right Side) */}
-                        <div className="lg:w-96">
+                        <motion.div
+                            initial={{ opacity: 0, x: 40 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.7, delay: 0.2, ease: 'easeOut' }}
+                            className="lg:w-96"
+                        >
                             <div className="bg-white rounded-2xl border border-vanilla-100 shadow-sm overflow-hidden sticky top-28">
                                 <div className="p-5 bg-vanilla-50 border-b border-vanilla-100">
                                     <h2 className="font-serif font-bold text-xl text-vanilla-900">Order Summary</h2>
@@ -524,7 +561,7 @@ const Cart = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
                 </div>
             </section>
@@ -532,7 +569,13 @@ const Cart = () => {
             {/* Features Bar */}
             <section className="py-12 bg-white border-t border-vanilla-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        viewport={{ once: true }}
+                        className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center"
+                    >
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 bg-vanilla-50 rounded-full flex items-center justify-center border border-vanilla-100">
                                 <RefreshCcw className="w-6 h-6 text-gold-500" />
@@ -560,11 +603,9 @@ const Cart = () => {
                                 <p className="text-vanilla-800/60 text-xs mt-0.5">Dedicated support team</p>
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             </section>
-
-            <Footer />
         </div>
     )
 }

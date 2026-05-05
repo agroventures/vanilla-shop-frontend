@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import {
     ShoppingBag,
@@ -592,7 +593,12 @@ const ProductDetail = () => {
             <main className="pt-24 pb-16 min-h-screen bg-vanilla-50 font-sans text-vanilla-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Breadcrumbs with Currency Selector */}
-                    <nav className="flex items-center justify-between text-sm py-6 gap-4">
+                    <motion.nav
+                        className="flex items-center justify-between text-sm py-6 gap-4"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4 }}
+                    >
                         <div className="flex items-center gap-2 overflow-x-auto">
                             <Link
                                 to="/"
@@ -616,15 +622,25 @@ const ProductDetail = () => {
                         
                         {/* Currency Selector in Breadcrumb Area */}
                         <CurrencySelector className="shrink-0" />
-                    </nav>
+                    </motion.nav>
 
                     {/* Main Product Section */}
-                    <div className="bg-white rounded-3xl shadow-sm border border-vanilla-100 overflow-hidden mb-12">
+                    <motion.div
+                        className="bg-white rounded-3xl shadow-sm border border-vanilla-100 overflow-hidden mb-12"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.1 }}
+                    >
                         <div className="grid lg:grid-cols-2">
                             {/* ==================== */}
                             {/* IMAGE GALLERY */}
                             {/* ==================== */}
-                            <div className="relative bg-vanilla-50 p-4 lg:p-8">
+                            <motion.div
+                                className="relative bg-vanilla-50 p-4 lg:p-8"
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.5, delay: 0.2 }}
+                            >
                                 {/* Main Image */}
                                 <div
                                     className="relative aspect-square rounded-2xl overflow-hidden bg-white cursor-zoom-in shadow-sm"
@@ -785,12 +801,17 @@ const ProductDetail = () => {
                                         )}
                                     </div>
                                 )}
-                            </div>
+                            </motion.div>
 
                             {/* ==================== */}
                             {/* PRODUCT INFO */}
                             {/* ==================== */}
-                            <div className="p-6 lg:p-10 flex flex-col">
+                            <motion.div
+                                className="p-6 lg:p-10 flex flex-col"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.5, delay: 0.3 }}
+                            >
                                 {/* Header */}
                                 <div className="mb-6">
                                     <div className="flex items-start justify-between gap-4 mb-4">
@@ -1094,7 +1115,12 @@ const ProductDetail = () => {
                                 )}
 
                                 {/* Trust Badges */}
-                                <div className="grid grid-cols-2 gap-3 pt-6 border-t border-vanilla-100">
+                                <motion.div
+                                    className="grid grid-cols-2 gap-3 pt-6 border-t border-vanilla-100"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.4, delay: 0.6 }}
+                                >
                                     <div className="flex items-center gap-3 p-3 bg-vanilla-50 rounded-xl">
                                         <Truck className="w-5 h-5 text-gold-500" />
                                         <div>
@@ -1125,15 +1151,21 @@ const ProductDetail = () => {
                                             <p className="text-xs text-vanilla-800/60">Pure Ingredients</p>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+                                </motion.div>
+                            </motion.div>
                         </div>
-                    </div>
+                    </motion.div>
 
                     {/* ==================== */}
                     {/* PRODUCT DETAILS TABS */}
                     {/* ==================== */}
-                    <div className="bg-white rounded-3xl shadow-sm border border-vanilla-100 overflow-hidden mb-12">
+                    <motion.div
+                        className="bg-white rounded-3xl shadow-sm border border-vanilla-100 overflow-hidden mb-12"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: '-50px' }}
+                        transition={{ duration: 0.5 }}
+                    >
                         {/* Tab Headers */}
                         <div className="flex border-b border-vanilla-100 overflow-x-auto">
                             {[
@@ -1326,7 +1358,7 @@ const ProductDetail = () => {
                                 </div>
                             )}
                         </div>
-                    </div>
+                    </motion.div>
 
                     {/* ==================== */}
                     {/* RELATED PRODUCTS */}
@@ -1347,12 +1379,19 @@ const ProductDetail = () => {
                             </div>
 
                             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                                {relatedProducts.map((relatedProduct) => (
-                                    <RelatedProductCard
+                                {relatedProducts.map((relatedProduct, index) => (
+                                    <motion.div
                                         key={relatedProduct._id}
-                                        product={relatedProduct}
-                                        currency={currency}
-                                    />
+                                        initial={{ opacity: 0, y: 20 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true, margin: '-30px' }}
+                                        transition={{ duration: 0.4, delay: index * 0.08 }}
+                                    >
+                                        <RelatedProductCard
+                                            product={relatedProduct}
+                                            currency={currency}
+                                        />
+                                    </motion.div>
                                 ))}
                             </div>
                         </div>

@@ -1,169 +1,151 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { ArrowRight, Sparkles } from 'lucide-react';
 
 const Hero = () => {
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
+  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
+
+
   return (
-    <section
-      id="home"
-      className="relative h-screen flex items-center justify-center overflow-hidden"
-    >
-      {/* Background Video */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        webkit-playsinline="true"
-        preload="auto"
-        aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-cover object-center scale-105"
-      >
-        <source src="/videos/hero_video.mov" type="video/mp4" />
-      </video>
-
-      {/* Layered Overlays for depth */}
-      <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/35 to-black/70 z-10" />
-      <div className="absolute inset-0 bg-linear-to-r from-black/30 via-transparent to-black/30 z-10" />
-
-      {/* Ambient gold glow - bottom */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-64 w-150 rounded-full bg-gold-500/10 blur-3xl z-10" />
-
-      {/* Top shimmer line */}
-      <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-gold-400/60 to-transparent z-20" />
-
-      {/* Floating side accents */}
-      <div className="absolute left-6 top-1/2 -translate-y-1/2 z-20 hidden lg:flex flex-col items-center gap-3">
-        <div className="h-20 w-px bg-linear-to-b from-transparent via-gold-400/50 to-transparent" />
-        <div className="flex flex-col gap-3">
-          {[
-            { icon: 'fa-facebook', href: 'https://www.facebook.com/thevanillashopsl' },
-            { icon: 'fa-instagram', href: 'https://www.instagram.com/the_vanillashop' },
-            { icon: 'fa-tiktok', href: 'https://www.tiktok.com/@the_vanillashop' },
-          ].map((s) => (
-            <a
-              key={s.icon}
-              href={s.href}
-              target="_blank"
-              rel="noreferrer"
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/50 backdrop-blur-sm transition-all duration-300 hover:border-gold-400/40 hover:text-gold-400 hover:bg-gold-500/10"
-            >
-              <i className={`fa-brands ${s.icon} text-xs`} />
-            </a>
-          ))}
-        </div>
-        <div className="h-20 w-px bg-linear-to-b from-transparent via-gold-400/50 to-transparent" />
-      </div>
-
-      {/* Right side scroll indicator */}
-      <div className="absolute right-6 top-1/2 -translate-y-1/2 z-20 hidden lg:flex flex-col items-center gap-3">
-        <div className="h-20 w-px bg-linear-to-b from-transparent via-white/20 to-transparent" />
-        <div
-          className="text-[9px] uppercase tracking-[0.4em] text-white/40"
-          style={{ writingMode: 'vertical-rl' }}
+    <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden">
+        {/* Animated Background */}
+        <motion.div
+          style={{ y, opacity }}
+          className="absolute inset-0 z-0"
         >
-          Scroll to explore
-        </div>
-        <div className="h-20 w-px bg-linear-to-b from-transparent via-white/20 to-transparent" />
-      </div>
+          {/* <div className="absolute inset-0 bg-linear-to-br from-vanilla-100 via-vanilla-50 to-white" /> */}
+          <video
+            src="/videos/hero_video.mov"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover opacity-60"
+          />
 
-      {/* Main Content */}
-      <div className="relative z-20 text-center text-white px-4 max-w-5xl mx-auto">
 
-        {/* Top badge */}
-        <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/8 px-6 py-2.5 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.2)]">
-          <div className="h-1.5 w-1.5 rounded-full bg-gold-400 shadow-[0_0_8px_rgba(212,175,55,0.8)]" />
-          <span className="text-[11px] uppercase tracking-[0.4em] text-white/80 font-medium">
-            Est. 2025 &nbsp;·&nbsp; Colombo, Sri Lanka
-          </span>
-          <div className="h-1.5 w-1.5 rounded-full bg-gold-400 shadow-[0_0_8px_rgba(212,175,55,0.8)]" />
-        </div>
-
-        {/* Main heading */}
-        <h1 className="font-serif font-bold leading-[1.08] mb-6">
-          <span className="block text-5xl md:text-7xl lg:text-8xl bg-linear-to-b from-white via-white to-white/70 bg-clip-text text-transparent">
-            From Bean
-          </span>
-          <span className="block text-5xl md:text-7xl lg:text-8xl bg-linear-to-r from-gold-300 via-gold-400 to-amber-300 bg-clip-text text-transparent mt-1">
-            to Bliss
-          </span>
-        </h1>
-
-        {/* Divider */}
-        <div className="mb-8 flex items-center justify-center gap-4">
-          <div className="h-px w-16 bg-linear-to-r from-transparent to-gold-400/70" />
-          <i className="fa-solid fa-spa text-gold-400 text-sm" />
-          <div className="h-px w-16 bg-linear-to-l from-transparent to-gold-400/70" />
-        </div>
-
-        {/* Subheading */}
-        <p className="text-base md:text-xl font-light leading-8 text-white/75 max-w-2xl mx-auto mb-12">
-          Experience vanilla in its purest form. A sensory journey of sweetness,
-          warmth, and craftsmanship — straight from Sri Lanka's finest orchids.
-        </p>
-
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-
-          {/* Primary CTA */}
-          <div className="relative group">
-            <div className="absolute -inset-1 rounded-full bg-linear-to-r from-gold-400/40 to-amber-400/40 blur-lg opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-            <Link to="/shop"
-              className="relative flex items-center gap-3 rounded-full bg-linear-to-r from-gold-500 to-amber-600 px-9 py-4 text-sm font-semibold uppercase tracking-[0.25em] text-white shadow-[0_10px_40px_rgba(212,175,55,0.35)] transition-all duration-400 hover:shadow-[0_15px_50px_rgba(212,175,55,0.5)] hover:from-gold-400 hover:to-amber-500"
-            >
-              <i className="fa-solid fa-bag-shopping text-xs" />
-              Shop Collection
-              <i className="fa-solid fa-arrow-right text-xs transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
-          </div>
-
-          {/* Secondary CTA */}
-          <div className="relative group">
-            <Link to="/about"
-              className="relative flex items-center gap-3 rounded-full border border-white/25 bg-white/8 px-9 py-4 text-sm font-semibold uppercase tracking-[0.25em] text-white backdrop-blur-md shadow-[0_10px_40px_rgba(0,0,0,0.15)] transition-all duration-400 hover:border-white/50 hover:bg-white/15 hover:shadow-[0_15px_50px_rgba(0,0,0,0.25)]"
-            >
-              <i className="fa-solid fa-mug-hot text-xs" />
-              Visit Café
-            </Link>
-          </div>
-        </div>
-
-        {/* Stats row */}
-        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
-          {[
-            { value: '100%', label: 'Natural Vanilla' },
-            { value: 'Sri Lanka', label: 'Origin' },
-            { value: 'Hand', label: 'Pollinated' },
-          ].map((stat, i) => (
-            <React.Fragment key={stat.label}>
-              <div className="text-center">
-                <div className="text-xl md:text-2xl font-serif font-bold text-gold-400">
-                  {stat.value}
-                </div>
-                <div className="text-[10px] uppercase tracking-[0.3em] text-white/50 mt-1">
-                  {stat.label}
-                </div>
-              </div>
-              {i < 2 && (
-                <div className="h-8 w-px bg-white/15 hidden sm:block" />
-              )}
-            </React.Fragment>
+          {/* Floating Elements */}
+          {[...Array(20)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-2 h-2 bg-vanilla-400/30 rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+              }}
+              animate={{
+                y: [0, -30, 0],
+                opacity: [0.2, 0.8, 0.2],
+                scale: [1, 1.5, 1],
+              }}
+              transition={{
+                duration: 3 + Math.random() * 2,
+                repeat: Infinity,
+                delay: Math.random() * 2,
+              }}
+            />
           ))}
-        </div>
-      </div>
+        </motion.div>
 
-      {/* Bottom scroll cue */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2">
-        <div className="text-[9px] uppercase tracking-[0.4em] text-white/40">
-          Discover
-        </div>
-        <div className="flex h-10 w-6 items-start justify-center rounded-full border border-white/20 p-1.5">
-          <div className="h-2 w-0.5 rounded-full bg-gold-400 animate-bounce" />
-        </div>
-      </div>
+        {/* Hero Content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="inline-flex items-center space-x-2 bg-vanilla-200/50 backdrop-blur-sm px-6 py-2 rounded-full mb-6"
+            >
+              <Sparkles className="w-5 h-5 text-vanilla-600" />
+              <span className="text-vanilla-800 font-medium">Premium Vanilla Since 2025</span>
+            </motion.div>
 
-      {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-black/40 to-transparent z-10" />
-    </section>
+            <h1 className="font-serif text-6xl md:text-7xl lg:text-8xl font-bold mb-6">
+              <motion.span
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="block text-gray-900"
+              >
+                From Bean
+              </motion.span>
+              <motion.span
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="block bg-linear-to-r from-vanilla-600 to-vanilla-800 bg-clip-text text-transparent"
+              >
+                to Bliss
+              </motion.span>
+            </h1>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
+              className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto"
+            >
+              Experience vanilla in its purest form. A sensory journey of sweetness, warmth, and craftsmanship - straight from Sri Lanka's finest orchids.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center"
+            >
+              <Link to="/shop">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="btn-primary group"
+                >
+                  <span>Shop Collection</span>
+                  <ArrowRight className="inline-block ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </motion.button>
+              </Link>
+
+              <Link to="/about">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="btn-secondary"
+                >
+                  Our Story
+                </motion.button>
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5 }}
+          className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+        >
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="w-6 h-10 border-2 border-vanilla-600 rounded-full flex justify-center pt-2"
+          >
+            <motion.div className="w-1.5 h-3 bg-vanilla-600 rounded-full" />
+          </motion.div>
+        </motion.div>
+      </section>
   );
 };
 

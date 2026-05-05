@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
     XCircle,
@@ -148,23 +149,43 @@ const OrderCancel = () => {
             <section className="pt-32 pb-12 bg-vanilla-50">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     {/* Error Icon */}
-                    <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border-4 border-vanilla-100">
+                    <motion.div
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+                        className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border-4 border-vanilla-100"
+                    >
                         <div className="text-red-500">
                             {reasonDetails.icon}
                         </div>
-                    </div>
+                    </motion.div>
 
                     {/* Error Message */}
-                    <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-vanilla-900 mb-4">
+                    <motion.h1
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2, duration: 0.5 }}
+                        className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-vanilla-900 mb-4"
+                    >
                         {reasonDetails.title}
-                    </h1>
-                    <p className="text-vanilla-800/70 text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+                    </motion.h1>
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3, duration: 0.5 }}
+                        className="text-vanilla-800/70 text-lg max-w-2xl mx-auto mb-8 leading-relaxed"
+                    >
                         {reasonDetails.description}
-                    </p>
+                    </motion.p>
 
                     {/* Error Code */}
                     {(errorCode || orderId) && (
-                        <div className="inline-flex items-center gap-4 bg-white px-6 py-3 rounded-xl shadow-sm border border-vanilla-200 text-sm">
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4, duration: 0.4 }}
+                            className="inline-flex items-center gap-4 bg-white px-6 py-3 rounded-xl shadow-sm border border-vanilla-200 text-sm"
+                        >
                             {orderId && (
                                 <span className="text-vanilla-800/60">
                                     Order: <span className="font-serif font-bold text-vanilla-900">{orderId}</span>
@@ -175,14 +196,19 @@ const OrderCancel = () => {
                                     Error: <span className="font-mono font-medium text-red-500">{errorCode}</span>
                                 </span>
                             )}
-                        </div>
+                        </motion.div>
                     )}
 
                     {/* Error Message Detail */}
                     {errorMessage && (
-                        <div className="mt-6 p-4 bg-red-50 border border-red-100 rounded-xl max-w-xl mx-auto">
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.5, duration: 0.4 }}
+                            className="mt-6 p-4 bg-red-50 border border-red-100 rounded-xl max-w-xl mx-auto"
+                        >
                             <p className="text-red-700 text-sm">{errorMessage}</p>
-                        </div>
+                        </motion.div>
                     )}
                 </div>
             </section>
@@ -192,7 +218,12 @@ const OrderCancel = () => {
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid lg:grid-cols-3 gap-8">
                         {/* Left Column */}
-                        <div className="lg:col-span-2 space-y-8">
+                        <motion.div
+                            initial={{ opacity: 0, x: -30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.4, duration: 0.5 }}
+                            className="lg:col-span-2 space-y-8"
+                        >
                             {/* Suggestions */}
                             <div className="bg-white rounded-3xl border border-vanilla-100 shadow-sm overflow-hidden">
                                 <div className="p-6 bg-vanilla-50 border-b border-vanilla-100">
@@ -272,10 +303,15 @@ const OrderCancel = () => {
                                     ))}
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
 
                         {/* Right Column */}
-                        <div className="space-y-6">
+                        <motion.div
+                            initial={{ opacity: 0, x: 30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.5, duration: 0.5 }}
+                            className="space-y-6"
+                        >
                             {/* Contact Support */}
                             <div className="bg-white rounded-3xl border border-vanilla-100 shadow-sm overflow-hidden">
                                 <div className="p-6 bg-vanilla-50 border-b border-vanilla-100">
@@ -370,7 +406,7 @@ const OrderCancel = () => {
                                 <ArrowLeft className="w-4 h-4" />
                                 Go Back
                             </button>
-                        </div>
+                        </motion.div>
                     </div>
                 </div>
             </section>

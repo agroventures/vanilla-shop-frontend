@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
     CheckCircle,
@@ -127,34 +128,45 @@ const OrderSuccess = () => {
         }
     ]
 
+    const fadeUp = (delay = 0) => ({
+        initial: { opacity: 0, y: 24 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.4, delay }
+    })
+
     return (
-        <div className="min-h-screen bg-vanilla-50 font-sans text-vanilla-800">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="min-h-screen bg-vanilla-50 font-sans text-vanilla-800">
             <Navbar />
 
             {/* Hero Section */}
             <section className="pt-32 pb-12 bg-linear-to-b from-vanilla-100 to-vanilla-50">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     {/* Success Icon */}
-                    <div className="relative inline-block mb-8">
+                    <motion.div
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
+                        className="relative inline-block mb-8"
+                    >
                         <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto shadow-lg border-4 border-vanilla-100 animate-bounce-slow">
                             <CheckCircle className="w-12 h-12 text-green-600" />
                         </div>
                         <div className="absolute -top-2 -right-2 w-10 h-10 bg-gold-500 rounded-full flex items-center justify-center shadow-md border-2 border-white">
                             <Sparkles className="w-5 h-5 text-white" />
                         </div>
-                    </div>
+                    </motion.div>
 
                     {/* Success Message */}
-                    <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-vanilla-900 mb-6">
+                    <motion.h1 {...fadeUp(0.2)} className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-vanilla-900 mb-6">
                         Thank You!
-                    </h1>
-                    <p className="text-vanilla-800/70 text-lg max-w-2xl mx-auto mb-10 leading-relaxed font-sans">
+                    </motion.h1>
+                    <motion.p {...fadeUp(0.3)} className="text-vanilla-800/70 text-lg max-w-2xl mx-auto mb-10 leading-relaxed font-sans">
                         Your order has been successfully placed. We've sent a confirmation email to{' '}
                         <strong className="text-vanilla-900 border-b border-gold-500/50 pb-0.5">{email || 'your email address'}</strong>
-                    </p>
+                    </motion.p>
 
                     {/* Order Number */}
-                    <div className="inline-flex items-center gap-4 bg-white px-8 py-5 rounded-2xl shadow-sm border border-vanilla-100 hover:shadow-md transition-shadow duration-300">
+                    <motion.div {...fadeUp(0.4)} className="inline-flex items-center gap-4 bg-white px-8 py-5 rounded-2xl shadow-sm border border-vanilla-100 hover:shadow-md transition-shadow duration-300">
                         <div className="text-left">
                             <p className="text-vanilla-800/50 text-xs font-bold uppercase tracking-wider mb-1">Order Number</p>
                             <p className="font-serif font-bold text-2xl text-vanilla-900">{orderId}</p>
@@ -170,7 +182,7 @@ const OrderSuccess = () => {
                         >
                             {copied ? <CheckCircle className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
                         </button>
-                    </div>
+                    </motion.div>
                 </div>
             </section>
 
@@ -181,7 +193,7 @@ const OrderSuccess = () => {
                         {/* Left Column - Order Details */}
                         <div className="lg:col-span-2 space-y-8">
                             {/* Order Timeline */}
-                            <div className="bg-white rounded-3xl border border-vanilla-100 shadow-sm overflow-hidden">
+                            <motion.div {...fadeUp(0.5)} className="bg-white rounded-3xl border border-vanilla-100 shadow-sm overflow-hidden">
                                 <div className="p-6 bg-vanilla-50 border-b border-vanilla-100">
                                     <h2 className="font-serif font-bold text-xl text-vanilla-900 flex items-center gap-3">
                                         <Clock className="w-5 h-5 text-gold-500" />
@@ -227,10 +239,10 @@ const OrderSuccess = () => {
                                         ))}
                                     </div>
                                 </div>
-                            </div>
+                            </motion.div>
 
                             {/* Actions */}
-                            <div className="flex flex-col sm:flex-row gap-4">
+                            <motion.div {...fadeUp(0.6)} className="flex flex-col sm:flex-row gap-4">
                                 <Link
                                     to="/products"
                                     className="flex-1 inline-flex items-center justify-center gap-2 px-8 py-4 bg-vanilla-900 text-white rounded-xl font-bold hover:bg-gold-500 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
@@ -245,13 +257,13 @@ const OrderSuccess = () => {
                                     <Home className="w-5 h-5" />
                                     Back to Home
                                 </Link>
-                            </div>
+                            </motion.div>
                         </div>
 
                         {/* Right Column - Order Summary */}
                         <div className="space-y-6">
                             {/* Order Total */}
-                            <div className="bg-white rounded-3xl border border-vanilla-100 shadow-sm overflow-hidden">
+                            <motion.div {...fadeUp(0.55)} className="bg-white rounded-3xl border border-vanilla-100 shadow-sm overflow-hidden">
                                 <div className="p-6 bg-vanilla-50 border-b border-vanilla-100">
                                     <h2 className="font-serif font-bold text-xl text-vanilla-900">Order Summary</h2>
                                 </div>
@@ -275,11 +287,11 @@ const OrderSuccess = () => {
                                         </div>
                                     )}
                                 </div>
-                            </div>
+                            </motion.div>
 
                             {/* Shipping Address */}
                             {shippingAddress && (
-                                <div className="bg-white rounded-3xl border border-vanilla-100 shadow-sm overflow-hidden">
+                                <motion.div {...fadeUp(0.65)} className="bg-white rounded-3xl border border-vanilla-100 shadow-sm overflow-hidden">
                                     <div className="p-6 bg-vanilla-50 border-b border-vanilla-100">
                                         <h2 className="font-serif font-bold text-xl text-vanilla-900 flex items-center gap-2">
                                             <MapPin className="w-5 h-5 text-gold-500" />
@@ -296,7 +308,7 @@ const OrderSuccess = () => {
                                         </p>
                                         <p className="text-vanilla-800/70 font-medium mt-1">{shippingAddress.country}</p>
                                     </div>
-                                </div>
+                                </motion.div>
                             )}
                         </div>
                     </div>
@@ -304,7 +316,7 @@ const OrderSuccess = () => {
             </section>
 
             <Footer />
-        </div>
+        </motion.div>
     )
 }
 

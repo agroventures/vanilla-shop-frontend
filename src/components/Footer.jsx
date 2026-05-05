@@ -1,191 +1,213 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { 
+//   Facebook, 
+//   Instagram, 
+//   Twitter, 
+  Mail, 
+  Phone, 
+  MapPin,
+  Heart, 
+  Globe
+} from 'lucide-react';
 
 const Footer = () => {
+  const footerLinks = {
+    shop: [
+      { name: 'All Products', path: '/shop' },
+      { name: 'Vanilla Beans', path: '/shop?category=beans' },
+      { name: 'Vanilla Extract', path: '/shop?category=extract' },
+      { name: 'Vanilla Paste', path: '/shop?category=vanilla-paste' },
+    ],
+    company: [
+      { name: 'About Us', path: '/about' },
+      { name: 'Contact', path: '/contact' },
+      { name: 'Our Story', path: '/about#story' },
+    ],
+    legal: [
+      { name: 'Privacy Policy', path: '/privacy' },
+      { name: 'Terms of Service', path: '/terms' },
+      { name: 'Shipping & Refund', path: '/refund' },
+    ],
+  };
+
+  const socialLinks = [
+    {
+      href: 'https://www.facebook.com/thevanillashopsl',
+      label: 'Facebook',
+      icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>,
+    },
+    {
+      href: 'https://www.instagram.com/the_vanillashop',
+      label: 'Instagram',
+      icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path fill="none" stroke="white" strokeWidth="2" d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line fill="none" stroke="white" strokeWidth="2" x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>,
+    },
+    {
+      href: 'https://www.tiktok.com/@the_vanillashop',
+      label: 'TikTok',
+      icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>,
+    },
+  ];
+
   return (
-    <footer className="relative overflow-hidden bg-vanilla-900 text-white">
-      {/* Ambient background glows */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(212,175,55,0.08),transparent_40%),radial-gradient(ellipse_at_bottom_right,rgba(255,248,235,0.03),transparent_50%)]" />
-      <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-80 w-80 rounded-full bg-gold-500/5 blur-3xl" />
-      <div className="absolute -bottom-20 left-0 h-60 w-60 rounded-full bg-gold-400/5 blur-3xl" />
-      <div className="absolute -bottom-20 right-0 h-60 w-60 rounded-full bg-gold-400/5 blur-3xl" />
-
-      {/* Top shimmer line */}
-      <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-gold-500/50 to-transparent" />
-
-      {/* Main Footer Content */}
-      <div className="relative max-w-7xl mx-auto px-4 md:px-12 pt-20 pb-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mb-16">
-
-          {/* Brand Column */}
-          <div className="md:col-span-4">
-            <Link to="/">
-              <img
-                src="/logo.png"
-                alt="The Vanilla Shop"
-                className="w-16 brightness-0 invert mb-5 transition-opacity duration-300 hover:opacity-80"
+    <footer className="bg-linear-to-br from-gray-900 to-gray-800 text-white">
+      {/* Newsletter Section */}
+      <div className="border-b border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="font-serif text-3xl font-bold mb-2">
+                Join Our Vanilla Community
+              </h3>
+              <p className="text-gray-400">
+                Subscribe for exclusive offers and vanilla recipes
+              </p>
+            </motion.div>
+            
+            <motion.form
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="flex gap-3"
+            >
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="flex-1 px-4 py-3 rounded-full bg-white/10 border border-white/20 focus:outline-none focus:border-vanilla-400 transition-colors"
               />
-            </Link>
-
-            <p className="text-sm leading-7 text-vanilla-200/60 max-w-xs">
-              Where Every Bean Tells a Story. Experience vanilla in its purest,
-              most authentic form — from Sri Lanka's heart to your home.
-            </p>
-
-            {/* Divider */}
-            <div className="my-6 h-px w-20 bg-linear-to-r from-gold-500/60 to-transparent" />
-
-            {/* Social Icons */}
-            <div className="flex items-center gap-3">
-              {[
-                { icon: 'fa-facebook', href: 'https://www.facebook.com/thevanillashopsl', label: 'Facebook' },
-                { icon: 'fa-instagram', href: 'https://www.instagram.com/the_vanillashop', label: 'Instagram' },
-                { icon: 'fa-tiktok', href: 'https://www.tiktok.com/@the_vanillashop', label: 'TikTok' },
-              ].map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={social.label}
-                  className="group relative flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-vanilla-300 transition-all duration-300 hover:border-gold-500/40 hover:bg-gold-500/15 hover:text-gold-400 hover:shadow-[0_0_20px_rgba(212,175,55,0.15)]"
-                >
-                  <i className={`fa-brands ${social.icon} text-sm`} />
-                </a>
-              ))}
-            </div>
-
-            {/* Trust badge */}
-            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-gold-500/20 bg-gold-500/8 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-gold-400">
-              <i className="fa-solid fa-shield-halved text-[10px]" />
-              Trusted Sri Lankan Brand
-            </div>
-          </div>
-
-          {/* Quick Links */}
-          <div className="md:col-span-2">
-            <h5 className="font-serif font-bold text-sm uppercase tracking-[0.3em] text-vanilla-100 mb-6">
-              Quick Links
-            </h5>
-            <ul className="space-y-3">
-              {[
-                { label: 'Home', to: '/' },
-                { label: 'About Us', to: '/about' },
-                { label: 'Our Products', to: '/shop' },
-                { label: 'Visit Store', to: '/#visit' },
-              ].map((link) => (
-                <li key={link.label}>
-                  <Link
-                    to={link.to}
-                    className="group flex items-center gap-2 text-sm text-vanilla-200/60 transition-all duration-300 hover:text-gold-400"
-                  >
-                    <span className="h-px w-0 bg-gold-400 transition-all duration-300 group-hover:w-4" />
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Customer Care */}
-          <div className="md:col-span-2">
-            <h5 className="font-serif font-bold text-sm uppercase tracking-[0.3em] text-vanilla-100 mb-6">
-              Customer Care
-            </h5>
-            <ul className="space-y-3">
-              {[
-                { label: 'Shipping & Refund Policy', to: '/refund' },
-                { label: 'Terms of Service', to: '/terms' },
-                { label: 'Privacy Policy', to: '/privacy' },
-              ].map((link) => (
-                <li key={link.label}>
-                  <Link
-                    to={link.to}
-                    className="group flex items-center gap-2 text-sm text-vanilla-200/60 transition-all duration-300 hover:text-gold-400"
-                  >
-                    <span className="h-px w-0 bg-gold-400 transition-all duration-300 group-hover:w-4" />
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Newsletter */}
-          <div className="md:col-span-4">
-            <h5 className="font-serif font-bold text-sm uppercase tracking-[0.3em] text-vanilla-100 mb-2">
-              Newsletter
-            </h5>
-            <p className="text-xs leading-6 text-vanilla-200/50 mb-6">
-              Receive vanilla-inspired recipes, exclusive offers, and artisan stories
-              delivered to your inbox.
-            </p>
-
-            {/* Input card */}
-            <div className="relative rounded-2xl border border-white/10 bg-white/5 p-1.5 backdrop-blur-sm shadow-[0_10px_40px_rgba(0,0,0,0.2)] transition-all duration-300 focus-within:border-gold-500/30 focus-within:shadow-[0_10px_40px_rgba(212,175,55,0.08)]">
-              <div className="flex items-center gap-2">
-                <div className="flex items-center flex-1 gap-2 px-3">
-                  <i className="fa-solid fa-envelope text-gold-400/60 text-xs" />
-                  <input
-                    type="email"
-                    placeholder="Your email address"
-                    className="flex-1 bg-transparent py-2.5 text-sm text-white placeholder-vanilla-300/40 outline-none"
-                  />
-                </div>
-                <button className="flex items-center gap-2 rounded-xl bg-linear-to-r from-gold-500 to-amber-600 px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-white shadow-[0_4px_15px_rgba(212,175,55,0.3)] transition-all duration-300 hover:shadow-[0_6px_20px_rgba(212,175,55,0.4)] hover:from-gold-400 hover:to-amber-500">
-                  Subscribe
-                  <i className="fa-solid fa-arrow-right text-[10px]" />
-                </button>
-              </div>
-            </div>
-
-            <p className="mt-3 text-[10px] text-vanilla-300/40 flex items-center gap-1.5">
-              <i className="fa-solid fa-lock text-[9px]" />
-              No spam. Unsubscribe anytime.
-            </p>
-
-            {/* Contact info */}
-            <div className="mt-6 space-y-2">
-              {[
-                { icon: 'fa-location-dot', text: 'Colombo, Sri Lanka' },
-                { icon: 'fa-envelope', text: 'hello@thevanillashop.lk' },
-              ].map((item) => (
-                <div
-                  key={item.text}
-                  className="flex items-center gap-3 text-xs text-vanilla-300/50"
-                >
-                  <i className={`fa-solid ${item.icon} text-gold-400/60 text-[10px] w-3`} />
-                  {item.text}
-                </div>
-              ))}
-            </div>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                type="submit"
+                className="btn-primary whitespace-nowrap"
+              >
+                Subscribe
+              </motion.button>
+            </motion.form>
           </div>
         </div>
+      </div>
 
-        {/* Divider */}
-        <div className="h-px w-full bg-linear-to-r from-transparent via-vanilla-700/60 to-transparent" />
-
-        {/* Bottom Bar */}
-        <div className="mt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-[11px] text-vanilla-300/40 tracking-wide">
-            &copy; {new Date().getFullYear()} The Vanilla Shop. All Rights Reserved.
-          </p>
-
-          <div className="flex items-center gap-2 text-[11px] text-vanilla-300/40">
-            <span>Powered by</span>
-            <a
-              href="https://ventrax.lk"
-              target="_blank"
-              rel="noreferrer"
-              className="font-semibold text-vanilla-300/60 transition-colors duration-300 hover:text-gold-400"
-            >
-              Ventrax.lk
-            </a>
+      {/* Main Footer Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+          {/* Brand Column */}
+          <div className="lg:col-span-2">
+            <Link to="/">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="flex items-center space-x-3 mb-6"
+              >
+                <img src="/logo.png" alt="The Vanilla Shop" className="h-16 brightness-0 invert" />
+              </motion.div>
+            </Link>
+            
+            <p className="text-gray-400 mb-6 max-w-sm">
+              Where Every Bean Tells a Story. Experience vanilla in its purest, most authentic form - from Sri Lanka's heart to your home.
+            </p>
+            
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3 text-gray-400">
+                <MapPin className="w-5 h-5 text-vanilla-400" />
+                <span>No. 253, Koswatta, Kaduwela Road, Battaramulla</span>
+              </div>
+              <div className="flex items-center space-x-3 text-gray-400">
+                <Phone className="w-5 h-5 text-vanilla-400" />
+                <span>+94 70 520 0900</span>
+              </div>
+              <div className="flex items-center space-x-3 text-gray-400">
+                <Mail className="w-5 h-5 text-vanilla-400" />
+                <span>info@thevanillashop.lk</span>
+              </div>
+            </div>
           </div>
 
-          <div className="flex items-center gap-1.5 text-[10px] text-vanilla-300/30">
-            <i className="fa-solid fa-heart text-gold-500/50 text-[9px]" />
-            <span>Crafted with passion in Sri Lanka</span>
+          {/* Shop Links */}
+          <div>
+            <h4 className="font-serif text-lg font-bold mb-4">Shop</h4>
+            <ul className="space-y-2">
+              {footerLinks.shop.map((link) => (
+                <li key={link.path}>
+                  <Link to={link.path}>
+                    <motion.span
+                      whileHover={{ x: 5 }}
+                      className="text-gray-400 hover:text-vanilla-400 transition-colors inline-block"
+                    >
+                      {link.name}
+                    </motion.span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Company Links */}
+          <div>
+            <h4 className="font-serif text-lg font-bold mb-4">Company</h4>
+            <ul className="space-y-2">
+              {footerLinks.company.map((link) => (
+                <li key={link.path}>
+                  <Link to={link.path}>
+                    <motion.span
+                      whileHover={{ x: 5 }}
+                      className="text-gray-400 hover:text-vanilla-400 transition-colors inline-block"
+                    >
+                      {link.name}
+                    </motion.span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Legal Links */}
+          <div>
+            <h4 className="font-serif text-lg font-bold mb-4">Legal</h4>
+            <ul className="space-y-2">
+              {footerLinks.legal.map((link) => (
+                <li key={link.path}>
+                  <Link to={link.path}>
+                    <motion.span
+                      whileHover={{ x: 5 }}
+                      className="text-gray-400 hover:text-vanilla-400 transition-colors inline-block"
+                    >
+                      {link.name}
+                    </motion.span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Bar */}
+      <div className="border-t border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div className="flex items-center space-x-2 text-gray-400 text-sm">
+              <span>© {new Date().getFullYear()} The Vanilla Shop. All rights reserved. Developed by <a href="https://ventrax.lk" target='_blank' className='font-semibold'>Ventrax.lk</a></span>
+            </div>
+            
+            <div className="flex space-x-4">
+              {socialLinks.map((social) => (
+                <motion.a
+                  key={social.label}
+                  href={social.href}
+                  whileHover={{ scale: 1.2, y: -3 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="w-10 h-10 bg-white/10 hover:bg-vanilla-600 rounded-full flex items-center justify-center transition-colors"
+                  aria-label={social.label}
+                >
+                  {social.icon}
+                </motion.a>
+              ))}
+            </div>
           </div>
         </div>
       </div>
