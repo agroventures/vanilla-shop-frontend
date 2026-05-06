@@ -28,7 +28,7 @@ const Hero = () => {
             loop
             muted
             playsInline
-            className="absolute inset-0 w-full h-full object-cover opacity-60"
+            className="absolute inset-0 w-full h-full object-cover opacity-70"
           />
 
 
