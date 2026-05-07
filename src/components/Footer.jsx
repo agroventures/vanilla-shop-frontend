@@ -13,9 +13,10 @@ const Footer = () => {
   const footerLinks = {
     shop: [
       { name: 'All Products', path: '/shop' },
-      { name: 'Vanilla Beans', path: '/shop?category=beans' },
-      { name: 'Vanilla Extract', path: '/shop?category=extract' },
-      { name: 'Vanilla Paste', path: '/shop?category=vanilla-paste' },
+      { name: 'Non Alcoholic Vanilla Extract', path: '/products/non-alcoholic-vanilla-extract' },
+      { name: 'Alcoholic Vanilla Extract', path: '/products/alcoholic-vanilla-extract' },
+      { name: 'Vanilla Powder', path: '/products/vanilla-tea-powder' },
+      { name: 'Vanilla Paste', path: '/products/natural-vanilla-paste' },
     ],
     company: [
       { name: 'About Us', path: '/about' },
