@@ -1481,15 +1481,15 @@ const ProductDetail = () => {
                     height: 6px;
                 }
                 .scrollbar-thin::-webkit-scrollbar-track {
-                    background: #f5f5f0;
+                    background: #f0f0f0;
                     border-radius: 3px;
                 }
                 .scrollbar-thin::-webkit-scrollbar-thumb {
-                    background: #d4a574;
+                    background: #606060;
                     border-radius: 3px;
                 }
                 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-                    background: #c49664;
+                    background: #404040;
                 }
             `}</style>
         </div>

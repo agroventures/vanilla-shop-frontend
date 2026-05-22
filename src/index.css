@@ -6,19 +6,19 @@
   --font-serif: "Playfair Display", serif;
   --font-sans: "Lato", sans-serif;
 
-  /* Custom Colors */
-  --color-vanilla-50: #fdfcf8;
-  --color-vanilla-100: #faf7ed;
-  --color-vanilla-200: #f4eed8;
-  --color-vanilla-300: #ebe0bb;
-  --color-vanilla-400: #dfc891;
-  --color-vanilla-500: #d4b271;
-  --color-vanilla-600: #c89d5e;
-  --color-vanilla-700: #a77f4d;
-  --color-vanilla-800: #896745;
-  --color-vanilla-900: #6f553a;
+  /* Custom Colors - Black & White Theme */
+  --color-vanilla-50: #f9f9f9;
+  --color-vanilla-100: #f0f0f0;
+  --color-vanilla-200: #e0e0e0;
+  --color-vanilla-300: #c8c8c8;
+  --color-vanilla-400: #a0a0a0;
+  --color-vanilla-500: #808080;
+  --color-vanilla-600: #606060;
+  --color-vanilla-700: #404040;
+  --color-vanilla-800: #202020;
+  --color-vanilla-900: #111111;
 
-  --color-gold-500: #d4af37;
+  --color-gold-500: #000000;
 
   --animate-fade-in: fade-in 0.8s ease-out forwards;
   --animate-slide-up: slide-up 0.8s ease-out forwards;
@@ -80,23 +80,23 @@
   }
 
   body {
-    @apply bg-vanilla-50 text-gray-900 antialiased;
+    @apply bg-white text-gray-900 antialiased;
   }
 
   /* Optional: smoother focus styles */
   :focus-visible {
-    outline: 2px solid theme(--color-vanilla-600);
+    outline: 2px solid #000;
     outline-offset: 2px;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-vanilla-600 hover:bg-vanilla-700 text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg;
+    @apply bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg;
   }
 
   .btn-secondary {
-    @apply border-2 border-vanilla-600 text-vanilla-700 hover:bg-vanilla-600 hover:text-white px-8 py-3 rounded-full font-semibold transition-all duration-300;
+    @apply border-2 border-black text-black hover:bg-black hover:text-white px-8 py-3 rounded-full font-semibold transition-all duration-300;
   }
 
   .section-title {
@@ -113,13 +113,13 @@
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #faf7ed;
+  background: #f0f0f0;
 }
 ::-webkit-scrollbar-thumb {
-  background: #c89d5e;
+  background: #606060;
   border-radius: 9999px;
-  border: 2px solid #faf7ed;
+  border: 2px solid #f0f0f0;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #a77f4d;
+  background: #404040;
 }

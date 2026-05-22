@@ -143,7 +143,7 @@ const Refund = () => {
     ]
 
     return (
-        <div className="pt-24 min-h-screen bg-vanilla-50">
+        <div className="pt-24 min-h-screen bg-vanilla-50 text-vanilla-800 font-sans antialiased leading-relaxed scroll-smooth">
             <Navbar />
 
             <section className="relative bg-vanilla-900 text-white py-16 lg:py-20 overflow-hidden">

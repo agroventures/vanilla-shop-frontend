@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import {
     XCircle,
     AlertTriangle,
@@ -27,17 +27,17 @@ import useSEO from '../hooks/useSEO'
 const OrderCancel = () => {
     const location = useLocation()
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
 
-    // Get data from navigation state
-    const {
-        reason,
-        orderId,
-        errorCode,
-        errorMessage,
-        canRetry = true
-    } = location.state || {}
+    // 1. Read internal router state or fall back to URL queries (Robust PayHere Integration)
+    const stateData = location.state || {}
+    const reason = stateData.reason || (searchParams.get('payment_failed') ? 'payment_failed' : 'default')
+    const orderId = stateData.orderId || searchParams.get('order_id')
+    const errorCode = stateData.errorCode || searchParams.get('status_code')
+    const errorMessage = stateData.errorMessage
+    const canRetry = stateData.canRetry ?? true
 
-    // Scroll to top
+    // Scroll to top on mount
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [])
@@ -51,7 +51,7 @@ const OrderCancel = () => {
         twitter_card: "summary_large_image",
     });
 
-    // Common reasons for cancellation
+    // Monochrome layout reason mapping
     const cancelReasons = {
         'payment_failed': {
             title: 'Payment Failed',
@@ -117,11 +117,9 @@ const OrderCancel = () => {
         }
     }
 
-    // Get reason details
     const reasonKey = reason || 'default'
     const reasonDetails = cancelReasons[reasonKey] || cancelReasons['default']
 
-    // FAQ items
     const faqItems = [
         {
             question: 'Why was my payment declined?',
@@ -142,162 +140,164 @@ const OrderCancel = () => {
     ]
 
     return (
-        <div className="min-h-screen bg-vanilla-50 font-sans text-vanilla-800">
+        <div className="min-h-screen bg-neutral-50 font-sans text-neutral-800 antialiased leading-relaxed scroll-smooth">
             <Navbar />
 
             {/* Hero Section */}
-            <section className="pt-32 pb-12 bg-vanilla-50">
+            <section className="pt-32 pb-12 bg-neutral-50">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    {/* Error Icon */}
+                    {/* Monochrome Minimalist Icon */}
                     <motion.div
                         initial={{ scale: 0, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-                        className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border-4 border-vanilla-100"
+                        className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-neutral-200"
                     >
-                        <div className="text-red-500">
+                        <div className="text-neutral-900">
                             {reasonDetails.icon}
                         </div>
                     </motion.div>
 
-                    {/* Error Message */}
+                    {/* Title & Desc */}
                     <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2, duration: 0.5 }}
-                        className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-vanilla-900 mb-4"
+                        className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-neutral-950 mb-4 tracking-tight"
                     >
                         {reasonDetails.title}
                     </motion.h1>
+                    
                     <motion.p
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3, duration: 0.5 }}
-                        className="text-vanilla-800/70 text-lg max-w-2xl mx-auto mb-8 leading-relaxed"
+                        className="text-neutral-600 text-base sm:text-lg max-w-2xl mx-auto mb-8 font-light"
                     >
                         {reasonDetails.description}
                     </motion.p>
 
-                    {/* Error Code */}
+                    {/* Metadata Badges */}
                     {(errorCode || orderId) && (
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.4, duration: 0.4 }}
-                            className="inline-flex items-center gap-4 bg-white px-6 py-3 rounded-xl shadow-sm border border-vanilla-200 text-sm"
+                            className="inline-flex flex-wrap justify-center items-center gap-x-6 gap-y-2 bg-white px-6 py-3 rounded-md shadow-sm border border-neutral-200 text-xs sm:text-sm"
                         >
                             {orderId && (
-                                <span className="text-vanilla-800/60">
-                                    Order: <span className="font-serif font-bold text-vanilla-900">{orderId}</span>
+                                <span className="text-neutral-500">
+                                    Order: <span className="font-serif font-bold text-neutral-900">{orderId}</span>
                                 </span>
                             )}
                             {errorCode && (
-                                <span className="text-vanilla-800/60">
-                                    Error: <span className="font-mono font-medium text-red-500">{errorCode}</span>
+                                <span className="text-neutral-500">
+                                    Error Reference: <span className="font-mono font-medium text-neutral-900">#{errorCode}</span>
                                 </span>
                             )}
                         </motion.div>
                     )}
 
-                    {/* Error Message Detail */}
+                    {/* Error Message Detail (Transformed to elegant inline banner) */}
                     {errorMessage && (
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.5, duration: 0.4 }}
-                            className="mt-6 p-4 bg-red-50 border border-red-100 rounded-xl max-w-xl mx-auto"
+                            className="mt-6 p-4 bg-neutral-100 border border-neutral-200 rounded-md max-w-xl mx-auto"
                         >
-                            <p className="text-red-700 text-sm">{errorMessage}</p>
+                            <p className="text-neutral-700 text-xs sm:text-sm font-mono">{errorMessage}</p>
                         </motion.div>
                     )}
                 </div>
             </section>
 
-            {/* Main Content */}
-            <section className="py-12">
+            {/* Main Layout Context */}
+            <section className="py-8 pb-24">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid lg:grid-cols-3 gap-8">
-                        {/* Left Column */}
+                        
+                        {/* Left Column: Resolution paths */}
                         <motion.div
-                            initial={{ opacity: 0, x: -30 }}
+                            initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.4, duration: 0.5 }}
                             className="lg:col-span-2 space-y-8"
                         >
-                            {/* Suggestions */}
-                            <div className="bg-white rounded-3xl border border-vanilla-100 shadow-sm overflow-hidden">
-                                <div className="p-6 bg-vanilla-50 border-b border-vanilla-100">
-                                    <h2 className="font-serif font-bold text-xl text-vanilla-900 flex items-center gap-2">
-                                        <HelpCircle className="w-5 h-5 text-gold-500" />
-                                        What You Can Do
+                            {/* Recommendations Matrix */}
+                            <div className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
+                                <div className="p-5 bg-neutral-50 border-b border-neutral-200">
+                                    <h2 className="font-serif font-bold text-lg text-neutral-950 flex items-center gap-2">
+                                        <HelpCircle className="w-4 h-4 text-neutral-900" />
+                                        Recommended Next Steps
                                     </h2>
                                 </div>
-                                <div className="p-8">
+                                <div className="p-6 sm:p-8">
                                     <ul className="space-y-4">
                                         {reasonDetails.suggestions.map((suggestion, index) => (
-                                            <li key={index} className="flex items-start gap-4">
-                                                <div className="w-6 h-6 bg-vanilla-900 rounded-full flex items-center justify-center shrink-0 mt-0.5 text-white font-bold text-sm">
+                                            <li key={`suggestion-${reasonKey}-${index}`} className="flex items-start gap-4">
+                                                <div className="w-5 h-5 bg-neutral-950 rounded-full flex items-center justify-center shrink-0 mt-0.5 text-white font-mono text-xs">
                                                     {index + 1}
                                                 </div>
-                                                <span className="text-vanilla-800/80">{suggestion}</span>
+                                                <span className="text-neutral-600 text-sm sm:text-base font-light">{suggestion}</span>
                                             </li>
                                         ))}
                                     </ul>
                                 </div>
                             </div>
 
-                            {/* Action Buttons */}
-                            <div className="bg-white rounded-3xl border border-vanilla-100 shadow-sm p-8">
-                                <div className="grid sm:grid-cols-2 gap-4">
+                            {/* Clean Responsive Action Wrappers */}
+                            <div className="bg-white rounded-xl border border-neutral-200 shadow-sm p-6 sm:p-8">
+                                <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-3">
                                     {canRetry && (
                                         <Link
                                             to="/checkout"
-                                            className="flex items-center justify-center gap-2 px-6 py-4 bg-vanilla-900 text-white rounded-xl font-bold hover:bg-gold-500 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+                                            className="flex items-center justify-center gap-2 px-6 py-3.5 bg-neutral-950 text-white rounded-md font-bold text-sm hover:bg-neutral-800 transition-colors duration-200 shadow-sm"
                                         >
-                                            <RefreshCcw className="w-5 h-5" />
-                                            Try Again
+                                            <RefreshCcw className="w-4 h-4" />
+                                            Retry Checkout
                                         </Link>
                                     )}
                                     <Link
                                         to="/cart"
-                                        className="flex items-center justify-center gap-2 px-6 py-4 bg-vanilla-100 text-vanilla-900 rounded-xl font-bold hover:bg-vanilla-200 transition-colors"
+                                        className="flex items-center justify-center gap-2 px-6 py-3.5 bg-neutral-100 text-neutral-900 rounded-md font-bold text-sm hover:bg-neutral-200 transition-colors"
                                     >
-                                        <ShoppingCart className="w-5 h-5" />
-                                        Return to Cart
+                                        <ShoppingCart className="w-4 h-4" />
+                                        Modify Items
                                     </Link>
                                     <Link
                                         to="/products"
-                                        className="flex items-center justify-center gap-2 px-6 py-4 border-2 border-vanilla-200 text-vanilla-900 rounded-xl font-bold hover:border-gold-500 hover:text-gold-500 transition-colors"
+                                        className="flex items-center justify-center gap-2 px-6 py-3.5 border border-neutral-200 text-neutral-800 rounded-md font-medium text-sm hover:border-neutral-950 hover:text-neutral-950 transition-colors"
                                     >
-                                        Continue Shopping
+                                        Browse Products
                                     </Link>
                                     <Link
                                         to="/"
-                                        className="flex items-center justify-center gap-2 px-6 py-4 border-2 border-vanilla-200 text-vanilla-900 rounded-xl font-bold hover:border-gold-500 hover:text-gold-500 transition-colors"
+                                        className="flex items-center justify-center gap-2 px-6 py-3.5 border border-neutral-200 text-neutral-800 rounded-md font-medium text-sm hover:border-neutral-950 hover:text-neutral-950 transition-colors"
                                     >
-                                        <Home className="w-5 h-5" />
-                                        Back to Home
+                                        <Home className="w-4 h-4" />
+                                        Storefront Home
                                     </Link>
                                 </div>
                             </div>
 
-                            {/* FAQ Section */}
-                            <div className="bg-white rounded-3xl border border-vanilla-100 shadow-sm overflow-hidden">
-                                <div className="p-6 bg-vanilla-50 border-b border-vanilla-100">
-                                    <h2 className="font-serif font-bold text-xl text-vanilla-900 flex items-center gap-2">
-                                        <MessageCircle className="w-5 h-5 text-gold-500" />
+                            {/* Minimal Accordion Drawer (FAQs) */}
+                            <div className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
+                                <div className="p-5 bg-neutral-50 border-b border-neutral-200">
+                                    <h2 className="font-serif font-bold text-lg text-neutral-950 flex items-center gap-2">
+                                        <MessageCircle className="w-4 h-4 text-neutral-900" />
                                         Frequently Asked Questions
                                     </h2>
                                 </div>
-                                <div className="divide-y divide-vanilla-100">
+                                <div className="divide-y divide-neutral-200">
                                     {faqItems.map((faq, index) => (
-                                        <details key={index} className="group">
-                                            <summary className="flex items-center justify-between p-6 cursor-pointer hover:bg-vanilla-50 transition-colors">
-                                                <span className="font-bold text-vanilla-900 pr-4 font-serif">{faq.question}</span>
-                                                <ChevronRight className="w-5 h-5 text-vanilla-400 group-open:rotate-90 transition-transform" />
+                                        <details key={`faq-${index}`} className="group">
+                                            <summary className="flex items-center justify-between p-5 cursor-pointer hover:bg-neutral-50 transition-colors list-none [&::-webkit-details-marker]:hidden">
+                                                <span className="font-bold text-neutral-900 pr-4 font-serif text-sm sm:text-base">{faq.question}</span>
+                                                <ChevronRight className="w-4 h-4 text-neutral-400 group-open:rotate-90 transition-transform duration-200" />
                                             </summary>
-                                            <div className="px-6 pb-6 pt-0">
-                                                <p className="text-vanilla-800/70 text-sm leading-relaxed">{faq.answer}</p>
+                                            <div className="px-5 pb-5 pt-0">
+                                                <p className="text-neutral-600 text-sm leading-relaxed font-light">{faq.answer}</p>
                                             </div>
                                         </details>
                                     ))}
@@ -305,108 +305,112 @@ const OrderCancel = () => {
                             </div>
                         </motion.div>
 
-                        {/* Right Column */}
+                        {/* Right Column: Information panels */}
                         <motion.div
-                            initial={{ opacity: 0, x: 30 }}
+                            initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.5, duration: 0.5 }}
                             className="space-y-6"
                         >
-                            {/* Contact Support */}
-                            <div className="bg-white rounded-3xl border border-vanilla-100 shadow-sm overflow-hidden">
-                                <div className="p-6 bg-vanilla-50 border-b border-vanilla-100">
-                                    <h2 className="font-serif font-bold text-xl text-vanilla-900 flex items-center gap-2">
-                                        <Headphones className="w-5 h-5 text-gold-500" />
-                                        Contact Support
+                            {/* Concierge Support Desk */}
+                            <div className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
+                                <div className="p-5 bg-neutral-50 border-b border-neutral-200">
+                                    <h2 className="font-serif font-bold text-lg text-neutral-950 flex items-center gap-2">
+                                        <Headphones className="w-4 h-4 text-neutral-900" />
+                                        Customer Care Desk
                                     </h2>
                                 </div>
                                 <div className="p-6 space-y-4">
-                                    <p className="text-vanilla-800/70 text-sm">
-                                        Need help? Our support team is ready to assist you.
+                                    <p className="text-neutral-600 text-sm font-light">
+                                        Have questions regarding authorization hold-ups or custom accounts? Get in touch with us.
                                     </p>
 
                                     <a
                                         href="mailto:support@ceylonvanilla.com"
-                                        className="flex items-center gap-3 p-4 bg-vanilla-50 rounded-xl hover:bg-vanilla-100 transition-colors border border-vanilla-100"
+                                        className="flex items-center gap-3 p-4 bg-neutral-50 rounded-md hover:bg-neutral-100 transition-colors border border-neutral-200"
                                     >
-                                        <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                                            <Mail className="w-5 h-5 text-gold-500" />
+                                        <div className="w-8 h-8 bg-white border border-neutral-200 rounded flex items-center justify-center shadow-sm shrink-0">
+                                            <Mail className="w-4 h-4 text-neutral-900" />
                                         </div>
-                                        <div>
-                                            <p className="font-bold text-vanilla-900 text-sm">Email Us</p>
-                                            <p className="text-vanilla-800/60 text-xs">support@ceylonvanilla.com</p>
+                                        <div className="min-w-0">
+                                            <p className="font-bold text-neutral-950 text-xs tracking-wide uppercase">Email Inquiries</p>
+                                            <p className="text-neutral-600 text-xs truncate">support@ceylonvanilla.com</p>
                                         </div>
                                     </a>
 
                                     <a
-                                        href="tel:+94705200900"
-                                        className="flex items-center gap-3 p-4 bg-vanilla-50 rounded-xl hover:bg-vanilla-100 transition-colors border border-vanilla-100"
+                                        href="tel:+94771234567"
+                                        className="flex items-center gap-3 p-4 bg-neutral-50 rounded-md hover:bg-neutral-100 transition-colors border border-neutral-200"
                                     >
-                                        <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                                            <Phone className="w-5 h-5 text-gold-500" />
+                                        <div className="w-8 h-8 bg-white border border-neutral-200 rounded flex items-center justify-center shadow-sm shrink-0">
+                                            <Phone className="w-4 h-4 text-neutral-900" />
                                         </div>
                                         <div>
-                                            <p className="font-bold text-vanilla-900 text-sm">Call Us</p>
-                                            <p className="text-vanilla-800/60 text-xs">+94 77 123 4567</p>
+                                            <p className="font-bold text-neutral-950 text-xs tracking-wide uppercase">Direct Line</p>
+                                            <p className="text-neutral-600 text-xs">+94 77 123 4567</p>
                                         </div>
                                     </a>
 
-                                    <div className="pt-4 border-t border-vanilla-100">
-                                        <p className="text-vanilla-800/40 text-xs text-center">
-                                            Available Monday - Saturday, 9 AM - 6 PM (IST)
+                                    <div className="pt-2">
+                                        <p className="text-neutral-400 text-[11px] font-mono text-center">
+                                            Mon - Sat, 9:00 AM - 6:00 PM (IST)
                                         </p>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Security Notice */}
-                            <div className="bg-green-50 rounded-3xl p-6 border border-green-100">
+                            {/* Safe Transaction Guarantee */}
+                            <div className="bg-white border border-neutral-200 rounded-xl p-6 shadow-sm">
                                 <div className="flex items-start gap-3">
-                                    <Shield className="w-6 h-6 text-green-600 shrink-0" />
+                                    <Shield className="w-5 h-5 text-neutral-950 shrink-0 mt-0.5" />
                                     <div>
-                                        <h3 className="font-bold text-green-800 mb-1 font-serif">Your Data is Safe</h3>
-                                        <p className="text-green-700/80 text-sm leading-relaxed">
-                                            No payment was processed and your financial information remains secure.
-                                            We use industry-standard encryption to protect all transactions.
+                                        <h3 className="font-bold text-neutral-950 mb-1 font-serif text-sm">Secure Architecture</h3>
+                                        <p className="text-neutral-600 text-xs leading-relaxed font-light">
+                                            No funds were extracted. Your session transactions remain completely anonymous and isolated under industry-grade encryption parameters.
                                         </p>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Alternative Payment Methods */}
-                            <div className="bg-white rounded-3xl border border-vanilla-100 shadow-sm p-6">
-                                <h3 className="font-serif font-bold text-vanilla-900 mb-4 flex items-center gap-2">
-                                    <CreditCard className="w-5 h-5 text-gold-500" />
-                                    Alternatives
+                            {/* Settlement Framework Modalities */}
+                            <div className="bg-white rounded-xl border border-neutral-200 shadow-sm p-6">
+                                <h3 className="font-serif font-bold text-neutral-950 text-sm mb-3 flex items-center gap-2">
+                                    <CreditCard className="w-4 h-4 text-neutral-900" />
+                                    Supported Gateways
                                 </h3>
-                                <p className="text-vanilla-800/70 text-sm mb-4">
-                                    Having trouble? Try one of these alternatives:
+                                <p className="text-neutral-600 text-xs mb-4 font-light">
+                                    You can switch to a separate clearance instrument at your convenience:
                                 </p>
-                                <ul className="space-y-3 text-sm text-vanilla-800/70">
-                                    <li className="flex items-center gap-2">
-                                        <div className="w-1.5 h-1.5 bg-gold-500 rounded-full" />
-                                        Credit/Debit Card
+                                <ul className="grid grid-cols-2 gap-2 text-xs font-mono text-neutral-700">
+                                    <li className="flex items-center gap-1.5 py-1 px-2 bg-neutral-50 border border-neutral-100 rounded">
+                                        <div className="w-1 h-1 bg-neutral-900 rounded-full" />
+                                        Visa / Master
                                     </li>
-                                    <li className="flex items-center gap-2">
-                                        <div className="w-1.5 h-1.5 bg-gold-500 rounded-full" />
+                                    <li className="flex items-center gap-1.5 py-1 px-2 bg-neutral-50 border border-neutral-100 rounded">
+                                        <div className="w-1 h-1 bg-neutral-900 rounded-full" />
                                         Bank Transfer
                                     </li>
-                                    <li className="flex items-center gap-2">
-                                        <div className="w-1.5 h-1.5 bg-gold-500 rounded-full" />
-                                        Cash on Delivery
+                                    <li className="flex items-center gap-1.5 py-1 px-2 bg-neutral-50 border border-neutral-100 rounded">
+                                        <div className="w-1 h-1 bg-neutral-900 rounded-full" />
+                                        Amex Portal
+                                    </li>
+                                    <li className="flex items-center gap-1.5 py-1 px-2 bg-neutral-50 border border-neutral-100 rounded">
+                                        <div className="w-1 h-1 bg-neutral-900 rounded-full" />
+                                        COD Delivery
                                     </li>
                                 </ul>
                             </div>
 
-                            {/* Back Link */}
+                            {/* History Back Nav Trigger */}
                             <button
                                 onClick={() => navigate(-1)}
-                                className="w-full flex items-center justify-center gap-2 p-4 text-vanilla-800/60 hover:text-vanilla-900 font-bold transition-colors"
+                                className="w-full flex items-center justify-center gap-2 p-3 text-neutral-400 hover:text-neutral-950 font-bold text-sm transition-colors"
                             >
-                                <ArrowLeft className="w-4 h-4" />
-                                Go Back
+                                <ArrowLeft className="w-3 h-3" />
+                                Go Back One Page
                             </button>
                         </motion.div>
+                        
                     </div>
                 </div>
             </section>

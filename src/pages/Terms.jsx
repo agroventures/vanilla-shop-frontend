@@ -155,7 +155,7 @@ const Terms = () => {
     ]
 
     return (
-        <div className="pt-24 min-h-screen bg-vanilla-50">
+        <div className="pt-24 min-h-screen bg-vanilla-50 text-vanilla-800 font-sans antialiased leading-relaxed scroll-smooth">
             <Navbar />
 
             {/* Hero Section */}

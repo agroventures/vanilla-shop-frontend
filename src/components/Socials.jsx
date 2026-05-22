@@ -28,7 +28,7 @@ const Socials = () => {
   };
 
   return (
-    <section ref={ref} className="py-20 bg-vanilla-50">
+    <section ref={ref} className="py-28 bg-neutral-950 text-white">
       <div className="max-w-7xl mx-auto px-4 text-center">
         
         {/* Header Animation */}
@@ -36,10 +36,12 @@ const Socials = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-16 space-y-4"
         >
-          <h2 className="section-title">Follow Us</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <span className="text-xs uppercase tracking-widest text-neutral-500 font-semibold block">Social</span>
+          <h2 className="text-3xl md:text-4xl font-serif font-normal tracking-tight text-white">Follow Us</h2>
+          <div className="w-12 h-px bg-neutral-700 mx-auto" />
+          <p className="text-neutral-400 font-light text-sm max-w-xl mx-auto tracking-wide">
             Stay connected and inspired. Tag us to be featured!
           </p>
         </motion.div>
@@ -63,7 +65,7 @@ const Socials = () => {
               whileTap={{ scale: 0.9 }}
               href={social.href}
               target="_blank"
-              className={`w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center text-vanilla-900 hover:text-white ${social.hover} transition-colors duration-300 text-xl`}
+              className={`w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center text-white hover:text-white ${social.hover} transition-colors duration-300 text-xl`}
             >
               <i className={`fa-brands ${social.icon}`}></i>
             </motion.a>
@@ -81,7 +83,7 @@ const Socials = () => {
             <motion.div 
               key={index} 
               variants={itemVariants}
-              className="group relative overflow-hidden rounded-lg cursor-pointer h-64"
+              className="group relative overflow-hidden cursor-pointer h-64"
             >
               <img 
                 src={img} 
@@ -99,7 +101,7 @@ const Socials = () => {
           {/* Video Placeholder */}
           <motion.div 
             variants={itemVariants}
-            className='group relative overflow-hidden rounded-lg cursor-pointer h-64'
+            className='group relative overflow-hidden cursor-pointer h-64'
           >
             <video 
               src="/videos/instagram_video.mp4" 

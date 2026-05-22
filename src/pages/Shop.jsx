@@ -845,7 +845,7 @@ const Shop = () => {
     }
 
     return (
-        <div className="min-h-screen bg-vanilla-50">
+        <div className="min-h-screen bg-vanilla-50 text-vanilla-800 font-sans antialiased leading-relaxed scroll-smooth">
             <Navbar onShopClick={resetFilters} />
 
             {/* Hero Section */}

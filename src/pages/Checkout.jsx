@@ -705,7 +705,7 @@ const Checkout = () => {
     }
 
     return (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="pt-24 min-h-screen bg-vanilla-50 font-sans text-vanilla-800">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="pt-24 min-h-screen bg-vanilla-50 font-sans text-vanilla-800 antialiased leading-relaxed scroll-smooth">
             <Navbar />
 
             {/* Breadcrumbs with Currency Selector */}

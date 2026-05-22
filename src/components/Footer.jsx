@@ -48,48 +48,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-linear-to-br from-gray-900 to-gray-800 text-white">
-      {/* Newsletter Section */}
-      <div className="border-b border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-            >
-              <h3 className="font-serif text-3xl font-bold mb-2">
-                Join Our Vanilla Community
-              </h3>
-              <p className="text-gray-400">
-                Subscribe for exclusive offers and vanilla recipes
-              </p>
-            </motion.div>
-            
-            <motion.form
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="flex gap-3"
-            >
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-full bg-white/10 border border-white/20 focus:outline-none focus:border-vanilla-400 transition-colors"
-              />
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                type="submit"
-                className="btn-primary whitespace-nowrap"
-              >
-                Subscribe
-              </motion.button>
-            </motion.form>
-          </div>
-        </div>
-      </div>
-
+    <footer className="bg-black">
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
@@ -126,7 +85,7 @@ const Footer = () => {
 
           {/* Shop Links */}
           <div>
-            <h4 className="font-serif text-lg font-bold mb-4">Shop</h4>
+            <h4 className="font-serif text-white text-lg font-bold mb-4">Shop</h4>
             <ul className="space-y-2">
               {footerLinks.shop.map((link) => (
                 <li key={link.path}>
@@ -145,7 +104,7 @@ const Footer = () => {
 
           {/* Company Links */}
           <div>
-            <h4 className="font-serif text-lg font-bold mb-4">Company</h4>
+            <h4 className="font-serif text-white text-lg font-bold mb-4">Company</h4>
             <ul className="space-y-2">
               {footerLinks.company.map((link) => (
                 <li key={link.path}>
@@ -164,7 +123,7 @@ const Footer = () => {
 
           {/* Legal Links */}
           <div>
-            <h4 className="font-serif text-lg font-bold mb-4">Legal</h4>
+            <h4 className="font-serif text-white text-lg font-bold mb-4">Legal</h4>
             <ul className="space-y-2">
               {footerLinks.legal.map((link) => (
                 <li key={link.path}>
@@ -198,7 +157,7 @@ const Footer = () => {
                   href={social.href}
                   whileHover={{ scale: 1.2, y: -3 }}
                   whileTap={{ scale: 0.9 }}
-                  className="w-10 h-10 bg-white/10 hover:bg-vanilla-600 rounded-full flex items-center justify-center transition-colors"
+                  className="w-10 h-10 bg-white/10 text-white hover:bg-vanilla-600 rounded-full flex items-center justify-center transition-colors"
                   aria-label={social.label}
                 >
                   <i className={`fa-brands ${social.icon}`}></i>

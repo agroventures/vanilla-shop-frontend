@@ -110,7 +110,7 @@ const Privacy = () => {
     }
 
     return (
-        <div className="pt-24 bg-vanilla-50 min-h-screen">
+        <div className="pt-24 bg-vanilla-50 min-h-screen text-vanilla-800 font-sans antialiased leading-relaxed scroll-smooth">
 
             <Navbar />
 

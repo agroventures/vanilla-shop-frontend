@@ -53,10 +53,10 @@ const OrderSuccess = () => {
     const shippingAddress = orderData?.shippingAddress;
     const paymentMethod = orderData?.paymentMethod;
 
-    // Confetti effect on mount
+    // Confetti effect on mount (Transformed to elegant monochrome colors)
     useEffect(() => {
         const duration = 3000
-        const animationEnd = Date.now() + duration
+            const animationEnd = Date.now() + duration
         const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 }
 
         function randomInRange(min, max) {
@@ -72,18 +72,18 @@ const OrderSuccess = () => {
 
             const particleCount = 50 * (timeLeft / duration)
 
-            // Updated colors to match the Vanilla/Gold theme
+            // Updated colors to match minimalist high-end Black and White aesthetics
             confetti({
                 ...defaults,
                 particleCount,
                 origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-                colors: ['#d4af37', '#5d4037', '#f7f1e3', '#3e2723'] 
+                colors: ['#171717', '#404040', '#a3a3a3', '#f5f5f5'] 
             })
             confetti({
                 ...defaults,
                 particleCount,
                 origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-                colors: ['#d4af37', '#5d4037', '#f7f1e3', '#3e2723']
+                colors: ['#171717', '#404040', '#a3a3a3', '#f5f5f5']
             })
         }, 250)
 
@@ -100,7 +100,7 @@ const OrderSuccess = () => {
     // Format price
     const formatPrice = (price = 0) => `LKR ${Number(price).toLocaleString('en-LK')}`
 
-    // Order timeline steps
+    // Order timeline steps (Synchronized to clean black/white statuses)
     const timelineSteps = [
         {
             title: 'Order Placed',
@@ -135,48 +135,48 @@ const OrderSuccess = () => {
     })
 
     return (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="min-h-screen bg-vanilla-50 font-sans text-vanilla-800">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="min-h-screen bg-neutral-50 font-sans text-neutral-800 antialiased leading-relaxed scroll-smooth">
             <Navbar />
 
             {/* Hero Section */}
-            <section className="pt-32 pb-12 bg-linear-to-b from-vanilla-100 to-vanilla-50">
+            <section className="pt-32 pb-12 bg-neutral-50 border-b border-neutral-200/60">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    {/* Success Icon */}
+                    {/* Success Icon Wrapper */}
                     <motion.div
                         initial={{ scale: 0, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
                         className="relative inline-block mb-8"
                     >
-                        <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto shadow-lg border-4 border-vanilla-100 animate-bounce-slow">
-                            <CheckCircle className="w-12 h-12 text-green-600" />
+                        <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm border border-neutral-200">
+                            <CheckCircle className="w-12 h-12 text-neutral-900" />
                         </div>
-                        <div className="absolute -top-2 -right-2 w-10 h-10 bg-gold-500 rounded-full flex items-center justify-center shadow-md border-2 border-white">
+                        <div className="absolute -top-2 -right-2 w-10 h-10 bg-neutral-950 rounded-full flex items-center justify-center shadow-md border-2 border-white">
                             <Sparkles className="w-5 h-5 text-white" />
                         </div>
                     </motion.div>
 
                     {/* Success Message */}
-                    <motion.h1 {...fadeUp(0.2)} className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-vanilla-900 mb-6">
+                    <motion.h1 {...fadeUp(0.2)} className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-neutral-950 mb-4 tracking-tight">
                         Thank You!
                     </motion.h1>
-                    <motion.p {...fadeUp(0.3)} className="text-vanilla-800/70 text-lg max-w-2xl mx-auto mb-10 leading-relaxed font-sans">
+                    <motion.p {...fadeUp(0.3)} className="text-neutral-600 text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed font-light">
                         Your order has been successfully placed. We've sent a confirmation email to{' '}
-                        <strong className="text-vanilla-900 border-b border-gold-500/50 pb-0.5">{email || 'your email address'}</strong>
+                        <strong className="text-neutral-950 font-medium border-b border-neutral-950 pb-0.5">{email || 'your email address'}</strong>
                     </motion.p>
 
-                    {/* Order Number */}
-                    <motion.div {...fadeUp(0.4)} className="inline-flex items-center gap-4 bg-white px-8 py-5 rounded-2xl shadow-sm border border-vanilla-100 hover:shadow-md transition-shadow duration-300">
+                    {/* Order Number Badge */}
+                    <motion.div {...fadeUp(0.4)} className="inline-flex items-center gap-4 bg-white px-8 py-4 rounded-md shadow-sm border border-neutral-200 transition-shadow duration-300">
                         <div className="text-left">
-                            <p className="text-vanilla-800/50 text-xs font-bold uppercase tracking-wider mb-1">Order Number</p>
-                            <p className="font-serif font-bold text-2xl text-vanilla-900">{orderId}</p>
+                            <p className="text-neutral-400 text-xs font-bold uppercase tracking-wider mb-0.5">Order Number</p>
+                            <p className="font-serif font-bold text-xl sm:text-2xl text-neutral-950">{orderId}</p>
                         </div>
-                        <div className="h-10 w-px bg-vanilla-200 mx-2"></div>
+                        <div className="h-10 w-px bg-neutral-200 mx-2"></div>
                         <button
                             onClick={copyOrderNumber}
-                            className={`p-3 rounded-xl transition-all duration-300 ${copied
-                                ? 'bg-green-100 text-green-700'
-                                : 'bg-vanilla-50 text-vanilla-400 hover:bg-vanilla-100 hover:text-gold-500'
+                            className={`p-3 rounded-md transition-all duration-300 ${copied
+                                ? 'bg-neutral-100 text-neutral-900'
+                                : 'bg-neutral-50 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-900'
                                 }`}
                             title="Copy order number"
                         >
@@ -186,51 +186,51 @@ const OrderSuccess = () => {
                 </div>
             </section>
 
-            {/* Main Content */}
+            {/* Main Content Details Grid */}
             <section className="py-12">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid lg:grid-cols-3 gap-8">
-                        {/* Left Column - Order Details */}
+                        
+                        {/* Left Column - Order Timeline Track */}
                         <div className="lg:col-span-2 space-y-8">
-                            {/* Order Timeline */}
-                            <motion.div {...fadeUp(0.5)} className="bg-white rounded-3xl border border-vanilla-100 shadow-sm overflow-hidden">
-                                <div className="p-6 bg-vanilla-50 border-b border-vanilla-100">
-                                    <h2 className="font-serif font-bold text-xl text-vanilla-900 flex items-center gap-3">
-                                        <Clock className="w-5 h-5 text-gold-500" />
+                            <motion.div {...fadeUp(0.5)} className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
+                                <div className="p-5 bg-neutral-50 border-b border-neutral-200">
+                                    <h2 className="font-serif font-bold text-lg text-neutral-950 flex items-center gap-2">
+                                        <Clock className="w-4 h-4 text-neutral-900" />
                                         Order Status
                                     </h2>
                                 </div>
-                                <div className="p-8">
+                                <div className="p-6 sm:p-8">
                                     <div className="relative">
                                         {timelineSteps.map((step, index) => (
                                             <div key={index} className="flex gap-6 pb-10 last:pb-0">
-                                                {/* Timeline Line */}
+                                                {/* Timeline Line element */}
                                                 {index < timelineSteps.length - 1 && (
                                                     <div className={`absolute left-6 top-12 w-0.5 h-full -ml-px ${
-                                                        step.status === 'completed' ? 'bg-green-500' : 'bg-vanilla-200'
+                                                        step.status === 'completed' ? 'bg-neutral-950' : 'bg-neutral-200'
                                                         }`} />
                                                 )}
 
-                                                {/* Icon */}
+                                                {/* Step Status Icon */}
                                                 <div className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center shrink-0 border-4 border-white shadow-sm ${
                                                     step.status === 'completed'
-                                                        ? 'bg-green-100 text-green-600'
+                                                        ? 'bg-neutral-950 text-white'
                                                         : step.status === 'current'
-                                                            ? 'bg-vanilla-900 text-white ring-4 ring-vanilla-100'
-                                                            : 'bg-vanilla-100 text-vanilla-300'
+                                                            ? 'bg-neutral-100 text-neutral-900 ring-2 ring-neutral-950'
+                                                            : 'bg-neutral-50 text-neutral-300 border border-neutral-200'
                                                     }`}>
                                                     {step.icon}
                                                 </div>
 
-                                                {/* Content */}
+                                                {/* Content descriptions */}
                                                 <div className="flex-1 pt-2">
-                                                    <h3 className={`font-serif font-bold text-lg ${
-                                                        step.status === 'pending' ? 'text-vanilla-800/40' : 'text-vanilla-900'
+                                                    <h3 className={`font-serif font-bold text-base sm:text-lg ${
+                                                        step.status === 'pending' ? 'text-neutral-400' : 'text-neutral-950'
                                                         }`}>
                                                         {step.title}
                                                     </h3>
-                                                    <p className={`text-sm mt-1 font-sans ${
-                                                        step.status === 'pending' ? 'text-vanilla-800/30' : 'text-vanilla-800/70'
+                                                    <p className={`text-sm mt-0.5 font-light ${
+                                                        step.status === 'pending' ? 'text-neutral-400/70' : 'text-neutral-600'
                                                         }`}>
                                                         {step.description}
                                                     </p>
@@ -241,46 +241,45 @@ const OrderSuccess = () => {
                                 </div>
                             </motion.div>
 
-                            {/* Actions */}
+                            {/* Main CTA Core Actions */}
                             <motion.div {...fadeUp(0.6)} className="flex flex-col sm:flex-row gap-4">
                                 <Link
                                     to="/products"
-                                    className="flex-1 inline-flex items-center justify-center gap-2 px-8 py-4 bg-vanilla-900 text-white rounded-xl font-bold hover:bg-gold-500 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+                                    className="flex-1 inline-flex items-center justify-center gap-2 px-8 py-4 bg-neutral-950 text-white rounded-md font-bold text-sm hover:bg-neutral-800 transition-colors shadow-sm"
                                 >
-                                    <ShoppingBag className="w-5 h-5" />
+                                    <ShoppingBag className="w-4 h-4" />
                                     Continue Shopping
                                 </Link>
                                 <Link
                                     to="/"
-                                    className="flex-1 inline-flex items-center justify-center gap-2 px-8 py-4 bg-white border-2 border-vanilla-200 text-vanilla-900 rounded-xl font-bold hover:border-gold-500 hover:text-gold-500 transition-colors duration-300"
+                                    className="flex-1 inline-flex items-center justify-center gap-2 px-8 py-4 bg-white border border-neutral-200 text-neutral-800 rounded-md font-medium text-sm hover:border-neutral-950 hover:text-neutral-950 transition-colors"
                                 >
-                                    <Home className="w-5 h-5" />
+                                    <Home className="w-4 h-4" />
                                     Back to Home
                                 </Link>
                             </motion.div>
                         </div>
 
-                        {/* Right Column - Order Summary */}
+                        {/* Right Column - Briefings Panels */}
                         <div className="space-y-6">
-                            {/* Order Total */}
-                            <motion.div {...fadeUp(0.55)} className="bg-white rounded-3xl border border-vanilla-100 shadow-sm overflow-hidden">
-                                <div className="p-6 bg-vanilla-50 border-b border-vanilla-100">
-                                    <h2 className="font-serif font-bold text-xl text-vanilla-900">Order Summary</h2>
+                            {/* Order Total Overview Block */}
+                            <motion.div {...fadeUp(0.55)} className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
+                                <div className="p-5 bg-neutral-50 border-b border-neutral-200">
+                                    <h2 className="font-serif font-bold text-lg text-neutral-950">Order Summary</h2>
                                 </div>
-                                <div className="p-8">
+                                <div className="p-6 sm:p-8">
                                     <div className="text-center py-2">
-                                        <p className="text-vanilla-800/60 text-sm font-bold uppercase tracking-wider mb-2">Total Amount</p>
-                                        <p className="font-serif text-4xl font-bold text-gold-500">
+                                        <p className="text-neutral-400 text-xs font-bold uppercase tracking-wider mb-1">Total Amount</p>
+                                        <p className="font-serif text-3xl sm:text-4xl font-bold text-neutral-950">
                                             {formatPrice(totalPrice)}
                                         </p>
                                     </div>
 
                                     {paymentMethod && (
-                                        <div className="mt-8 pt-6 border-t border-vanilla-100">
-                                            <div className="flex items-center justify-between text-sm">
-                                                <span className="text-vanilla-800/60 font-medium">Payment Method</span>
-                                                <span className="font-bold text-vanilla-900 capitalize flex items-center gap-2 bg-vanilla-50 px-3 py-1.5 rounded-full">
-                                                    <CreditCard className="w-4 h-4 text-gold-500" />
+                                        <div className="mt-6 pt-6 border-t border-neutral-200">
+                                            <div className="flex items-center justify-between text-xs sm:text-sm">
+                                                <span className="text-neutral-500 font-light">Payment Method</span>
+                                                <span className="font-mono font-medium text-neutral-900 uppercase tracking-wider bg-neutral-50 border border-neutral-200 px-3 py-1 rounded">
                                                     {paymentMethod.replace('_', ' ')}
                                                 </span>
                                             </div>
@@ -289,28 +288,29 @@ const OrderSuccess = () => {
                                 </div>
                             </motion.div>
 
-                            {/* Shipping Address */}
+                            {/* Delivery Despatched Target Address */}
                             {shippingAddress && (
-                                <motion.div {...fadeUp(0.65)} className="bg-white rounded-3xl border border-vanilla-100 shadow-sm overflow-hidden">
-                                    <div className="p-6 bg-vanilla-50 border-b border-vanilla-100">
-                                        <h2 className="font-serif font-bold text-xl text-vanilla-900 flex items-center gap-2">
-                                            <MapPin className="w-5 h-5 text-gold-500" />
-                                            Shipping To
+                                <motion.div {...fadeUp(0.65)} className="bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden">
+                                    <div className="p-5 bg-neutral-50 border-b border-neutral-200">
+                                        <h2 className="font-serif font-bold text-lg text-neutral-950 flex items-center gap-2">
+                                            <MapPin className="w-4 h-4 text-neutral-900" />
+                                            Shipping Details
                                         </h2>
                                     </div>
-                                    <div className="p-8 font-sans">
-                                        <p className="text-vanilla-900 font-bold text-lg mb-1">
+                                    <div className="p-6 font-sans">
+                                        <p className="text-neutral-950 font-bold text-base mb-1 font-serif">
                                             {shippingAddress.firstName} {shippingAddress.lastName}
                                         </p>
-                                        <p className="text-vanilla-800/70">{shippingAddress.address}</p>
-                                        <p className="text-vanilla-800/70">
+                                        <p className="text-neutral-600 text-sm font-light">{shippingAddress.address}</p>
+                                        <p className="text-neutral-600 text-sm font-light">
                                             {shippingAddress.city}, {shippingAddress.state} {shippingAddress.zipCode}
                                         </p>
-                                        <p className="text-vanilla-800/70 font-medium mt-1">{shippingAddress.country}</p>
+                                        <p className="text-neutral-900 text-xs font-mono mt-2 pt-2 border-t border-neutral-100">{shippingAddress.country}</p>
                                     </div>
                                 </motion.div>
                             )}
                         </div>
+                        
                     </div>
                 </div>
             </section>

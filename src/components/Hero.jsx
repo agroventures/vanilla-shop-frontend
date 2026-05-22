@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { motion, useScroll, useTransform, useInView } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Sparkles } from 'lucide-react';
 
@@ -10,142 +10,149 @@ const Hero = () => {
     offset: ["start start", "end start"]
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '40%']);
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
 
-
   return (
-    <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Animated Background */}
-        <motion.div
-          style={{ y, opacity }}
-          className="absolute inset-0 z-0"
-        >
-          {/* <div className="absolute inset-0 bg-linear-to-br from-vanilla-100 via-vanilla-50 to-white" /> */}
-          <video
-            src="/videos/hero_video.mov"
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover opacity-70"
+    <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden bg-white text-black">
+      {/* Animated Background */}
+      <motion.div
+        style={{ y, opacity }}
+        className="absolute inset-0 z-0"
+      >
+        <video
+          src="/videos/hero_video.mov"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-40 grayscale contrast-125"
+        />
+        
+        {/* Premium Vignette/Overlay */}
+        <div className="absolute inset-0 bg-linear-to-b from-white/10 via-transparent to-white" />
+
+        {/* Floating Monochrome Elements */}
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-black/20 rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [0, -40, 0],
+              opacity: [0.1, 0.6, 0.1],
+              scale: [1, 2, 1],
+            }}
+            transition={{
+              duration: 4 + Math.random() * 3,
+              repeat: Infinity,
+              delay: Math.random() * 2,
+            }}
           />
+        ))}
+      </motion.div>
 
-
-          {/* Floating Elements */}
-          {[...Array(20)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-2 h-2 bg-vanilla-400/30 rounded-full"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-              }}
-              animate={{
-                y: [0, -30, 0],
-                opacity: [0.2, 0.8, 0.2],
-                scale: [1, 1.5, 1],
-              }}
-              transition={{
-                duration: 3 + Math.random() * 2,
-                repeat: Infinity,
-                delay: Math.random() * 2,
-              }}
-            />
-          ))}
-        </motion.div>
-
-        {/* Hero Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="inline-flex items-center space-x-2 bg-vanilla-200/50 backdrop-blur-sm px-6 py-2 rounded-full mb-6"
-            >
-              <Sparkles className="w-5 h-5 text-vanilla-600" />
-              <span className="text-vanilla-800 font-medium">Premium Vanilla Since 2025</span>
-            </motion.div>
-
-            <h1 className="font-serif text-6xl md:text-7xl lg:text-8xl font-bold mb-6">
-              <motion.span
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="block text-gray-900"
-              >
-                From Bean
-              </motion.span>
-              <motion.span
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="block bg-linear-to-r from-vanilla-600 to-vanilla-800 bg-clip-text text-transparent"
-              >
-                to Bliss
-              </motion.span>
-            </h1>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.7 }}
-              className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto"
-            >
-              Experience vanilla in its purest form. A sensory journey of sweetness, warmth, and craftsmanship - straight from Sri Lanka's finest orchids.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
-            >
-              <Link to="/shop">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="btn-primary group"
-                >
-                  <span>Shop Collection</span>
-                  <ArrowRight className="inline-block ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </motion.button>
-              </Link>
-
-              <Link to="/about">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="btn-secondary"
-                >
-                  Our Story
-                </motion.button>
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-
-        {/* Scroll Indicator */}
+      {/* Hero Content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }} // Custom premium cubic-bezier ease
         >
+          {/* Tag */}
           <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-            className="w-6 h-10 border-2 border-vanilla-600 rounded-full flex justify-center pt-2"
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="inline-flex items-center space-x-2 bg-neutral-900 text-white text-xs tracking-widest uppercase px-5 py-2.5 rounded-full mb-8 shadow-sm"
           >
-            <motion.div className="w-1.5 h-3 bg-vanilla-600 rounded-full" />
+            <Sparkles className="w-3.5 h-3.5 text-neutral-400" />
+            <span className="font-medium">Premium Vanilla Since 2025</span>
+          </motion.div>
+
+          {/* Typography */}
+          <h1 className="font-serif text-6xl md:text-8xl font-normal tracking-tight mb-8">
+            <motion.span
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+              className="block text-neutral-950/85 font-light italic"
+            >
+              From Bean
+            </motion.span>
+            <motion.span
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+              className="block text-neutral-950 font-semibold uppercase tracking-wide text-5xl md:text-7xl mt-2"
+            >
+              to Bliss
+            </motion.span>
+          </h1>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7, duration: 0.8 }}
+            className="text-lg md:text-xl text-neutral-600 font-light mb-12 max-w-2xl mx-auto leading-relaxed tracking-wide"
+          >
+            Experience vanilla in its purest form. A sensory journey of warmth and fine craftsmanship - sourced straight from Sri Lanka's finest orchids.
+          </motion.p>
+
+          {/* Minimalist Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.8 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+          >
+            <Link to="/shop">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-8 py-4 bg-neutral-950 text-white font-medium text-sm tracking-wider uppercase transition-colors duration-300 hover:bg-neutral-800 flex items-center space-x-2 min-w-[180px] justify-center"
+              >
+                <span>Shop Collection</span>
+                <ArrowRight className="w-4 h-4" />
+              </motion.button>
+            </Link>
+
+            <Link to="/about">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-8 py-4 bg-transparent border border-neutral-300 text-neutral-900 font-medium text-sm tracking-wider uppercase transition-all duration-300 hover:border-neutral-950 hover:bg-neutral-50 min-w-[180px]"
+              >
+                Our Story
+              </motion.button>
+            </Link>
           </motion.div>
         </motion.div>
-      </section>
+      </div>
+
+      {/* Premium Scroll Indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.4 }}
+        className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+      >
+        <motion.div
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="w-[2px] h-12 bg-neutral-200 relative overflow-hidden"
+        >
+          <motion.div 
+            animate={{ top: ["-100%", "100%"] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute left-0 w-full h-1/2 bg-neutral-950"
+          />
+        </motion.div>
+      </motion.div>
+    </section>
   );
 };
 

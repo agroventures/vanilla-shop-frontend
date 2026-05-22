@@ -16,18 +16,19 @@ const Wholesale = () => {
   ];
 
   return (
-    <section ref={ref} className="py-24 bg-white">
+    <section ref={ref} className="py-28 bg-white border-b border-neutral-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="section-title">Partner With Us</h2>
-            <div className="w-20 h-1 bg-vanilla-600 mb-6" />
+            <span className="text-xs uppercase tracking-widest text-neutral-400 font-medium block mb-4">Wholesale</span>
+            <h2 className="text-3xl md:text-4xl font-serif font-normal tracking-tight text-neutral-950 mb-4">Partner With Us</h2>
+            <div className="w-12 h-px bg-neutral-900 mb-8" />
 
-            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+            <p className="text-neutral-500 font-light text-sm md:text-base mb-8 leading-relaxed tracking-wide">
               Join our network of restaurants, bakeries, and retailers who trust
               us for their vanilla needs. We offer competitive wholesale pricing,
               exceptional service, and the finest quality products.
@@ -42,8 +43,8 @@ const Wholesale = () => {
                   transition={{ delay: index * 0.1 }}
                   className="flex items-center space-x-3"
                 >
-                  <CheckCircle className="w-6 h-6 text-vanilla-600 shrink-0" />
-                  <span className="text-gray-700">{benefit}</span>
+                  <CheckCircle className="w-5 h-5 text-neutral-700 shrink-0" />
+                  <span className="text-neutral-600 font-light text-sm">{benefit}</span>
                 </motion.div>
               ))}
             </div>
@@ -51,7 +52,7 @@ const Wholesale = () => {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-1/2 btn-primary"
+              className="w-1/2 text-xs uppercase tracking-widest font-medium px-8 py-4 bg-neutral-950 text-white hover:bg-neutral-800 transition-colors duration-300"
             >
               Contact Our Team
             </motion.button>
@@ -75,8 +76,7 @@ const Wholesale = () => {
                 animate={isInView ? { opacity: 1, scale: 1 } : {}}
                 transition={{ delay: 0.3 + index * 0.1 }}
                 whileHover={{ scale: 1.05 }}
-                className={`relative h-64 rounded-2xl overflow-hidden shadow-xl ${index === 1 || index === 2 ? 'mt-8' : ''
-                  }`}
+                className={`relative h-64 overflow-hidden shadow-lg ${index === 1 || index === 2 ? 'mt-8' : ''}`}
               >
                 <img
                   src={img}

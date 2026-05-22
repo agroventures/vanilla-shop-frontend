@@ -108,17 +108,19 @@ const ContactForm = () => {
   };
 
   return (
-    <section ref={ref} className="py-20 bg-vanilla-50 overflow-hidden">
-      <div className="max-w-4xl mx-auto px-4">
+    <section ref={ref} className="py-28 bg-white overflow-hidden border-b border-neutral-100">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
         {/* Header Animation */}
         <motion.div
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           variants={fadeInUp}
-          className="text-center mb-16"
+          className="text-center mb-16 space-y-4"
         >
-          <h2 className="section-title">Get In Touch</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <span className="text-xs uppercase tracking-widest text-neutral-400 font-medium block">Correspondence</span>
+          <h2 className="text-3xl md:text-4xl font-serif font-normal tracking-tight text-neutral-950">Get In Touch</h2>
+          <div className="w-12 h-px bg-neutral-900 mx-auto" />
+          <p className="text-neutral-500 font-light text-sm md:text-base max-w-xl mx-auto tracking-wide">
             Have a question, custom request, or wholesale inquiry? We'd love to hear from you.
           </p>
         </motion.div>
@@ -132,7 +134,7 @@ const ContactForm = () => {
               initial="initial"
               animate="animate"
               exit="exit"
-              className="p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg overflow-hidden"
+              className="p-4 bg-green-50 border border-green-300 text-green-800 overflow-hidden"
             >
               <p className="font-bold">Message sent successfully!</p>
               <p className="text-sm">Thank you for reaching out. We'll get back to you soon.</p>
@@ -146,7 +148,7 @@ const ContactForm = () => {
               initial="initial"
               animate="animate"
               exit="exit"
-              className="p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg overflow-hidden"
+              className="p-4 bg-red-50 border border-red-300 text-red-800 overflow-hidden"
             >
               <p className="font-bold">Failed to send message</p>
               <p className="text-sm">Please try again or contact us directly at info@thevanillashop.lk</p>
@@ -161,12 +163,12 @@ const ContactForm = () => {
           variants={fadeInUp}
           transition={{ delay: 0.2 }}
           onSubmit={handleSubmit}
-          className="bg-white shadow-xl rounded-xl p-8 space-y-6"
+          className="bg-white border border-neutral-200 p-8 md:p-12 space-y-6"
           noValidate
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-bold mb-2">Name <span className="text-red-500">*</span></label>
+              <label className="block text-xs uppercase tracking-widest text-neutral-500 font-medium mb-2">Name <span className="text-red-400">*</span></label>
               <motion.input
                 whileFocus={{ scale: 1.01 }}
                 type="text"
@@ -174,7 +176,7 @@ const ContactForm = () => {
                 value={formData.name}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={`w-full border p-3 rounded-md focus:outline-none focus:border-gold-500 transition-all ${touched.name && errors.name ? 'border-red-500 bg-red-50' : 'border-gray-300'}`}
+                className={`w-full border p-3 focus:outline-none focus:border-neutral-900 transition-all text-sm font-light ${touched.name && errors.name ? 'border-red-400 bg-red-50' : 'border-neutral-300'}`}
                 placeholder="Your Name"
                 disabled={isSubmitting}
               />
@@ -185,7 +187,7 @@ const ContactForm = () => {
               </AnimatePresence>
             </div>
             <div>
-              <label className="block text-sm font-bold mb-2">Email <span className="text-red-500">*</span></label>
+              <label className="block text-xs uppercase tracking-widest text-neutral-500 font-medium mb-2">Email <span className="text-red-400">*</span></label>
               <motion.input
                 whileFocus={{ scale: 1.01 }}
                 type="email"
@@ -193,7 +195,7 @@ const ContactForm = () => {
                 value={formData.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={`w-full border p-3 rounded-md focus:outline-none focus:border-gold-500 transition-all ${touched.email && errors.email ? 'border-red-500 bg-red-50' : 'border-gray-300'}`}
+                className={`w-full border p-3 focus:outline-none focus:border-neutral-900 transition-all text-sm font-light ${touched.email && errors.email ? 'border-red-400 bg-red-50' : 'border-neutral-300'}`}
                 placeholder="your@email.com"
                 disabled={isSubmitting}
               />
@@ -206,7 +208,7 @@ const ContactForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-bold mb-2">Subject</label>
+            <label className="block text-xs uppercase tracking-widest text-neutral-500 font-medium mb-2">Subject</label>
             <motion.input
               whileFocus={{ scale: 1.005 }}
               type="text"
@@ -214,21 +216,21 @@ const ContactForm = () => {
               value={formData.subject}
               onChange={handleChange}
               onBlur={handleBlur}
-              className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:border-gold-500 transition-all"
+              className="w-full border border-neutral-300 p-3 focus:outline-none focus:border-neutral-900 transition-all text-sm font-light"
               placeholder="Wholesale / General Inquiry"
               disabled={isSubmitting}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-bold mb-2">Message <span className="text-red-500">*</span></label>
+            <label className="block text-xs uppercase tracking-widest text-neutral-500 font-medium mb-2">Message <span className="text-red-400">*</span></label>
             <motion.textarea
               whileFocus={{ scale: 1.005 }}
               name="message"
               value={formData.message}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={`w-full border p-3 rounded-md h-32 focus:outline-none focus:border-gold-500 transition-all ${touched.message && errors.message ? 'border-red-500 bg-red-50' : 'border-gray-300'}`}
+              className={`w-full border p-3 h-32 focus:outline-none focus:border-neutral-900 transition-all text-sm font-light resize-none ${touched.message && errors.message ? 'border-red-400 bg-red-50' : 'border-neutral-300'}`}
               placeholder="How can we help?"
               disabled={isSubmitting}
             ></motion.textarea>
@@ -244,7 +246,7 @@ const ContactForm = () => {
             whileTap={!isSubmitting ? { scale: 0.98 } : {}}
             type="submit"
             disabled={isSubmitting}
-            className={`w-full font-bold py-3 rounded-md transition ${isSubmitting ? 'bg-gray-400 cursor-not-allowed text-white' : 'bg-vanilla-900 text-white hover:bg-gold-500'}`}
+            className={`w-full text-xs uppercase tracking-widest font-medium py-4 transition-colors duration-300 ${isSubmitting ? 'bg-neutral-300 cursor-not-allowed text-neutral-500' : 'bg-neutral-950 text-white hover:bg-neutral-800'}`}
           >
             {isSubmitting ? (
               <span className="flex items-center justify-center gap-2">
@@ -261,17 +263,17 @@ const ContactForm = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.5 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 text-center"
+          className="grid grid-cols-1 md:grid-cols-2 gap-px bg-neutral-200 border border-neutral-200 mt-12"
         >
-          <div>
-            <h4 className="font-bold text-vanilla-900">Contact Info</h4>
-            <p className="text-gray-600">info@thevanillashop.lk</p>
-            <p className="text-gray-600">+94 70 520 0900</p>
+          <div className="bg-white p-8 text-center">
+            <div className="text-xs uppercase tracking-widest text-neutral-400 mb-3 font-semibold">// Contact Info</div>
+            <p className="text-neutral-600 font-light text-sm">info@thevanillashop.lk</p>
+            <p className="text-neutral-600 font-light text-sm">+94 70 520 0900</p>
           </div>
-          <div>
-            <h4 className="font-bold text-vanilla-900">Wholesale & Bulk</h4>
-            <p className="text-sm text-gray-600">Interested in white-label or bulk supply?</p>
-            <a href="mailto:info@thevanillashop.lk" className="text-gold-500 hover:underline">Contact Our Team</a>
+          <div className="bg-white p-8 text-center">
+            <div className="text-xs uppercase tracking-widest text-neutral-400 mb-3 font-semibold">// Wholesale & Bulk</div>
+            <p className="text-neutral-500 font-light text-sm">Interested in white-label or bulk supply?</p>
+            <a href="mailto:info@thevanillashop.lk" className="text-neutral-900 text-sm font-medium hover:underline underline-offset-4">Contact Our Team</a>
           </div>
         </motion.div>
       </div>

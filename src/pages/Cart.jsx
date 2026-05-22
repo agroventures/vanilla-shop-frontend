@@ -171,7 +171,7 @@ const Cart = () => {
     // ============================================
     if (cartItems.length === 0) {
         return (
-            <div className="pt-24 min-h-screen bg-vanilla-50 font-sans">
+            <div className="pt-24 min-h-screen bg-vanilla-50 font-sans text-vanilla-800 antialiased leading-relaxed scroll-smooth">
                 <Navbar />
 
                 {/* Breadcrumbs */}
@@ -234,7 +234,7 @@ const Cart = () => {
     // MAIN CART VIEW
     // ============================================
     return (
-        <div className="pt-24 min-h-screen bg-vanilla-50 font-sans text-vanilla-800">
+        <div className="pt-24 min-h-screen bg-vanilla-50 font-sans text-vanilla-800 antialiased leading-relaxed scroll-smooth">
             <Navbar />
 
             {/* Breadcrumbs */}
