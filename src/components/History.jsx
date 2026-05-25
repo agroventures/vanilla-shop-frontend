@@ -50,7 +50,7 @@ const History = () => {
         {/* Timeline Core */}
         <div className="relative">
           {/* Razor Thin Minimalist Center Axis Line */}
-          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-[1px] bg-neutral-700" />
+          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-px bg-neutral-700" />
 
           <div className="space-y-16">
             {timeline.map((item, index) => (
