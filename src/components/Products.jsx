@@ -33,7 +33,7 @@ const Products = () => {
   return (
     <section ref={ref} className="py-32 bg-white text-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -52,38 +52,40 @@ const Products = () => {
         {/* Product Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
           {products.map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 40 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="group cursor-pointer flex flex-col"
-            >
-              {/* Product Image Frame */}
-              <div className="relative h-96 w-full overflow-hidden bg-neutral-100 mb-5 border border-neutral-100">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-full h-full object-cover contrast-110 brightness-95 transition-transform duration-700 ease-out group-hover:scale-105"
-                />
-                
-                {/* Micro Dark Vignette */}
-                <div className="absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent opacity-40 group-hover:opacity-20 transition-opacity duration-500" />
-              </div>
+            <Link key={index} to="/shop" className="group">
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 40 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                className="group cursor-pointer flex flex-col"
+              >
+                {/* Product Image Frame */}
+                <div className="relative h-96 w-full overflow-hidden bg-neutral-100 mb-5 border border-neutral-100">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-cover contrast-110 brightness-95 transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
 
-              {/* Product Metadata (Text below image adds high-end retail look) */}
-              <div className="flex flex-col grow">
-                <div className="flex justify-between items-baseline mb-2">
-                  <h3 className="font-serif text-xl font-normal text-neutral-900 tracking-wide group-hover:text-neutral-600 transition-colors">
-                    {item.name}
-                  </h3>
-                  <ArrowRight className="w-4 h-4 text-neutral-400 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300" />
+                  {/* Micro Dark Vignette */}
+                  <div className="absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent opacity-40 group-hover:opacity-20 transition-opacity duration-500" />
                 </div>
-                <p className="text-sm text-neutral-500 font-light leading-relaxed tracking-wide">
-                  {item.description}
-                </p>
-              </div>
-            </motion.div>
+
+                {/* Product Metadata (Text below image adds high-end retail look) */}
+                <div className="flex flex-col grow">
+                  <div className="flex justify-between items-baseline mb-2">
+                    <h3 className="font-serif text-xl font-normal text-neutral-900 tracking-wide group-hover:text-neutral-600 transition-colors">
+                      {item.name}
+                    </h3>
+                    <ArrowRight className="w-4 h-4 text-neutral-400 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300" />
+                  </div>
+                  <p className="text-sm text-neutral-500 font-light leading-relaxed tracking-wide">
+                    {item.description}
+                  </p>
+                </div>
+              </motion.div>
+            </Link>
           ))}
         </div>
 
@@ -104,7 +106,7 @@ const Products = () => {
             </motion.button>
           </Link>
         </motion.div>
-        
+
       </div>
     </section>
   );
