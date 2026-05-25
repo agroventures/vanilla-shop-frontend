@@ -30,7 +30,7 @@ const Features = () => {
   ];
 
   return (
-    <section ref={ref} className="py-32 bg-white text-black border-t border-neutral-100">
+    <section ref={ref} className="py-32 bg-neutral-50 text-black border-t border-neutral-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}

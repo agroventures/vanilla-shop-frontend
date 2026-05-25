@@ -29,7 +29,7 @@ const History = () => {
   ];
 
   return (
-    <section ref={ref} className="py-32 bg-neutral-50 text-black overflow-hidden border-t border-neutral-100">
+    <section ref={ref} className="py-32 bg-black text-white overflow-hidden border-t border-neutral-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
@@ -39,10 +39,10 @@ const History = () => {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-24"
         >
-          <h2 className="font-serif text-4xl md:text-5xl font-normal tracking-tight mb-4 text-neutral-900">
+          <h2 className="font-serif text-4xl md:text-5xl font-normal tracking-tight mb-4 text-white">
             The Story of Vanilla
           </h2>
-          <p className="text-lg text-neutral-500 max-w-2xl mx-auto font-light tracking-wide">
+          <p className="text-lg text-neutral-400 max-w-2xl mx-auto font-light tracking-wide">
             Journey through centuries of cultivation and discover why this precious orchid became the world's most coveted flavor profile.
           </p>
         </motion.div>
@@ -50,7 +50,7 @@ const History = () => {
         {/* Timeline Core */}
         <div className="relative">
           {/* Razor Thin Minimalist Center Axis Line */}
-          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-[1px] bg-neutral-200" />
+          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-[1px] bg-neutral-700" />
 
           <div className="space-y-16">
             {timeline.map((item, index) => (
@@ -72,7 +72,7 @@ const History = () => {
                     initial={{ scale: 0 }}
                     animate={isInView ? { scale: 1 } : {}}
                     transition={{ delay: index * 0.15 + 0.2, duration: 0.5 }}
-                    className="w-3 h-3 bg-neutral-950 rounded-full z-10 ring-4 ring-neutral-50"
+                    className="w-3 h-3 bg-white rounded-full z-10 ring-4 ring-black"
                   />
                 </div>
 
@@ -80,15 +80,15 @@ const History = () => {
                 <motion.div
                   whileHover={{ y: -4 }}
                   transition={{ duration: 0.3, ease: "easeOut" }}
-                  className="flex-1 bg-white p-10 rounded-sm border border-neutral-200/60 shadow-xs group"
+                  className="flex-1 bg-neutral-900 p-10 rounded-sm border border-neutral-700 shadow-xs group"
                 >
-                  <div className="text-neutral-400 font-medium text-xs tracking-widest uppercase mb-3">
+                  <div className="text-neutral-500 font-medium text-xs tracking-widest uppercase mb-3">
                     {item.year}
                   </div>
-                  <h3 className="font-serif text-2xl font-normal text-neutral-950 mb-3 tracking-wide group-hover:text-neutral-700 transition-colors">
+                  <h3 className="font-serif text-2xl font-normal text-white mb-3 tracking-wide group-hover:text-neutral-300 transition-colors">
                     {item.title}
                   </h3>
-                  <p className="text-sm text-neutral-600 font-light leading-relaxed tracking-wide">
+                  <p className="text-sm text-neutral-400 font-light leading-relaxed tracking-wide">
                     {item.description}
                   </p>
                 </motion.div>

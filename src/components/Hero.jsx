@@ -26,11 +26,11 @@ const Hero = () => {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-40 grayscale contrast-125"
+          className="absolute inset-0 w-full h-full object-cover opacity-70 contrast-125"
         />
         
         {/* Premium Vignette/Overlay */}
-        <div className="absolute inset-0 bg-linear-to-b from-white/10 via-transparent to-white" />
+        <div className="absolute inset-0 bg-linear-to-b from-neutral-900/50 to-neutral-900" />
 
         {/* Floating Monochrome Elements */}
         {[...Array(20)].map((_, i) => (
@@ -79,7 +79,7 @@ const Hero = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
-              className="block text-neutral-950/85 font-light italic"
+              className="block text-neutral-200 font-light italic"
             >
               From Bean
             </motion.span>
@@ -87,7 +87,7 @@ const Hero = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              className="block text-neutral-950 font-semibold uppercase tracking-wide text-5xl md:text-7xl mt-2"
+              className="block text-neutral-500 font-semibold uppercase tracking-wide text-5xl md:text-7xl mt-2"
             >
               to Bliss
             </motion.span>
@@ -97,7 +97,7 @@ const Hero = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7, duration: 0.8 }}
-            className="text-lg md:text-xl text-neutral-600 font-light mb-12 max-w-2xl mx-auto leading-relaxed tracking-wide"
+            className="text-lg md:text-xl text-neutral-200 font-light mb-12 max-w-2xl mx-auto leading-relaxed tracking-wide"
           >
             Experience vanilla in its purest form. A sensory journey of warmth and fine craftsmanship - sourced straight from Sri Lanka's finest orchids.
           </motion.p>
@@ -113,7 +113,7 @@ const Hero = () => {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-8 py-4 bg-neutral-950 text-white font-medium text-sm tracking-wider uppercase transition-colors duration-300 hover:bg-neutral-800 flex items-center space-x-2 min-w-[180px] justify-center"
+                className="px-8 py-4 bg-neutral-950 text-white font-medium text-sm tracking-wider uppercase transition-colors duration-300 hover:bg-neutral-800 flex items-center space-x-2 min-w-45 justify-center"
               >
                 <span>Shop Collection</span>
                 <ArrowRight className="w-4 h-4" />
@@ -124,7 +124,7 @@ const Hero = () => {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-8 py-4 bg-transparent border border-neutral-300 text-neutral-900 font-medium text-sm tracking-wider uppercase transition-all duration-300 hover:border-neutral-950 hover:bg-neutral-50 min-w-[180px]"
+                className="px-8 py-4 bg-transparent border border-white text-white font-medium text-sm tracking-wider uppercase transition-all duration-300 hover:border-neutral-950 hover:bg-neutral-50 min-w-45"
               >
                 Our Story
               </motion.button>
@@ -143,7 +143,7 @@ const Hero = () => {
         <motion.div
           animate={{ y: [0, 6, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="w-[2px] h-12 bg-neutral-200 relative overflow-hidden"
+          className="w-0.5 h-12 bg-neutral-200 relative overflow-hidden"
         >
           <motion.div 
             animate={{ top: ["-100%", "100%"] }}

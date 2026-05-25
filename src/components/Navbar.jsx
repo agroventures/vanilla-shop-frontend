@@ -48,35 +48,22 @@ const Navbar = ({ onShopClick }) => {
   const getNavbarStyle = () => {
     if (!isHomePage) {
       return isScrolled
-        ? 'bg-white/95 backdrop-blur-md border-b border-neutral-100 py-4'
-        : 'bg-neutral-950 py-4 border-b border-neutral-900 shadow-sm';
+        ? 'bg-white/95 backdrop-blur-md border-b border-neutral-100 py-8'
+        : 'bg-neutral-950 py-8 border-b border-neutral-900 shadow-sm';
     }
     return isScrolled
-      ? 'bg-white/95 backdrop-blur-md border-b border-neutral-100 py-4'
-      : 'bg-transparent py-6';
+      ? 'bg-white/95 backdrop-blur-md border-b border-neutral-100 py-8'
+      : 'bg-transparent py-8';
   };
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${getNavbarStyle()}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          
-          {/* Logo Housing */}
-          <div className="shrink-0 flex items-center">
-            <Link to="/" className="font-serif text-2xl tracking-widest uppercase">
-              <img
-                src='/logo.png'
-                alt="Logo"
-                className={`w-14 h-14 transition-all duration-500 object-contain ${
-                  isScrolled ? 'brightness-100 invert-0' : isHomePage ? 'brightness-0 invert' : 'brightness-0 invert'
-                }`}
-              />
-            </Link>
-          </div>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex md:items-center space-x-10">
-            {navLinks.map((link) => (
+          {/* Left Nav Links - Changed space-x-6 to space-x-12 */}
+          <div className="hidden md:flex items-center justify-end space-x-12 flex-1 pr-12">
+            {navLinks.slice(0, 2).map((link) => (
               <Link
                 key={link.name}
                 to={link.href}
@@ -85,8 +72,8 @@ const Navbar = ({ onShopClick }) => {
                   if (link.href === '/shop' && onShopClick) onShopClick();
                 }}
                 className={`text-xs font-medium tracking-widest uppercase transition-colors duration-300 ${
-                  isScrolled 
-                    ? "text-neutral-600 hover:text-neutral-950" 
+                  isScrolled
+                    ? "text-neutral-600 hover:text-neutral-950"
                     : isHomePage ? "text-neutral-300 hover:text-white" : "text-neutral-400 hover:text-white"
                 }`}
               >
@@ -95,18 +82,47 @@ const Navbar = ({ onShopClick }) => {
             ))}
           </div>
 
-          {/* Desktop Cart Badge */}
-          <div className="hidden md:flex items-center">
+          {/* Center Logo */}
+          <div className="flex-1 flex justify-center md:flex-none shrink-0">
+            <Link to="/">
+              <img
+                src='/logo.png'
+                alt="Logo"
+                className={`w-24 transition-all duration-500 object-contain ${
+                  isScrolled ? 'brightness-100 invert-0' : 'brightness-0 invert'
+                }`}
+              />
+            </Link>
+          </div>
+
+          {/* Right Nav Links + Cart - Changed space-x-6 to space-x-12 */}
+          <div className="hidden md:flex items-center space-x-12 flex-1 pl-12">
+            {navLinks.slice(2).map((link) => (
+              <Link
+                key={link.name}
+                to={link.href}
+                onClick={() => {
+                  setIsOpen(false);
+                  if (link.href === '/shop' && onShopClick) onShopClick();
+                }}
+                className={`text-xs font-medium tracking-widest uppercase transition-colors duration-300 ${
+                  isScrolled
+                    ? "text-neutral-600 hover:text-neutral-950"
+                    : isHomePage ? "text-neutral-300 hover:text-white" : "text-neutral-400 hover:text-white"
+                }`}
+              >
+                {link.name}
+              </Link>
+            ))}
             <Link
               to="/cart"
               className={`relative p-2.5 rounded-sm border transition-all duration-300 ${
                 isScrolled
-                  ? 'text-neutral-900 border-neutral-200 hover:bg-neutral-950 hover:border-neutral-950 hover:text-white'
-                  : 'text-white border-neutral-800 hover:bg-white hover:text-neutral-950'
+                  ? 'text-neutral-900 border-neutral-800 hover:bg-neutral-950 hover:border-neutral-950 hover:text-white'
+                  : 'text-white border-neutral-300 hover:bg-white hover:text-neutral-950'
               }`}
             >
               <ShoppingBagIcon size={18} strokeWidth={1.5} />
-
               {cartCount > 0 && (
                 <span className={`absolute -top-1.5 -right-1.5 text-[9px] font-semibold h-4 w-4 flex items-center justify-center rounded-xs transition-colors ${
                   isScrolled ? 'bg-neutral-950 text-white' : 'bg-white text-neutral-950'
@@ -152,7 +168,7 @@ const Navbar = ({ onShopClick }) => {
       {/* Mobile Luxury Overlay Dropdown */}
       {isOpen && (
         <div className="md:hidden bg-white border-t border-neutral-100 absolute top-full left-0 right-0 shadow-xl animate-in fade-in slide-in-from-top-4 duration-300">
-          <div className="py-4 bg-white">
+          <div className="py-2 bg-white">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
@@ -161,7 +177,7 @@ const Navbar = ({ onShopClick }) => {
                   setIsOpen(false);
                   if (link.href === '/shop' && onShopClick) onShopClick();
                 }}
-                className="block py-4 px-8 text-xs font-medium tracking-widest uppercase text-neutral-900 hover:bg-neutral-50 border-b border-neutral-50 last:border-none transition-colors"
+                className="block py-5 px-8 text-xs font-medium tracking-widest uppercase text-neutral-900 hover:bg-neutral-50 border-b border-neutral-50 last:border-none transition-colors"
               >
                 {link.name}
               </Link>

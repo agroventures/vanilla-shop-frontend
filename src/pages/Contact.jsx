@@ -27,7 +27,7 @@ function Contact() {
             {/* Hero Section */}
             <div
                 className="relative h-[65vh] flex items-center justify-center bg-cover bg-center border-b border-neutral-100"
-                style={{ backgroundImage: "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/images/about/hero.jpg')" }}
+                style={{ backgroundImage: "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/images/contact/hero.jpg')" }}
             >
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
