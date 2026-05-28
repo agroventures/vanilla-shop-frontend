@@ -43,7 +43,7 @@ function Contact() {
                         transition={{ delay: 0.4, duration: 1 }}
                         className="text-base md:text-lg font-light tracking-wide max-w-xl mx-auto text-neutral-200"
                     >
-                        We'd love to hear from you — whether it's a question, a custom request, or a wholesale inquiry.
+                        We'd love to hear from you - whether it's a question, a custom request, or a wholesale inquiry.
                     </motion.p>
                 </motion.div>
             </div>

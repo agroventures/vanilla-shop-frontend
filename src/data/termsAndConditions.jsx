@@ -57,7 +57,7 @@ export const termsAndConditions = [
                     <li>Orders are confirmed upon full payment</li>
                     <li>You agree to provide accurate details for processing</li>
                     <li>We reserve the right to cancel any order where fraud or incorrect details are suspected</li>
-                    <li>Payments are processed through secure payment gateways — we do not store payment
+                    <li>Payments are processed through secure payment gateways - we do not store payment
                         card details</li>
                 </ul>
             </div>

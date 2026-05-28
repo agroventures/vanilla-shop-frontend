@@ -10,7 +10,7 @@ const Features = () => {
     {
       icon: Verified,
       title: "Authenticity & Purity",
-      description: "Only hand-cured, natural vanilla. Absolute purity with zero synthetic vanillin—ever.",
+      description: "Only hand-cured, natural vanilla. Absolute purity with zero synthetic vanillin - ever.",
     },
     {
       icon: Thermometer,

@@ -67,7 +67,7 @@ const About = () => {
             transition={{ delay: 0.4, duration: 1 }}
             className="text-base md:text-lg font-light tracking-wide max-w-xl mx-auto text-neutral-200"
           >
-            Vanilla is not simply an ingredient—it is an art of patience, environment, and human dedication.
+            Vanilla is not simply an ingredient - it is an art of patience, environment, and human dedication.
           </motion.p>
         </motion.div>
       </div>
@@ -134,7 +134,7 @@ const About = () => {
               <div className="text-xs uppercase tracking-widest text-neutral-400 mb-6 font-semibold">// 01 . Direction</div>
               <h3 className="text-2xl font-serif font-normal text-neutral-950 mb-4 tracking-wide">Our Mission</h3>
               <p className="text-neutral-500 font-light text-sm leading-relaxed tracking-wide">
-                To introduce, educate, and accurately represent the nature of pure vanilla—converting a misunderstood, raw botanical delicacy into standard sensory fulfillment while supporting regional agriculture.
+                To introduce, educate, and accurately represent the nature of pure vanilla - converting a misunderstood, raw botanical delicacy into standard sensory fulfillment while supporting regional agriculture.
               </p>
             </motion.div>
 
@@ -143,7 +143,7 @@ const About = () => {
               <div className="text-xs uppercase tracking-widest text-neutral-400 mb-6 font-semibold">// 02 . Outlook</div>
               <h3 className="text-2xl font-serif font-normal text-neutral-950 mb-4 tracking-wide">Our Vision</h3>
               <p className="text-neutral-500 font-light text-sm leading-relaxed tracking-wide">
-                To anchor Sri Lankan vanilla directly onto the elite culinary map—championing its singular tasting notes, strict eco-sustainability formats, and ethical micro-lot communities.
+                To anchor Sri Lankan vanilla directly onto the elite culinary map - championing its singular tasting notes, strict eco-sustainability formats, and ethical micro-lot communities.
               </p>
             </motion.div>
           </motion.div>

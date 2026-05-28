@@ -15,7 +15,7 @@ export const privacyPolicy = [
           <li>Delivery Address & Billing Address</li>
           <li>Email Address</li>
           <li>Phone Number</li>
-          <li>Payment Details (processed securely through payment gateways — we do not store card
+          <li>Payment Details (processed securely through payment gateways - we do not store card
             numbers)</li>
         </ul>
         <span className="text-md font-semibold">1.2 Automatically Collected Information</span>
