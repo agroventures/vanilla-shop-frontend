@@ -1,6 +1,7 @@
 import { motion, useInView } from 'framer-motion';
 import { Building, CheckCircle, Mail } from 'lucide-react';
 import React, { useRef } from 'react';
+import { Link } from 'react-router-dom';
 
 const Wholesale = () => {
   const ref = useRef(null);
@@ -49,13 +50,14 @@ const Wholesale = () => {
               ))}
             </div>
 
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-1/2 text-xs uppercase tracking-widest font-medium px-8 py-4 bg-neutral-950 text-white hover:bg-neutral-800 transition-colors duration-300"
-            >
-              Contact Our Team
-            </motion.button>
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-1/2">
+              <Link
+                to="/contact#contact-form"
+                className="block text-center text-xs uppercase tracking-widest font-medium px-8 py-4 bg-neutral-950 text-white hover:bg-neutral-800 transition-colors duration-300"
+              >
+                Contact Our Team
+              </Link>
+            </motion.div>
           </motion.div>
 
           <motion.div

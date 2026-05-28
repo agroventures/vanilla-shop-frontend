@@ -48,7 +48,7 @@ function Contact() {
                 </motion.div>
             </div>
 
-            <ContactForm />
+            <div id="contact-form"><ContactForm /></div>
             <Visit />
             <Wholesale />
             <Socials />
