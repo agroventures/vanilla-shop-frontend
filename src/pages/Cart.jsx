@@ -176,7 +176,7 @@ const Cart = () => {
 
                 {/* Breadcrumbs */}
                 <div className="bg-white border-b border-vanilla-100">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-4">
                         <nav className="flex items-center gap-2 text-sm">
                             <Link to="/" className="text-vanilla-800/60 hover:text-gold-500 transition-colors flex items-center gap-1">
                                 <Home className="w-4 h-4" />

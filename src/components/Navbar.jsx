@@ -83,7 +83,7 @@ const Navbar = ({ onShopClick }) => {
           </div>
 
           {/* Center Logo */}
-          <div className="flex-1 flex justify-center md:flex-none shrink-0">
+          <div className="flex-1 flex justify-start md:justify-center md:flex-none shrink-0">
             <Link to="/">
               <img
                 src='/logo.png'
