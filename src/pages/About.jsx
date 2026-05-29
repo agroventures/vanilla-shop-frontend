@@ -131,7 +131,7 @@ const About = () => {
           >
             {/* Mission Card */}
             <motion.div variants={cardItem} className="bg-white p-12 md:p-16 flex flex-col items-start text-left">
-              <div className="text-xs uppercase tracking-widest text-neutral-400 mb-6 font-semibold">// 01 . Direction</div>
+              <div className="text-xs uppercase tracking-widest text-neutral-400 mb-6 font-semibold"> 01 . Direction</div>
               <h3 className="text-2xl font-serif font-normal text-neutral-950 mb-4 tracking-wide">Our Mission</h3>
               <p className="text-neutral-500 font-light text-sm leading-relaxed tracking-wide">
                 To introduce, educate, and accurately represent the nature of pure vanilla - converting a misunderstood, raw botanical delicacy into standard sensory fulfillment while supporting regional agriculture.
@@ -140,7 +140,7 @@ const About = () => {
 
             {/* Vision Card */}
             <motion.div variants={cardItem} className="bg-white p-12 md:p-16 flex flex-col items-start text-left">
-              <div className="text-xs uppercase tracking-widest text-neutral-400 mb-6 font-semibold">// 02 . Outlook</div>
+              <div className="text-xs uppercase tracking-widest text-neutral-400 mb-6 font-semibold"> 02 . Outlook</div>
               <h3 className="text-2xl font-serif font-normal text-neutral-950 mb-4 tracking-wide">Our Vision</h3>
               <p className="text-neutral-500 font-light text-sm leading-relaxed tracking-wide">
                 To anchor Sri Lankan vanilla directly onto the elite culinary map - championing its singular tasting notes, strict eco-sustainability formats, and ethical micro-lot communities.
