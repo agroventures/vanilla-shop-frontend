@@ -18,7 +18,7 @@ const Visit = () => {
             className="relative h-125 overflow-hidden shadow-xl border border-neutral-100"
           >
             <img
-              src="/images/vanilla-shop.png"
+              src="https://pub-8476bede5a4146e8b7731cfe515f1c3b.r2.dev/the-vanilla-shop/contact/vanilla-shop.png"
               alt="Our shop"
               className="w-full h-full object-cover"
             />

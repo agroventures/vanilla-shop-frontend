@@ -6,22 +6,22 @@ import { ArrowRight } from "lucide-react";
 const products = [
   {
     name: "Vanilla Extract",
-    image: "/images/products/non-alcoholic-extract.webp",
+    image: "https://pub-8476bede5a4146e8b7731cfe515f1c3b.r2.dev/the-vanilla-shop/products/non-alcoholic-extract.webp",
     description: "Pure, concentrated, and ideal for baking or beverages.",
   },
   {
     name: "Vanilla Syrup",
-    image: "/images/products/vanilla_syrup_500ml.webp",
+    image: "https://pub-8476bede5a4146e8b7731cfe515f1c3b.r2.dev/the-vanilla-shop/products/vanilla_syrup_500ml.webp",
     description: "Smooth sweetness for lattes, cocktails, and desserts.",
   },
   {
     name: "Vanilla Beans",
-    image: "/images/products/vanilla_pod_3.webp",
+    image: "https://pub-8476bede5a4146e8b7731cfe515f1c3b.r2.dev/the-vanilla-shop/products/pods_1.jpg",
     description: "Fine, aromatic ingredient for baking.",
   },
   {
     name: "Vanilla Paste",
-    image: "/images/products/vanilla_paste.webp",
+    image: "https://pub-8476bede5a4146e8b7731cfe515f1c3b.r2.dev/the-vanilla-shop/products/vanilla_paste.webp",
     description: "Deliciously infused creations from our café kitchen.",
   }
 ];

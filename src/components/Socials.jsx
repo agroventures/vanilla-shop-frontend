@@ -6,9 +6,9 @@ const Socials = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   const feedImages = [
-    "/images/contact/instagram-1.png",
-    "/images/contact/instagram-2.png",
-    "/images/contact/instagram-3.png",
+    "https://pub-8476bede5a4146e8b7731cfe515f1c3b.r2.dev/the-vanilla-shop/contact/instagram-1.png",
+    "https://pub-8476bede5a4146e8b7731cfe515f1c3b.r2.dev/the-vanilla-shop/contact/instagram-2.png",
+    "https://pub-8476bede5a4146e8b7731cfe515f1c3b.r2.dev/the-vanilla-shop/contact/instagram-3.png",
   ];
 
   // Animation Variants
@@ -104,7 +104,7 @@ const Socials = () => {
             className='group relative overflow-hidden cursor-pointer h-64'
           >
             <video 
-              src="/videos/instagram_video.mp4" 
+              src="https://pub-8476bede5a4146e8b7731cfe515f1c3b.r2.dev/the-vanilla-shop/videos/instagram_video.mp4" 
               autoPlay 
               loop 
               muted 
