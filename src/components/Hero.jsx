@@ -18,7 +18,7 @@ const Hero = () => {
         aria-hidden="true"
         className="absolute inset-0 w-full h-full object-cover object-center scale-105"
       >
-        <source src="/videos/hero_video.mov" type="video/mp4" />
+        <source src="https://pub-8476bede5a4146e8b7731cfe515f1c3b.r2.dev/the-vanilla-shop/videos/hero_video.mov" type="video/mp4" />
       </video>
 
       {/* Layered Overlays for depth */}
