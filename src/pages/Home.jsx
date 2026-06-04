@@ -12,7 +12,7 @@ function Home() {
   const url = window.location.href;
   
   useSEO({
-    title: "Home - The Vanilla Shop",
+    title: "The Vanilla Shop",
     url,
     image_alt: "Home",
     twitter_card: "summary_large_image",
