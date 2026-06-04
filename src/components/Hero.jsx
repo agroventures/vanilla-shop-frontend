@@ -87,7 +87,7 @@ const Hero = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              className="block text-neutral-500 font-semibold uppercase tracking-wide text-5xl md:text-7xl mt-2"
+              className="block text-neutral-500 font-semibold tracking-wide text-5xl md:text-7xl mt-2"
             >
               to Bliss
             </motion.span>
