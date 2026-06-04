@@ -124,7 +124,7 @@ const Hero = () => {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-8 py-4 bg-transparent border border-white text-white font-medium text-sm tracking-wider uppercase transition-all duration-300 hover:border-neutral-950 hover:bg-neutral-50 hover:text-neutral-950 min-w-45"
+                className="px-8 py-4 bg-transparent border border-white text-white font-medium text-sm tracking-wider uppercase hover:border-white hover:bg-neutral-50 hover:text-neutral-950 min-w-45 transition-all duration-300"
               >
                 Our Story
               </motion.button>
