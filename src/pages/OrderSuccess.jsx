@@ -232,7 +232,7 @@ const OrderSuccess = () => {
                             {/* Actions */}
                             <div className="flex flex-col sm:flex-row gap-4">
                                 <Link
-                                    to="/products"
+                                    to="/shop"
                                     className="flex-1 inline-flex items-center justify-center gap-2 px-8 py-4 bg-vanilla-900 text-white rounded-xl font-bold hover:bg-gold-500 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
                                 >
                                     <ShoppingBag className="w-5 h-5" />
