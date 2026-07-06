@@ -29,107 +29,79 @@ const History = () => {
   ];
 
   return (
-    <section className="relative overflow-hidden py-28 px-4 md:px-12 bg-vanilla-900">
-      {/* Background layers */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(212,175,55,0.10),transparent_40%),radial-gradient(ellipse_at_bottom_right,rgba(255,248,235,0.05),transparent_50%)]" />
-      <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-gold-500/40 to-transparent" />
-      <div className="absolute bottom-0 left-0 w-full h-px bg-linear-to-r from-transparent via-gold-500/30 to-transparent" />
-      <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-gold-500/5 blur-3xl" />
-      <div className="absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-gold-500/5 blur-3xl" />
+    <section className="relative overflow-hidden py-28 px-6 md:px-12 bg-vanilla-900">
+      {/* Single restrained glow, top only */}
+      <div className="absolute -top-32 left-1/2 -translate-x-1/2 h-96 w-[40rem] rounded-full bg-gold-500/5 blur-[100px]" />
+      <div className="absolute top-0 left-0 w-full h-px bg-gold-500/20" />
 
-      <div className="relative max-w-7xl mx-auto">
+      <div className="relative max-w-6xl mx-auto">
         {/* Section Header */}
-        <div className="text-center mb-20">
-          <span className="inline-flex items-center rounded-full border border-gold-500/30 bg-gold-500/10 px-5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.4em] text-white backdrop-blur-sm">
+        <div className="text-center mb-24">
+          <p className="text-[11px] uppercase tracking-[0.5em] text-gold-500/70 mb-6">
             The Story of Vanilla
-          </span>
+          </p>
 
-          <h2 className="mt-6 text-4xl md:text-5xl font-serif font-bold bg-linear-to-r from-vanilla-50 via-gold-300 to-vanilla-200 bg-clip-text text-transparent leading-tight">
-            A Legacy Centuries in the Making
+          <h2 className="font-serif text-4xl md:text-5xl leading-[1.15] text-vanilla-50">
+            A Legacy Centuries<br />
+            <span className="italic font-light text-gold-400">in the Making</span>
           </h2>
 
-          <div className="mt-5 flex items-center justify-center gap-3">
-            <div className="h-px w-16 bg-linear-to-r from-transparent to-gold-500/70" />
-            <i className="fa-solid fa-spa text-gold-500 text-xs" />
-            <div className="h-px w-16 bg-linear-to-l from-transparent to-gold-500/70" />
-          </div>
+          <div className="w-12 h-px bg-gold-500 mx-auto mt-7 mb-7" />
 
-          <p className="mt-6 max-w-xl mx-auto text-vanilla-200/70 leading-8">
+          <p className="max-w-xl mx-auto text-vanilla-200/60 leading-8 text-[15px]">
             From ancient civilizations to modern artisans, the journey of vanilla is as
             rich and complex as its flavor.
           </p>
         </div>
 
-        {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 perspective:distant">
-          {cards.map((card, index) => (
-            <div
-              key={index}
-              className="group relative transform-3d] transition-all duration-700 hover:transform:[translateY(-10px)]"
-            >
-              {/* Back glow layer */}
-              <div className="absolute -inset-1 rounded-4xl bg-linear-to-br from-gold-500/20 via-transparent to-gold-300/10 blur-xl opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
+        {/* Timeline rail */}
+        <div className="relative">
+          {/* Connecting line — desktop only */}
+          <div className="hidden md:block absolute top-[13px] left-[16.66%] right-[16.66%] h-px bg-gold-500/25" />
 
-              {/* Back depth layer */}
-              <div className="absolute inset-0 translate-x-2 translate-y-2 rounded-4xl bg-linear-to-br from-vanilla-800/80 to-vanilla-950/80" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-14 md:gap-8">
+            {cards.map((card, index) => (
+              <div key={index} className="group relative">
 
-              {/* Main card */}
-              <div className="relative rounded-4xl border border-white/5 bg-linear-to-br from-vanilla-800/90 via-vanilla-900/95 to-vanilla-950 p-8 shadow-[0_30px_80px_rgba(0,0,0,0.4)] backdrop-blur-sm overflow-hidden transition-all duration-500 group-hover:border-gold-500/20 group-hover:shadow-[0_40px_100px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(212,175,55,0.1)]">
-
-                {/* Inner top light shimmer */}
-                <div className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-white/10 to-transparent" />
-
-                {/* Top right year badge */}
-                <div className="absolute top-5 right-5 rounded-full border border-gold-500/20 bg-gold-500/10 px-3 py-1 text-[10px] tracking-[0.25em] text-white/50 uppercase">
-                  {card.year}
-                </div>
-
-                {/* Icon container */}
-                <div className="relative mb-6 inline-flex">
-                  <div className="absolute inset-0 rounded-full bg-gold-500/20 blur-lg" />
-                  <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-gold-500/20 bg-linear-to-br from-gold-500/20 to-gold-700/10 shadow-[inset_0_1px_0_rgba(212,175,55,0.2),0_10px_30px_rgba(0,0,0,0.3)]">
-                    <i className={`${card.icon} text-2xl text-gold-400`} />
+                {/* Node marker sitting on the rail */}
+                <div className="hidden md:flex justify-center mb-8">
+                  <div className="relative h-[27px] w-[27px] rounded-full border border-gold-500/50 bg-vanilla-900 flex items-center justify-center transition-colors duration-500 group-hover:border-gold-500 group-hover:bg-gold-500/10">
+                    <div className="h-1.5 w-1.5 rounded-full bg-gold-500" />
                   </div>
                 </div>
 
-                {/* Label */}
-                <span className="inline-flex items-center text-[10px] uppercase tracking-[0.35em] text-gold-500/80 font-semibold ml-2 mb-3">
-                  {card.label}
-                </span>
+                <div className="text-center md:text-left">
+                  {/* Year */}
+                  <p className="text-[10px] uppercase tracking-[0.35em] text-vanilla-200/40 mb-3">
+                    {card.year}
+                  </p>
 
-                {/* Title */}
-                <h3 className="font-serif text-2xl font-bold text-vanilla-50 mb-4 leading-snug group-hover:text-gold-100 transition-colors duration-300">
-                  {card.title}
-                </h3>
+                  {/* Icon, quiet outline instead of glowing box */}
+                  <div className="mx-auto md:mx-0 mb-5 flex h-12 w-12 items-center justify-center rounded-full border border-gold-500/25 transition-colors duration-500 group-hover:border-gold-500/60">
+                    <i className={`${card.icon} text-base text-gold-500`} />
+                  </div>
 
-                {/* Divider */}
-                <div className="mb-5 h-px w-12 bg-linear-to-r from-gold-500/60 to-transparent transition-all duration-500 group-hover:w-24" />
+                  {/* Label */}
+                  <p className="text-[10px] uppercase tracking-[0.35em] text-gold-500/80 font-medium mb-3">
+                    {card.label}
+                  </p>
 
-                {/* Description */}
-                <p className="text-sm leading-7 text-vanilla-200/60 group-hover:text-vanilla-200/80 transition-colors duration-300">
-                  {card.description}
-                </p>
+                  {/* Title */}
+                  <h3 className="font-serif text-2xl text-vanilla-50 mb-4 leading-snug">
+                    {card.title}
+                  </h3>
 
-                {/* Bottom shimmer on hover */}
-                <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-gold-500/30 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  {/* Divider — one hover motion, not five */}
+                  <div className="mx-auto md:mx-0 mb-5 h-px w-10 bg-gold-500/50 transition-all duration-500 group-hover:w-16" />
 
-                {/* Corner accent */}
-                <div className="absolute bottom-6 right-6 h-8 w-8 rounded-full border border-gold-500/10 bg-gold-500/5 opacity-0 transition-all duration-500 group-hover:opacity-100" />
+                  {/* Description */}
+                  <p className="text-sm leading-7 text-vanilla-200/55">
+                    {card.description}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Bottom timeline dots */}
-        <div className="mt-16 flex items-center justify-center gap-3">
-          {cards.map((_, i) => (
-            <div
-              key={i}
-              className={`rounded-full bg-gold-500 transition-all duration-300 ${
-                i === 1 ? 'h-2 w-8' : 'h-2 w-2 opacity-40'
-              }`}
-            />
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

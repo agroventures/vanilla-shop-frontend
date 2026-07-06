@@ -4,18 +4,13 @@ import { Link } from 'react-router-dom';
 const Footer = () => {
   return (
     <footer className="relative overflow-hidden bg-vanilla-900 text-white">
-      {/* Ambient background glows */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(212,175,55,0.08),transparent_40%),radial-gradient(ellipse_at_bottom_right,rgba(255,248,235,0.03),transparent_50%)]" />
-      <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-80 w-80 rounded-full bg-gold-500/5 blur-3xl" />
-      <div className="absolute -bottom-20 left-0 h-60 w-60 rounded-full bg-gold-400/5 blur-3xl" />
-      <div className="absolute -bottom-20 right-0 h-60 w-60 rounded-full bg-gold-400/5 blur-3xl" />
-
-      {/* Top shimmer line */}
-      <div className="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-gold-500/50 to-transparent" />
+      {/* One quiet glow, matches other sections instead of three */}
+      <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-80 w-80 rounded-full bg-gold-500/5 blur-[100px]" />
+      <div className="absolute top-0 left-0 w-full h-px bg-gold-500/20" />
 
       {/* Main Footer Content */}
-      <div className="relative max-w-7xl mx-auto px-4 md:px-12 pt-20 pb-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mb-16">
+      <div className="relative max-w-6xl mx-auto px-6 md:px-12 pt-24 pb-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
 
           {/* Brand Column */}
           <div className="md:col-span-4">
@@ -33,9 +28,9 @@ const Footer = () => {
             </p>
 
             {/* Divider */}
-            <div className="my-6 h-px w-20 bg-linear-to-r from-gold-500/60 to-transparent" />
+            <div className="my-6 h-px w-12 bg-gold-500" />
 
-            {/* Social Icons */}
+            {/* Social Icons — quiet outline circles, matches Features/History */}
             <div className="flex items-center gap-3">
               {[
                 { icon: 'fa-facebook', href: 'https://www.facebook.com/thevanillashopsl', label: 'Facebook' },
@@ -48,23 +43,23 @@ const Footer = () => {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={social.label}
-                  className="group relative flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-vanilla-300 transition-all duration-300 hover:border-gold-500/40 hover:bg-gold-500/15 hover:text-gold-400 hover:shadow-[0_0_20px_rgba(212,175,55,0.15)]"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-vanilla-300 transition-colors duration-300 hover:border-gold-500/60 hover:text-gold-400"
                 >
                   <i className={`fa-brands ${social.icon} text-sm`} />
                 </a>
               ))}
             </div>
 
-            {/* Trust badge */}
-            <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-gold-500/20 bg-gold-500/8 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-gold-400">
+            {/* Trust line — plain text, not a badge pill */}
+            <p className="mt-6 flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-gold-500/70">
               <i className="fa-solid fa-shield-halved text-[10px]" />
               Trusted Sri Lankan Brand
-            </div>
+            </p>
           </div>
 
           {/* Quick Links */}
           <div className="md:col-span-2">
-            <h5 className="font-serif font-bold text-sm uppercase tracking-[0.3em] text-vanilla-100 mb-6">
+            <h5 className="font-serif text-sm uppercase tracking-[0.3em] text-vanilla-100 mb-6">
               Quick Links
             </h5>
             <ul className="space-y-3">
@@ -79,7 +74,7 @@ const Footer = () => {
                     to={link.to}
                     className="group flex items-center gap-2 text-sm text-vanilla-200/60 transition-all duration-300 hover:text-gold-400"
                   >
-                    <span className="h-px w-0 bg-gold-400 transition-all duration-300 group-hover:w-4" />
+                    <span className="h-px w-0 bg-gold-500 transition-all duration-300 group-hover:w-4" />
                     {link.label}
                   </Link>
                 </li>
@@ -89,7 +84,7 @@ const Footer = () => {
 
           {/* Customer Care */}
           <div className="md:col-span-2">
-            <h5 className="font-serif font-bold text-sm uppercase tracking-[0.3em] text-vanilla-100 mb-6">
+            <h5 className="font-serif text-sm uppercase tracking-[0.3em] text-vanilla-100 mb-6">
               Customer Care
             </h5>
             <ul className="space-y-3">
@@ -103,7 +98,7 @@ const Footer = () => {
                     to={link.to}
                     className="group flex items-center gap-2 text-sm text-vanilla-200/60 transition-all duration-300 hover:text-gold-400"
                   >
-                    <span className="h-px w-0 bg-gold-400 transition-all duration-300 group-hover:w-4" />
+                    <span className="h-px w-0 bg-gold-500 transition-all duration-300 group-hover:w-4" />
                     {link.label}
                   </Link>
                 </li>
@@ -113,7 +108,7 @@ const Footer = () => {
 
           {/* Newsletter */}
           <div className="md:col-span-4">
-            <h5 className="font-serif font-bold text-sm uppercase tracking-[0.3em] text-vanilla-100 mb-2">
+            <h5 className="font-serif text-sm uppercase tracking-[0.3em] text-vanilla-100 mb-2">
               Newsletter
             </h5>
             <p className="text-xs leading-6 text-vanilla-200/50 mb-6">
@@ -121,26 +116,19 @@ const Footer = () => {
               delivered to your inbox.
             </p>
 
-            {/* Input card */}
-            <div className="relative rounded-2xl border border-white/10 bg-white/5 p-1.5 backdrop-blur-sm shadow-[0_10px_40px_rgba(0,0,0,0.2)] transition-all duration-300 focus-within:border-gold-500/30 focus-within:shadow-[0_10px_40px_rgba(212,175,55,0.08)]">
-              <div className="flex items-center gap-2">
-                <div className="flex items-center flex-1 gap-2 px-3">
-                  <i className="fa-solid fa-envelope text-gold-400/60 text-xs" />
-                  <input
-                    type="email"
-                    placeholder="Your email address"
-                    className="flex-1 bg-transparent py-2.5 text-sm text-white placeholder-vanilla-300/40 outline-none"
-                  />
-                </div>
-                <button className="flex items-center gap-2 rounded-xl bg-linear-to-r from-gold-500 to-amber-600 px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-white shadow-[0_4px_15px_rgba(212,175,55,0.3)] transition-all duration-300 hover:shadow-[0_6px_20px_rgba(212,175,55,0.4)] hover:from-gold-400 hover:to-amber-500">
-                  Subscribe
-                  <i className="fa-solid fa-arrow-right text-[10px]" />
-                </button>
-              </div>
+            {/* Input — flat underline field, not a glass gradient card */}
+            <div className="flex items-end gap-3 border-b border-white/15 pb-2 transition-colors duration-300 focus-within:border-gold-500/60">
+              <input
+                type="email"
+                placeholder="Your email address"
+                className="flex-1 bg-transparent py-1.5 text-sm text-white placeholder-vanilla-300/40 outline-none"
+              />
+              <button className="text-[10px] uppercase tracking-[0.3em] text-gold-400 whitespace-nowrap pb-1.5 transition-colors duration-300 hover:text-gold-300">
+                Subscribe →
+              </button>
             </div>
 
-            <p className="mt-3 text-[10px] text-vanilla-300/40 flex items-center gap-1.5">
-              <i className="fa-solid fa-lock text-[9px]" />
+            <p className="mt-3 text-[10px] text-vanilla-300/40">
               No spam. Unsubscribe anytime.
             </p>
 
@@ -154,7 +142,7 @@ const Footer = () => {
                   key={item.text}
                   className="flex items-center gap-3 text-xs text-vanilla-300/50"
                 >
-                  <i className={`fa-solid ${item.icon} text-gold-400/60 text-[10px] w-3`} />
+                  <i className={`fa-solid ${item.icon} text-gold-500/60 text-[10px] w-3`} />
                   {item.text}
                 </div>
               ))}
@@ -163,7 +151,7 @@ const Footer = () => {
         </div>
 
         {/* Divider */}
-        <div className="h-px w-full bg-linear-to-r from-transparent via-vanilla-700/60 to-transparent" />
+        <div className="h-px w-full bg-vanilla-700/40" />
 
         {/* Bottom Bar */}
         <div className="mt-8 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -177,7 +165,7 @@ const Footer = () => {
               href="https://ventrax.lk"
               target="_blank"
               rel="noreferrer"
-              className="font-semibold text-vanilla-300/60 transition-colors duration-300 hover:text-gold-400"
+              className="font-medium text-vanilla-300/60 transition-colors duration-300 hover:text-gold-400"
             >
               Ventrax.lk
             </a>

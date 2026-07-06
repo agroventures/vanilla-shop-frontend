@@ -6,21 +6,19 @@
   --font-serif: "Playfair Display", serif;
   --font-sans: "Lato", sans-serif;
 
-  /* Custom Colors */
-/* --- High-End Minimalist Palette Update --- */
+  /* High-End Minimalist Palette */
+  --color-vanilla-50: #fbfbfa;   /* Pure Alabaster */
+  --color-vanilla-100: #f5f0e6;  /* Raw Silk */
+  --color-vanilla-200: #eadeca;  /* Fine Linen */
+  --color-vanilla-800: #4a3b32;  /* Smoked Umber */
+  --color-vanilla-900: #261e1a;  /* Velvet Espresso */
 
---color-vanilla-50: #fbfbfa;   /* Pure Alabaster: A crisp, bright off-white with subtle cool warmth */
---color-vanilla-100: #f5f0e6;  /* Raw Silk: A premium, milky ivory background tone */
---color-vanilla-200: #eadeca;  /* Fine Linen: A soft, sophisticated warm oat/biscuit mid-tone */
---color-vanilla-800: #4a3b32;  /* Smoked Umber: A clean, desaturated architectural dark brown */
---color-vanilla-900: #261e1a;  /* Velvet Espresso: A deep, near-black luxurious anchor */
+  --color-gold-500: #d4b896;     /* Warm Parchment */
 
---color-gold-500: #d4b896;     /* Warm Parchment: A soft, creamy warm-neutral that lifts against deep browns */
-
-/* Aliases for consistency */
---color-charcoal: #4a3b32;     /* Alias for vanilla-800 */
---color-dark: #261e1a;         /* Alias for vanilla-900 */
---color-gold: #d4b896;         /* Alias for gold-500 */
+  /* Aliases — chained via var() so they stay in sync with the scale */
+  --color-charcoal: var(--color-vanilla-800);
+  --color-dark: var(--color-vanilla-900);
+  --color-gold: var(--color-gold-500);
 
   --animate-fade-in: fade-in 0.8s ease-out forwards;
   --animate-slide-up: slide-up 0.8s ease-out forwards;
@@ -29,53 +27,26 @@
 }
 
 @keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes float {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-20px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
 }
-
 
 @keyframes bounce-slow {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-10px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
-/* Custom Scrollbar Styles */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
 }
