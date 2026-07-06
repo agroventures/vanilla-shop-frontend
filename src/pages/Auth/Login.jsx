@@ -84,7 +84,7 @@ export default function Login() {
             >
                 <div className="flex flex-col items-center mb-8">
                     <img src="/logo.png" alt="logo" className="w-30 mb-4" />
-                    <h1 className="text-xl font-bold text-dark">Login</h1>
+                    <h1 className="text-xl font-bold text-vanilla-900">Login</h1>
                 </div>
 
                 <div className="space-y-6">
@@ -99,10 +99,10 @@ export default function Login() {
                                 setEmail(e.target.value);
                                 setErrors({ ...errors, email: "" });
                             }}
-                            className={`w-full h-12 bg-transparent border-b text-dark placeholder:text-dark/40 focus:outline-none transition
+                            className={`w-full h-12 bg-transparent border-b text-vanilla-900 placeholder:text-vanilla-800/40 focus:outline-none transition
                                 ${errors.email
                                     ? "border-red-500"
-                                    : "border-dark/30 focus:border-gold"
+                                    : "border-vanilla-800/30 focus:border-gold-500"
                                 }`}
                         />
                         {errors.email && (
@@ -123,10 +123,10 @@ export default function Login() {
                                     setPassword(e.target.value);
                                     setErrors({ ...errors, password: "" });
                                 }}
-                                className={`w-full h-12 bg-transparent border-b text-dark placeholder:text-dark/40 focus:outline-none transition
+                                className={`w-full h-12 bg-transparent border-b text-vanilla-900 placeholder:text-vanilla-800/40 focus:outline-none transition
                                     ${errors.password
                                         ? "border-red-500"
-                                        : "border-dark/30 focus:border-gold"
+                                        : "border-vanilla-800/30 focus:border-gold-500"
                                     }`}
                             />
                             <button
@@ -135,9 +135,9 @@ export default function Login() {
                                 className="absolute right-0 top-3"
                             >
                                 {showPassword ? (
-                                    <Eye className="w-6 h-6 text-dark/30" />
+                                    <Eye className="w-6 h-6 text-vanilla-800/30" />
                                 ) : (
-                                    <EyeOff className="w-6 h-6 text-dark/30" />
+                                    <EyeOff className="w-6 h-6 text-vanilla-800/30" />
                                 )}
                             </button>
                         </div>
@@ -153,7 +153,7 @@ export default function Login() {
                     <div className="flex justify-end">
                         <Link
                             to="/forgot-password"
-                            className="text-sm text-dark hover:underline"
+                            className="text-sm text-vanilla-900 hover:underline"
                         >
                             Forgot password?
                         </Link>
@@ -163,10 +163,10 @@ export default function Login() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className={`w-full h-12 border border-dark font-semibold rounded-xl transition-all duration-300
+                        className={`w-full h-12 border border-vanilla-900 font-semibold rounded-xl transition-all duration-300
                             ${loading
                                 ? "opacity-50 cursor-not-allowed"
-                                : "hover:bg-dark/80 hover:text-white"
+                                : "hover:bg-vanilla-900 hover:text-white"
                             }`}
                     >
                         {loading ? "Logging in..." : "Login"}

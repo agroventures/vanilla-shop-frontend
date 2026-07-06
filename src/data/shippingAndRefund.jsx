@@ -19,14 +19,14 @@ export const shippingAndRefund = [
                 <p className="my-3">If you are unsure whether your country is supported, please email us at <Link to='mailto:info@thevanillashop.lk'>info@thevanillashop.lk</Link>
                     and we will assist you.</p>
                 <span className="text-md font-semibold">1.2 Delivery Timeframes</span>
-                <p className="text-charcoal/70 font-semibold text-sm m-3">
+                <p className="text-vanilla-800/70 font-semibold text-sm m-3">
                     Local Deliveries (Sri Lanka)
                 </p>
                 <ul className="list-disc pl-6 space-y-2">
                     <li><strong>Colombo & Suburbs:</strong> 1 – 3 working days</li>
                     <li><strong>Outstation:</strong> 2 – 5 working days</li>
                 </ul>
-                <p className="text-charcoal/70 font-semibold text-sm m-3">
+                <p className="text-vanilla-800/70 font-semibold text-sm m-3">
                     International Deliveries
                 </p>
                 <ul className="list-disc pl-6 space-y-2">

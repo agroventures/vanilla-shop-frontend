@@ -90,7 +90,7 @@ export default function Register() {
                         alt="logo"
                         className="w-30 mb-4"
                     />
-                    <h1 className="text-xl font-bold text-dark">
+                    <h1 className="text-xl font-bold text-vanilla-900">
                         Register
                     </h1>
                 </div>
@@ -107,10 +107,10 @@ export default function Register() {
                                 setName(e.target.value);
                                 setErrors({ ...errors, name: "" });
                             }}
-                            className={`w-full h-12 bg-transparent border-b text-dark placeholder:text-dark/40 focus:outline-none transition
+                            className={`w-full h-12 bg-transparent border-b text-vanilla-900 placeholder:text-vanilla-800/40 focus:outline-none transition
                                 ${errors.name
                                     ? "border-red-500"
-                                    : "border-dark/30 focus:border-gold"
+                                    : "border-vanilla-800/30 focus:border-gold-500"
                                 }`}
                         />
                         {errors.name && (
@@ -130,10 +130,10 @@ export default function Register() {
                                 setEmail(e.target.value);
                                 setErrors({ ...errors, email: "" });
                             }}
-                            className={`w-full h-12 bg-transparent border-b text-dark placeholder:text-dark/40 focus:outline-none transition
+                            className={`w-full h-12 bg-transparent border-b text-vanilla-900 placeholder:text-vanilla-800/40 focus:outline-none transition
                                 ${errors.email
                                     ? "border-red-500"
-                                    : "border-dark/30 focus:border-gold"
+                                    : "border-vanilla-800/30 focus:border-gold-500"
                                 }`}
                         />
                         {errors.email && (
@@ -153,10 +153,10 @@ export default function Register() {
                                 setPassword(e.target.value);
                                 setErrors({ ...errors, password: "" });
                             }}
-                            className={`w-full h-12 bg-transparent border-b text-dark placeholder:text-dark/40 focus:outline-none transition
+                            className={`w-full h-12 bg-transparent border-b text-vanilla-900 placeholder:text-vanilla-800/40 focus:outline-none transition
                                 ${errors.password
                                     ? "border-red-500"
-                                    : "border-dark/30 focus:border-gold"
+                                    : "border-vanilla-800/30 focus:border-gold-500"
                                 }`}
                         />
                         {errors.password && (
@@ -170,20 +170,20 @@ export default function Register() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className={`w-full h-12 border border-dark font-semibold rounded-xl transition-all duration-300
+                        className={`w-full h-12 border border-vanilla-900 font-semibold rounded-xl transition-all duration-300
                             ${loading
                                 ? "opacity-50 cursor-not-allowed"
-                                : "hover:bg-dark/80 hover:text-white"
+                                : "hover:bg-vanilla-900 hover:text-white"
                             }`}
                     >
                         {loading ? "Registering..." : "Register"}
                     </button>
 
-                    <p className="text-dark/70 text-sm text-center pt-4">
+                    <p className="text-vanilla-800/70 text-sm text-center pt-4">
                         Already have an account?{" "}
                         <Link
                             to="/login"
-                            className="text-gold hover:underline font-semibold"
+                            className="text-gold-500 hover:underline font-semibold"
                         >
                             Login
                         </Link>

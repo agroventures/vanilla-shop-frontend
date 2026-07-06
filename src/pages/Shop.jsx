@@ -325,7 +325,7 @@ const Shop = () => {
             return (
                 <div className="flex items-center gap-2 flex-wrap">
                     <span className={`font-serif ${textSize} font-bold text-vanilla-900`}>{formatPrice(variantPrice)}</span>
-                    {selectedVariant.weight && <span className="text-charcoal/50 text-sm">/ {selectedVariant.weight}</span>}
+                    {selectedVariant.weight && <span className="text-vanilla-800/50 text-sm">/ {selectedVariant.weight}</span>}
                 </div>
             )
         }
@@ -334,7 +334,7 @@ const Shop = () => {
             return (
                 <div className="flex items-center gap-2 flex-wrap">
                     <span className={`font-serif ${textSize} font-bold text-vanilla-900`}>{formatPrice(priceInfo.displayPrice)}</span>
-                    {product.weight && <span className="text-charcoal/50 text-sm">/ {product.weight}</span>}
+                    {product.weight && <span className="text-vanilla-800/50 text-sm">/ {product.weight}</span>}
                 </div>
             )
         }
@@ -343,7 +343,7 @@ const Shop = () => {
             return (
                 <div className="flex items-center gap-1 flex-wrap">
                     <span className={`font-serif ${size === 'small' ? 'text-base' : 'text-xl'} font-bold text-vanilla-900`}>{formatPrice(priceInfo.minPrice)}</span>
-                    <span className="text-charcoal/40">-</span>
+                    <span className="text-vanilla-800/40">-</span>
                     <span className={`font-serif ${size === 'small' ? 'text-base' : 'text-xl'} font-bold text-vanilla-900`}>{formatPrice(priceInfo.maxPrice)}</span>
                 </div>
             )
@@ -505,7 +505,7 @@ const Shop = () => {
                             {product.name}
                         </h3>
                     </Link>
-                    <p className="text-charcoal/60 text-sm mb-3 line-clamp-2">{product.description}</p>
+                    <p className="text-vanilla-800/60 text-sm mb-3 line-clamp-2">{product.description}</p>
 
                     {/* Thumbnail Gallery - List View */}
                     {viewMode === 'list' && hasMultipleImages && (
@@ -530,15 +530,15 @@ const Shop = () => {
                                     className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${selectedVariantIndex === index
                                         ? 'bg-vanilla-900 text-white'
                                         : !isVariantInStock(variant)
-                                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed line-through'
-                                            : 'bg-vanilla-100 text-charcoal hover:bg-vanilla-200'
+                                            ? 'bg-vanilla-100 text-vanilla-800/40 cursor-not-allowed line-through'
+                                            : 'bg-vanilla-100 text-vanilla-800 hover:bg-vanilla-200'
                                         }`}
                                 >
                                     {variant.label}
                                 </button>
                             ))}
                             {priceInfo.variants.length > 3 && (
-                                <span className="px-3 py-1.5 text-xs text-charcoal/50">
+                                <span className="px-3 py-1.5 text-xs text-vanilla-800/50">
                                     +{priceInfo.variants.length - 3} more
                                 </span>
                             )}
@@ -723,7 +723,7 @@ const Shop = () => {
 
                         <div className="mb-4">{renderModalPrice()}</div>
 
-                        <p className="text-charcoal/70 mb-6 leading-relaxed">{product.description}</p>
+                        <p className="text-vanilla-800/70 mb-6 leading-relaxed">{product.description}</p>
 
                         {/* Highlights */}
                         {product.highlights && product.highlights.length > 0 && (
@@ -757,7 +757,7 @@ const Shop = () => {
                                                 className={`p-3 rounded-xl text-left border-2 transition-all flex items-center gap-3 ${localSelectedVariant === index
                                                     ? 'border-vanilla-900 bg-vanilla-900/5'
                                                     : !variantInStock
-                                                        ? 'border-gray-200 bg-gray-50 opacity-50 cursor-not-allowed'
+                                                        ? 'border-vanilla-100 bg-vanilla-50 opacity-50 cursor-not-allowed'
                                                         : 'border-vanilla-200 hover:border-vanilla-400'
                                                     }`}
                                             >
@@ -772,7 +772,7 @@ const Shop = () => {
                                                     </div>
                                                 )}
                                                 <div className="flex-1 min-w-0">
-                                                    <div className={`font-medium text-sm truncate ${!variantInStock ? 'line-through text-gray-400' : 'text-vanilla-900'}`}>
+                                                    <div className={`font-medium text-sm truncate ${!variantInStock ? 'line-through text-vanilla-800/40' : 'text-vanilla-900'}`}>
                                                         {variant.label}
                                                     </div>
                                                     <div className="text-vanilla-600 text-sm">
@@ -867,7 +867,7 @@ const Shop = () => {
                     <div className="flex flex-col lg:flex-row gap-4">
                         {/* Search */}
                         <div className="relative flex-1">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-charcoal/40" />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-vanilla-800/40" />
                             <input
                                 type="text"
                                 placeholder="Search vanilla products..."
@@ -896,7 +896,7 @@ const Shop = () => {
                                 <option value="price-low">Price: Low-High</option>
                                 <option value="price-high">Price: High-Low</option>
                             </select>
-                            <ArrowUpDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-charcoal/40 pointer-events-none" />
+                            <ArrowUpDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-vanilla-800/40 pointer-events-none" />
                         </div>
 
                         {/* Currency Selector */}
@@ -909,13 +909,13 @@ const Shop = () => {
                                 <option value="LKR">🇱🇰 LKR (Rs)</option>
                                 <option value="USD">🇺🇸 USD ($)</option>
                             </select>
-                            <Globe className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-charcoal/40 pointer-events-none" />
+                            <Globe className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-vanilla-800/40 pointer-events-none" />
                         </div>
 
                         {/* View Toggle */}
                         <div className="hidden sm:flex items-center bg-vanilla-100 rounded-xl p-1">
-                            <button onClick={() => setViewMode('grid')} className={`p-2.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-vanilla-900 shadow-sm' : 'text-charcoal/60'}`}><Grid3X3 className="w-5 h-5" /></button>
-                            <button onClick={() => setViewMode('list')} className={`p-2.5 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white text-vanilla-900 shadow-sm' : 'text-charcoal/60'}`}><LayoutList className="w-5 h-5" /></button>
+                            <button onClick={() => setViewMode('grid')} className={`p-2.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-vanilla-900 shadow-sm' : 'text-vanilla-800/60'}`}><Grid3X3 className="w-5 h-5" /></button>
+                            <button onClick={() => setViewMode('list')} className={`p-2.5 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white text-vanilla-900 shadow-sm' : 'text-vanilla-800/60'}`}><LayoutList className="w-5 h-5" /></button>
                         </div>
                     </div>
 
@@ -928,7 +928,7 @@ const Shop = () => {
                                     <button
                                         key={category}
                                         onClick={() => { setSelectedCategory(category); setVisibleCount(9); }}
-                                        className={`px-4 py-2 rounded-xl text-sm font-medium capitalize transition-all ${selectedCategory === category ? 'bg-vanilla-900 text-white shadow-lg' : 'bg-vanilla-100 text-charcoal hover:bg-vanilla-200'}`}
+                                        className={`px-4 py-2 rounded-xl text-sm font-medium capitalize transition-all ${selectedCategory === category ? 'bg-vanilla-900 text-white shadow-lg' : 'bg-vanilla-100 text-vanilla-800 hover:bg-vanilla-200'}`}
                                     >
                                         {category === 'all' ? 'All' : category}
                                     </button>
@@ -944,10 +944,10 @@ const Shop = () => {
 
                 {/* Results Info */}
                 <div className="mb-6 flex items-center justify-between">
-                    <span className="text-charcoal/70">
+                    <span className="text-vanilla-800/70">
                         Showing <span className="font-semibold text-vanilla-900">{displayedProducts.length}</span> of <span className="font-semibold text-vanilla-900">{filteredProducts.length}</span> products
                     </span>
-                    <span className="text-sm text-charcoal/50">
+                    <span className="text-sm text-vanilla-800/50">
                         Prices in {currency === 'USD' ? 'US Dollars ($)' : 'Sri Lankan Rupees (Rs)'}
                     </span>
                 </div>
@@ -956,7 +956,7 @@ const Shop = () => {
                 {isLoading && allProducts.length === 0 ? (
                     <div className="text-center py-20">
                         <Loader2 className="w-12 h-12 text-vanilla-500 animate-spin mx-auto mb-4" />
-                        <p className="text-charcoal/60">Loading products...</p>
+                        <p className="text-vanilla-800/60">Loading products...</p>
                     </div>
                 ) : displayedProducts.length > 0 ? (
                     <div className={viewMode === 'grid' ? 'grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8' : 'flex flex-col gap-4'}>
@@ -968,7 +968,7 @@ const Shop = () => {
                     <div className="text-center py-20 bg-white rounded-2xl border border-vanilla-100">
                         <div className="w-24 h-24 bg-vanilla-100 rounded-full flex items-center justify-center mx-auto mb-6"><Search className="w-10 h-10 text-vanilla-400" /></div>
                         <h3 className="text-2xl font-semibold text-vanilla-900 mb-3">No products found</h3>
-                        <p className="text-charcoal/60 mb-8 max-w-md mx-auto">Try adjusting your search or filters.</p>
+                        <p className="text-vanilla-800/60 mb-8 max-w-md mx-auto">Try adjusting your search or filters.</p>
                         <button onClick={resetFilters} className="inline-flex items-center gap-2 px-6 py-3 bg-vanilla-900 text-white rounded-full font-medium hover:bg-vanilla-600 transition-colors">Clear All Filters</button>
                     </div>
                 )}

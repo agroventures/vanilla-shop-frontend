@@ -59,7 +59,7 @@ const Features = () => {
             <div className="h-px w-16 bg-linear-to-l from-transparent to-gold-400/70" />
           </div>
 
-          <p className="mt-5 text-gray-500 max-w-md mx-auto leading-7">
+          <p className="mt-5 text-vanilla-800/60 max-w-md mx-auto leading-7">
             Every detail, every ingredient, every moment — designed around the world's
             finest vanilla experience.
           </p>
@@ -111,7 +111,7 @@ const Features = () => {
                 <div className="mb-4 h-px w-8 bg-linear-to-r from-gold-400 to-transparent transition-all duration-500 group-hover:w-16" />
 
                 {/* Description */}
-                <p className="text-sm leading-7 text-gray-500 group-hover:text-gray-600 transition-colors duration-300 flex-1">
+                <p className="text-sm leading-7 text-vanilla-800/60 group-hover:text-vanilla-800/70 transition-colors duration-300 flex-1">
                   {feature.text}
                 </p>
 

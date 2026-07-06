@@ -15,7 +15,12 @@
 --color-vanilla-800: #4a3b32;  /* Smoked Umber: A clean, desaturated architectural dark brown */
 --color-vanilla-900: #261e1a;  /* Velvet Espresso: A deep, near-black luxurious anchor */
 
---color-gold-500: #c5a880;     /* Champagne Gold: A muted, elegant satin gold (less yellow, more luxury) */
+--color-gold-500: #d4b896;     /* Warm Parchment: A soft, creamy warm-neutral that lifts against deep browns */
+
+/* Aliases for consistency */
+--color-charcoal: #4a3b32;     /* Alias for vanilla-800 */
+--color-dark: #261e1a;         /* Alias for vanilla-900 */
+--color-gold: #d4b896;         /* Alias for gold-500 */
 
   --animate-fade-in: fade-in 0.8s ease-out forwards;
   --animate-slide-up: slide-up 0.8s ease-out forwards;
@@ -82,5 +87,5 @@
   border-radius: 5px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #b59026;
+  background: #b8997a;
 }

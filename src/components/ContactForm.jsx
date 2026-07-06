@@ -118,7 +118,7 @@ const ContactForm = () => {
       <div className="max-w-4xl mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-serif font-bold text-vanilla-900">Get In Touch</h2>
-          <p className="text-gray-600 mt-2">Have a question, custom request, or wholesale inquiry? We'd love to hear from you.</p>
+          <p className="text-vanilla-800/70 mt-2">Have a question, custom request, or wholesale inquiry? We'd love to hear from you.</p>
         </div>
 
         {/* Success Message */}
@@ -149,7 +149,7 @@ const ContactForm = () => {
                 value={formData.name}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={`w-full border p-3 rounded-md focus:outline-none focus:border-gold-500 ${touched.name && errors.name ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                className={`w-full border p-3 rounded-md focus:outline-none focus:border-gold-500 ${touched.name && errors.name ? 'border-red-500 bg-red-50' : 'border-vanilla-200'
                   }`}
                 placeholder="Your Name"
                 disabled={isSubmitting}
@@ -168,7 +168,7 @@ const ContactForm = () => {
                 value={formData.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={`w-full border p-3 rounded-md focus:outline-none focus:border-gold-500 ${touched.email && errors.email ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                className={`w-full border p-3 rounded-md focus:outline-none focus:border-gold-500 ${touched.email && errors.email ? 'border-red-500 bg-red-50' : 'border-vanilla-200'
                   }`}
                 placeholder="your@email.com"
                 disabled={isSubmitting}
@@ -186,7 +186,7 @@ const ContactForm = () => {
               value={formData.subject}
               onChange={handleChange}
               onBlur={handleBlur}
-              className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:border-gold-500"
+              className="w-full border border-vanilla-200 p-3 rounded-md focus:outline-none focus:border-gold-500"
               placeholder="Wholesale / General Inquiry"
               disabled={isSubmitting}
             />
@@ -200,7 +200,7 @@ const ContactForm = () => {
               value={formData.message}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={`w-full border p-3 rounded-md h-32 focus:outline-none focus:border-gold-500 ${touched.message && errors.message ? 'border-red-500 bg-red-50' : 'border-gray-300'
+              className={`w-full border p-3 rounded-md h-32 focus:outline-none focus:border-gold-500 ${touched.message && errors.message ? 'border-red-500 bg-red-50' : 'border-vanilla-200'
                 }`}
               placeholder="How can we help?"
               disabled={isSubmitting}
@@ -213,7 +213,7 @@ const ContactForm = () => {
             type="submit"
             disabled={isSubmitting}
             className={`w-full font-bold py-3 rounded-md transition ${isSubmitting
-              ? 'bg-gray-400 cursor-not-allowed text-white'
+              ? 'bg-vanilla-200 cursor-not-allowed text-vanilla-800/50'
               : 'bg-vanilla-900 text-white hover:bg-gold-500'
               }`}
           >
@@ -224,12 +224,12 @@ const ContactForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 text-center">
           <div>
             <h4 className="font-bold text-vanilla-900">Contact Info</h4>
-            <p className="text-gray-600">info@thevanillashop.lk</p>
-            <p className="text-gray-600">+94 70 520 0900</p>
+            <p className="text-vanilla-800/70">info@thevanillashop.lk</p>
+            <p className="text-vanilla-800/70">+94 70 520 0900</p>
           </div>
           <div>
             <h4 className="font-bold text-vanilla-900">Wholesale & Bulk</h4>
-            <p className="text-sm text-gray-600">Interested in white-label or bulk supply?</p>
+            <p className="text-sm text-vanilla-800/70">Interested in white-label or bulk supply?</p>
             <a href="mailto:info@thevanillashop.lk" className="text-gold-500 hover:underline">Contact Our Team</a>
           </div>
         </div>

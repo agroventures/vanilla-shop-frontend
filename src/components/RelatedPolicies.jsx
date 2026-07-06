@@ -16,7 +16,7 @@ export default function RelatedPolicies() {
                     >
                         <FileText className="w-8 h-8 text-vanilla-500 mb-3 group-hover:text-vanilla-600 transition-colors" />
                         <h4 className="font-semibold text-dark mb-1">Terms of Service</h4>
-                        <p className="text-charcoal/60 text-sm">Our terms and conditions</p>
+                        <p className="text-vanilla-800/60 text-sm">Our terms and conditions</p>
                     </Link>
                     <Link
                         to="/privacy"
@@ -24,7 +24,7 @@ export default function RelatedPolicies() {
                     >
                         <ShieldCheck className="w-8 h-8 text-vanilla-500 mb-3 group-hover:text-vanilla-600 transition-colors" />
                         <h4 className="font-semibold text-dark mb-1">Privacy Policy</h4>
-                        <p className="text-charcoal/60 text-sm">How we protect your data</p>
+                        <p className="text-vanilla-800/60 text-sm">How we protect your data</p>
                     </Link>
                     <Link
                         to="/refund"
@@ -32,7 +32,7 @@ export default function RelatedPolicies() {
                     >
                         <Truck className="w-8 h-8 text-vanilla-500 mb-3 group-hover:text-vanilla-600 transition-colors" />
                         <h4 className="font-semibold text-dark mb-1">Shipping and Refund</h4>
-                        <p className="text-charcoal/60 text-sm">Shipping and refund policies</p>
+                        <p className="text-vanilla-800/60 text-sm">Shipping and refund policies</p>
                     </Link>
                 </div>
             </div>

@@ -7,11 +7,11 @@ export const StatCard = ({ title, value, icon }) => {
         <div className="space-y-3">
           <span className="text-sm font-medium text-vanilla-600">{title}</span>
           <div className="flex items-baseline gap-2">
-            <h3 className="text-2xl font-bold text-dark">{value}</h3>
+            <h3 className="text-2xl font-bold text-vanilla-900">{value}</h3>
           </div>
         </div>
         <div className="lg:absolute lg:right-1 lg:top-2 xl:static p-3 rounded-xl bg-vanilla-100">
-          <div className="text-dark">{icon}</div>
+          <div className="text-vanilla-900">{icon}</div>
         </div>
       </div>
     </div>

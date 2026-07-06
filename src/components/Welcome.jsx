@@ -68,7 +68,7 @@ const Welcome = () => {
               world’s most beloved flavor in its truest, most natural form.
             </p>
 
-            <p className="mt-4 leading-8 text-gray-600">
+            <p className="mt-4 leading-8 text-vanilla-800/70">
               Every creation reflects our passion for quality and authenticity. Whether
               you’re sipping a vanilla-infused beverage or selecting a gift from our
               retail collection, each moment is infused with the pure essence of vanilla.
@@ -105,7 +105,7 @@ const Welcome = () => {
                 A Legacy Rooted in Heritage
               </h3>
 
-              <p className="text-sm leading-7 text-gray-700">
+              <p className="text-sm leading-7 text-vanilla-800/70">
                 We partner with Sri Lankan farmers who hand-pollinate every orchid. Our
                 vanilla is known for its soft smokiness and deep aroma — cherished by
                 connoisseurs worldwide.

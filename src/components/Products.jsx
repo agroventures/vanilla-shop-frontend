@@ -77,7 +77,7 @@ const Products = () => {
             <div className="h-px w-16 bg-linear-to-l from-transparent to-gold-400/70" />
           </div>
 
-          <p className="mt-5 text-gray-500 max-w-md mx-auto leading-7">
+          <p className="mt-5 text-vanilla-800/60 max-w-md mx-auto leading-7">
             Each product is crafted for purity, taste, and inspiration — a
             true expression of Sri Lankan vanilla.
           </p>
@@ -137,7 +137,7 @@ const Products = () => {
                     {product.name}
                   </h3>
 
-                  <p className="text-sm leading-6 text-gray-500 mb-5">
+                  <p className="text-sm leading-6 text-vanilla-800/60 mb-5">
                     {product.desc}
                   </p>
 

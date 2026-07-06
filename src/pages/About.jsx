@@ -34,16 +34,16 @@ const About = () => {
           <div>
             <span className="uppercase tracking-widest text-gold-500 text-sm font-bold mb-2 block">Est. Feb 21, 2025</span>
             <h2 className="text-4xl font-serif font-bold text-vanilla-900 mb-6">A Dream Rooted in Colombo</h2>
-            <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+            <p className="text-lg text-vanilla-800/80 mb-6 leading-relaxed">
               Founded at <strong>No. 253, Koswatta, Kaduwela Road, Battaramulla</strong>, our journey began with a simple dream: to celebrate the essence of vanilla in its purest form.
             </p>
-            <p className="text-gray-600 mb-6 leading-relaxed">
+            <p className="text-vanilla-800/70 mb-6 leading-relaxed">
               As Sri Lanka’s first premium vanilla boutique café, we have transformed a simple ingredient into an immersive experience that engages all senses. Every detail — from our aromatic brews and desserts to our artisanal retail range — reflects our devotion to authenticity and excellence.
             </p>
-            <p className="text-gray-600 mb-6 leading-relaxed">
+            <p className="text-vanilla-800/70 mb-6 leading-relaxed">
               Our founders collaborated with Sri Lankan vanilla growers, food technologists, and culinary artisans to bring this vision to life. Together, we created a space where the artistry of flavor meets the purity of nature.
             </p>
-            <p className="text-gray-600 leading-relaxed">
+            <p className="text-vanilla-800/70 leading-relaxed">
               We warmly welcome guests to experience our creations in-store, where we accept both <span className='font-semibold'>cash and card payments</span> for your convenience.
             </p>
           </div>
@@ -68,7 +68,7 @@ const About = () => {
                 <i className="fa-solid fa-lightbulb text-vanilla-900 text-2xl"></i>
               </div>
               <h3 className="text-3xl font-serif font-bold text-vanilla-900 mb-4">Our Mission</h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-vanilla-800/70 leading-relaxed">
                 To introduce, educate, and delight — turning the mystique of vanilla into everyday joy while nurturing a deep appreciation for its natural beauty.
               </p>
             </div>
@@ -79,7 +79,7 @@ const About = () => {
                 <i className="fa-solid fa-globe text-vanilla-900 text-2xl"></i>
               </div>
               <h3 className="text-3xl font-serif font-bold text-vanilla-900 mb-4">Our Vision</h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-vanilla-800/70 leading-relaxed">
                 To put Sri Lankan vanilla on the global gastronomic map — celebrating its flavor, sustainability, and community-driven cultivation.
               </p>
             </div>
@@ -91,7 +91,7 @@ const About = () => {
       <section className="py-20 max-w-5xl mx-auto px-4 text-center">
         <i className="fa-solid fa-flask text-gold-500 text-4xl mb-6"></i>
         <h2 className="text-4xl font-serif font-bold text-vanilla-900 mb-8">Science Meets Artistry</h2>
-        <div className="prose prose-lg mx-auto text-gray-600">
+        <div className="prose prose-lg mx-auto text-vanilla-800/70">
           <p className="mb-6">
             Behind every extract, syrup, or dessert lies a story of dedication. Our team is made up of flavor artisans, pastry chefs, chemists, and herbal specialists who work in harmony to craft products that preserve the soul of vanilla.
           </p>
@@ -152,7 +152,7 @@ const About = () => {
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-vanilla-900 mb-6 italic">
             "Vanilla is more than a spice; it’s a storyteller of nature’s patience and human artistry."
           </h2>
-          <p className="text-gray-600 text-lg">
+          <p className="text-vanilla-800/70 text-lg">
             At The Vanilla Shop, we treat vanilla with reverence — preserving its integrity while creating new ways for you to experience its magic.
           </p>
         </div>
