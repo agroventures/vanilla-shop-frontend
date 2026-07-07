@@ -47,7 +47,7 @@ import {
 } from '../utils/Cart'
 import useSEO from '../hooks/useSEO'
 // New Import based on your snippet
-import { initPayment } from "../api/payment.api";
+import { initPayment, getTransaction } from "../api/payment.api";
 
 // ============================================
 // HELPER COMPONENTS
@@ -261,14 +261,6 @@ const OrderSummaryContent = ({
                     <span>Subtotal ({cartItems.reduce((sum, item) => sum + item.quantity, 0)} items)</span>
                     <span className="font-medium text-vanilla-900">{formatPrice(subtotal)}</span>
                 </div>
-                {/* <div className="flex justify-between text-vanilla-800/70">
-                    <span>Shipping</span>
-                    {shippingCost === 0 ? (
-                        <span className="text-green-600 font-bold bg-green-50 px-2 py-0.5 rounded text-xs">FREE</span>
-                    ) : (
-                        <span className="font-medium text-vanilla-900">{formatPrice(shippingCost)}</span>
-                    )}
-                </div> */}
             </div>
 
             <div className="h-px bg-vanilla-100 my-4" />
@@ -372,6 +364,10 @@ const Checkout = () => {
     
     // NEW STATE for Payment Gateway Iframe
     const [iframeUrl, setIframeUrl] = useState(null)
+    // Tracks the reqid/orderId for the payment currently in the iframe, and
+    // whether we're mid-verification after receiving the postMessage below.
+    const [pendingPayment, setPendingPayment] = useState(null) // { reqid, orderId }
+    const [verifyingPayment, setVerifyingPayment] = useState(false)
 
     // Currency State - Initialize from localStorage or location state
     const [currency, setCurrency] = useState(() => {
@@ -444,12 +440,10 @@ const Checkout = () => {
             if (currency === 'USD') {
                 return [
                     { id: 'standard', name: 'Standard Delivery', description: '3-5 business days' },
-                    // { id: 'express', name: 'Express Delivery', description: '1-2 business days', price: 5, freeOver: null },
                 ]
             }
             return [
                 { id: 'standard', name: 'Standard Delivery', description: '3-5 business days' },
-                // { id: 'express', name: 'Express Delivery', description: '1-2 business days', price: 750, freeOver: null },
             ]
         } else {
             // International
@@ -528,6 +522,51 @@ const Checkout = () => {
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }, [currentStep])
+
+    // Listen for the postMessage the backend's /api/payment/callback route sends
+    // once Paycorp redirects the iframe there and PAYMENT_COMPLETE has run.
+    // (The iframe can't top-level-redirect us to a receipt page — its own
+    // navigation is trapped inside the frame — so the backend instead posts a
+    // message up to this window instead of doing a plain HTTP redirect.)
+    useEffect(() => {
+        if (!pendingPayment) return
+
+        const expectedOrigin = new URL(import.meta.env.VITE_API_URL).origin
+
+        const handleMessage = async (event) => {
+            if (event.origin !== expectedOrigin) return
+            if (!event.data || event.data.type !== 'PAYCENTER_PAYMENT_RESULT') return
+            if (event.data.reqid !== pendingPayment.reqid) return
+
+            setVerifyingPayment(true)
+            try {
+                // Re-fetch the authoritative record from our own DB rather than
+                // trusting the postMessage payload alone.
+                const { data: txn } = await getTransaction(pendingPayment.reqid)
+
+                if (txn.status === 'APPROVED') {
+                    emptyCart()
+                    window.dispatchEvent(new Event('cartUpdated'))
+                    toast.success('Payment approved!')
+                    navigate(`/order-success/${pendingPayment.orderId}`)
+                } else {
+                    toast.error(`Payment ${txn.status.toLowerCase()}. Please try again.`)
+                    setErrors({ submit: `Payment was not approved (${txn.responseText || txn.status}). You can retry or choose Cash on Delivery.` })
+                    setIframeUrl(null)
+                    setPendingPayment(null)
+                }
+            } catch (err) {
+                console.error('Payment verification failed:', err)
+                toast.error('Could not confirm payment status. Please contact support with your order reference.')
+                setErrors({ submit: `We couldn't confirm your payment automatically. Your order reference is ${pendingPayment.orderId} — contact support if you were charged.` })
+            } finally {
+                setVerifyingPayment(false)
+            }
+        }
+
+        window.addEventListener('message', handleMessage)
+        return () => window.removeEventListener('message', handleMessage)
+    }, [pendingPayment, navigate])
 
     // Calculations
     const subtotal = cartItems.reduce((sum, item) => sum + (getPriceValue(item) * item.quantity), 0)
@@ -638,27 +677,31 @@ const Checkout = () => {
 
             // 1. Create the Order in the Backend first
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/orders`, orderData)
+            
             const createdOrder = response.data.order
 
             if (createdOrder) {
                 // 2. Check Payment Method
-                const requiresGateway = ['card', 'mobile', 'bank'].includes(formData.paymentMethod) && formData.paymentMethod !== 'cod';
+                const requiresGateway = ['cod', 'card'].includes(formData.paymentMethod) && formData.paymentMethod !== 'cod';
 
                 if (requiresGateway) {
-                    // Start Payment Gateway Integration
                     try {
                         const res = await initPayment({
                             amount: total,
                             currency: currency,
-                            orderId: createdOrder.orderId, // Use real order ID from DB
-                            // Optional: You might want to pass customer details here if your initPayment supports it
-                            // first_name: formData.firstName,
-                            // email: formData.email
+                            clientRef: createdOrder.orderId,
                         });
+                        console.log(res);
+                        
 
-                        if(res.data && res.data.paymentPageUrl) {
-                            emptyCart() // Clear cart to prevent double submission
-                            window.dispatchEvent(new Event('cartUpdated'))
+                        if (res.data && res.data.paymentPageUrl && res.data.reqid) {
+                            // NOTE: cart is intentionally NOT cleared here. The
+                            // customer hasn't paid yet — clearing it now would
+                            // lose their order if they cancel or the card is
+                            // declined inside the iframe. It's cleared only
+                            // once the postMessage listener above confirms
+                            // status === APPROVED.
+                            setPendingPayment({ reqid: res.data.reqid, orderId: createdOrder.orderId });
                             setIframeUrl(res.data.paymentPageUrl);
                             toast.success("Redirecting to secure payment...");
                             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -784,12 +827,19 @@ const Checkout = () => {
                             
                             {/* IFRAME RENDER LOGIC */}
                             {iframeUrl ? (
-                                <div className="bg-white rounded-2xl border border-vanilla-100 shadow-sm overflow-hidden p-1">
+                                <div className="bg-white rounded-2xl border border-vanilla-100 shadow-sm overflow-hidden p-1 relative">
                                     <div className="p-4 bg-vanilla-50 border-b border-vanilla-100 mb-2 flex justify-between items-center">
                                         <h2 className="font-bold text-lg text-vanilla-900">Secure Payment</h2>
-                                        <button 
-                                            onClick={() => window.location.reload()} // Simple way to cancel/reset if stuck
-                                            className="text-sm text-red-500 hover:underline"
+                                        <button
+                                            onClick={() => {
+                                                // Graceful cancel: the order was already created (unpaid) and the
+                                                // cart is still intact since we never emptied it pre-payment.
+                                                // Just drop back to the payment step so they can retry or pick COD.
+                                                setIframeUrl(null)
+                                                setPendingPayment(null)
+                                            }}
+                                            disabled={verifyingPayment}
+                                            className="text-sm text-red-500 hover:underline disabled:opacity-40 disabled:cursor-not-allowed"
                                         >
                                             Cancel Payment
                                         </button>
@@ -801,6 +851,12 @@ const Checkout = () => {
                                             className="w-full h-150"
                                             frameBorder="0"
                                         />
+                                        {verifyingPayment && (
+                                            <div className="absolute inset-0 bg-white/90 flex flex-col items-center justify-center gap-3">
+                                                <Loader2 className="w-8 h-8 text-gold-500 animate-spin" />
+                                                <p className="text-vanilla-800 font-medium text-sm">Confirming your payment...</p>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             ) : (
@@ -967,10 +1023,6 @@ const Checkout = () => {
                                                                 Shipping to {formData.country}
                                                             </p>
                                                         )}
-                                                        {/* <p className="text-vanilla-800/60 text-xs sm:text-sm flex items-center gap-1">
-                                                            <Wallet className="w-4 h-4" />
-                                                            Prices in {currency}
-                                                        </p> */}
                                                     </div>
                                                 </div>
                                                 
@@ -1031,16 +1083,8 @@ const Checkout = () => {
                                                                             <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
                                                                             {method.description}
                                                                         </p>
-                                                                        {/* {method.freeOver && !isFree && (
-                                                                            <p className="text-green-600 text-xs mt-1">
-                                                                                Free on orders over {formatPrice(method.freeOver)}
-                                                                            </p>
-                                                                        )} */}
                                                                     </div>
                                                                 </div>
-                                                                {/* <span className={`font-bold text-sm sm:text-base ml-2 ${isFree && method.price > 0 ? 'text-green-600 line-through decoration-2' : 'text-vanilla-900'}`}>
-                                                                    {method.price === 0 ? 'Free' : formatPrice(method.price)}
-                                                                </span> */}
                                                             </label>
                                                         )
                                                     })}
@@ -1071,7 +1115,7 @@ const Checkout = () => {
                                     {/* Step 3: Payment */}
                                     {currentStep === 3 && (
                                         <div className="space-y-4 sm:space-y-6">
-                                            {/* <div className="bg-white rounded-xl sm:rounded-2xl border border-vanilla-100 shadow-sm overflow-hidden">
+                                            <div className="bg-white rounded-xl sm:rounded-2xl border border-vanilla-100 shadow-sm overflow-hidden">
                                                 <div className="p-4 sm:p-5 bg-vanilla-50 border-b border-vanilla-100">
                                                     <h2 className="font-bold text-base sm:text-lg text-vanilla-900 flex items-center gap-2 font-serif">
                                                         <Wallet className="w-5 h-5 text-gold-500" />
@@ -1119,14 +1163,14 @@ const Checkout = () => {
                                                                 <Info className="w-4 h-4 shrink-0 mt-0.5 text-vanilla-500" />
                                                                 <span>
                                                                     {currency === 'USD' 
-                                                                        ? 'Cash on Delivery and Mobile Payment are only available for LKR orders within Sri Lanka.'
-                                                                        : 'Cash on Delivery and Mobile Payment are only available within Sri Lanka.'}
+                                                                        ? 'Cash on Delivery is only available for LKR orders within Sri Lanka.'
+                                                                        : 'Cash on Delivery is only available within Sri Lanka.'}
                                                                 </span>
                                                             </p>
                                                         </div>
                                                     )}
                                                 </div>
-                                            </div> */}
+                                            </div>
 
                                             {/* Order Review */}
                                             <div className="bg-white rounded-xl sm:rounded-2xl border border-vanilla-100 shadow-sm overflow-hidden">
@@ -1178,10 +1222,6 @@ const Checkout = () => {
                                                             <span>Subtotal</span>
                                                             <span>{formatPrice(subtotal)}</span>
                                                         </div>
-                                                        {/* <div className="flex justify-between text-sm text-vanilla-800/70">
-                                                            <span>Shipping ({selectedShipping?.name})</span>
-                                                            <span>{shippingCost === 0 ? <span className="text-green-600 font-bold">FREE</span> : formatPrice(shippingCost)}</span>
-                                                        </div> */}
                                                         <div className="flex justify-between font-bold text-base sm:text-lg pt-2 text-vanilla-900">
                                                             <span className="font-serif">Total</span>
                                                             <span className="font-serif">{formatPrice(total)}</span>
@@ -1253,7 +1293,6 @@ const Checkout = () => {
                                                     </>
                                                 ) : (
                                                     <>
-                                                        {/* <Lock className="w-5 h-5" /> Pay {formatPrice(total)} */}
                                                         <Lock className="w-5 h-5" /> Submit
                                                     </>
                                                 )}
@@ -1292,21 +1331,6 @@ const Checkout = () => {
                                         onCurrencyChange={handleCurrencyChange}
                                         showCurrencySelector={false}
                                     />
-                                    
-                                    {/* Free Shipping Progress in Summary */}
-                                    {/* {freeShippingProgress && !freeShippingProgress.qualifies && (
-                                        <div className="mt-4 p-3 bg-green-50 border border-green-100 rounded-lg">
-                                            <p className="text-green-800 text-xs font-medium mb-2">
-                                                🚚 {formatPrice(freeShippingProgress.remaining)} away from free shipping!
-                                            </p>
-                                            <div className="w-full bg-green-100 rounded-full h-1.5">
-                                                <div 
-                                                    className="bg-green-500 h-1.5 rounded-full transition-all duration-300"
-                                                    style={{ width: `${freeShippingProgress.progress}%` }}
-                                                />
-                                            </div>
-                                        </div>
-                                    )} */}
                                 </div>
                                 <div className="p-5 bg-vanilla-50 border-t border-vanilla-100">
                                     <div className="flex items-center justify-center gap-6">
