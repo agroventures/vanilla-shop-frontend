@@ -2,7 +2,7 @@ import api from "./api";
 
 export const getOrders = async () => {
     const response = await api.get("/orders");
-    response.data = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    response.data = response.data.filter((order) => order.status !== "cancelled" && order.status !== "pending_payment").sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     return response.data;
 };
 
@@ -13,13 +13,13 @@ export const getProducts = async () => {
 
 export const getTodayOrders = async () => {
     const response = await api.get(`/orders`)
-    response.data = response.data.filter((order) => new Date(order.createdAt).toDateString() === new Date().toDateString());
+    response.data = response.data.filter((order) => order.status !== "cancelled" && order.status !== "pending_payment" &&  new Date(order.createdAt).toDateString() === new Date().toDateString());
     return response.data;
 };
 
 export const getTotalRevenue = async () => {
     const response = await api.get(`/orders`)
-    response.data = response.data.filter((order) => order.status !== "cancelled").reduce((total, order) => total + order.totalPrice, 0);
+    response.data = response.data.filter((order) => order.status !== "cancelled" && order.status !== "pending_payment").reduce((total, order) => total + order.totalPrice, 0);
     return response.data;
 };
 

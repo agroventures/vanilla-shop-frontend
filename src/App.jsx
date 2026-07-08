@@ -20,6 +20,8 @@ import ScrollToTop from "./components/ScrollToTop";
 import NotFound from "./components/NotFound";
 import Loader from "./components/Loader";
 import { useEffect, useState } from "react";
+import Receipt from "./pages/Receipt";
+import OrderFailed from "./pages/OrderFailed";
 // import PaymentReturn from "./pages/PaymentReturn";
 
 
@@ -50,12 +52,15 @@ function App() {
         <Route path="/products/:slug" element={<ProductDetail />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/receipt" element={<Receipt />} />
         {/* <Route path="/payment/return" element={<PaymentReturn />} /> */}
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/refund" element={<Refund />} />
+        {/* <Route path="/receipt" element={<Receipt />} /> */}
         <Route path="/order-success/:orderId" element={<OrderSuccess />} />
         <Route path="/order-cancel" element={<OrderCancel />} />
+        <Route path="/order-failed/:orderId" element={<OrderFailed />} />
         <Route path="/admin/*" element={<Admin />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

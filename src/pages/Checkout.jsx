@@ -364,9 +364,9 @@ const Checkout = () => {
     
     // NEW STATE for Payment Gateway Iframe
     const [iframeUrl, setIframeUrl] = useState(null)
-    // Tracks the reqid/orderId for the payment currently in the iframe, and
-    // whether we're mid-verification after receiving the postMessage below.
-    const [pendingPayment, setPendingPayment] = useState(null) // { reqid, orderId }
+    // Tracks the reqid + original orderData for the card payment in the iframe.
+    // Order is only created after APPROVED is confirmed.
+    const [pendingPayment, setPendingPayment] = useState(null) // { reqid, orderData }
     const [verifyingPayment, setVerifyingPayment] = useState(false)
 
     // Currency State - Initialize from localStorage or location state
@@ -523,7 +523,7 @@ const Checkout = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }, [currentStep])
 
-    // Listen for the postMessage the backend's /api/payment/callback route sends
+    // Listen for the postMessage the backend's /api/payments/callback route sends
     // once Paycorp redirects the iframe there and PAYMENT_COMPLETE has run.
     // (The iframe can't top-level-redirect us to a receipt page — its own
     // navigation is trapped inside the frame — so the backend instead posts a
@@ -540,15 +540,19 @@ const Checkout = () => {
 
             setVerifyingPayment(true)
             try {
-                // Re-fetch the authoritative record from our own DB rather than
-                // trusting the postMessage payload alone.
                 const { data: txn } = await getTransaction(pendingPayment.reqid)
 
                 if (txn.status === 'APPROVED') {
+                    // Payment confirmed — now create the order
+                    const response = await axios.post(
+                        `${import.meta.env.VITE_API_URL}/orders`,
+                        { ...pendingPayment.orderData, txnReference: txn.txnReference }
+                    )
+                    const createdOrder = response.data.order
                     emptyCart()
                     window.dispatchEvent(new Event('cartUpdated'))
                     toast.success('Payment approved!')
-                    navigate(`/order-success/${pendingPayment.orderId}`)
+                    navigate(`/order-success/${createdOrder.orderId}`)
                 } else {
                     toast.error(`Payment ${txn.status.toLowerCase()}. Please try again.`)
                     setErrors({ submit: `Payment was not approved (${txn.responseText || txn.status}). You can retry or choose Cash on Delivery.` })
@@ -557,8 +561,8 @@ const Checkout = () => {
                 }
             } catch (err) {
                 console.error('Payment verification failed:', err)
-                toast.error('Could not confirm payment status. Please contact support with your order reference.')
-                setErrors({ submit: `We couldn't confirm your payment automatically. Your order reference is ${pendingPayment.orderId} — contact support if you were charged.` })
+                toast.error('Could not confirm payment. Please contact support.')
+                setErrors({ submit: `We couldn't confirm your payment. Please contact support if you were charged.` })
             } finally {
                 setVerifyingPayment(false)
             }
@@ -638,88 +642,68 @@ const Checkout = () => {
 
     const handlePrevStep = () => setCurrentStep(currentStep - 1)
 
+    const buildOrderData = () => ({
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim().toLowerCase(),
+        phone: formData.phone.trim(),
+        currency,
+        orderItems: cartItems.map(item => ({
+            name: item.variantLabel ? `${item.name} (${item.variantLabel})` : item.name,
+            quantity: item.quantity,
+            image: item.image || '/images/placeholder.jpg',
+            price: getPriceValue(item),
+            priceInLKR: item.priceInLKR || item.price || null,
+            priceInUSD: item.priceInUSD || null,
+            product: item.productId
+        })),
+        shippingAddress: {
+            address: formData.address.trim(),
+            city: formData.city.trim(),
+            state: formData.state.trim(),
+            zipCode: formData.zipCode.trim(),
+            country: formData.country
+        },
+        paymentMethod: formData.paymentMethod,
+        itemsPrice: subtotal,
+        shippingPrice: shippingCost,
+        totalPrice: total
+    })
+
     const handlePlaceOrder = async () => {
         if (!validateStep(3)) return
         if (!canCheckout) {
             toast.error(`Some items don't have prices in ${currency}`)
             return
         }
-        
+
         setIsProcessing(true)
         try {
-            const orderData = {
-                firstName: formData.firstName.trim(),
-                lastName: formData.lastName.trim(),
-                email: formData.email.trim().toLowerCase(),
-                phone: formData.phone.trim(),
-                currency: currency,
-                orderItems: cartItems.map(item => ({
-                    name: item.variantLabel ? `${item.name} (${item.variantLabel})` : item.name,
-                    quantity: item.quantity,
-                    image: item.image || '/images/placeholder.jpg',
-                    price: getPriceValue(item),
-                    priceInLKR: item.priceInLKR || item.price || null,
-                    priceInUSD: item.priceInUSD || null,
-                    product: item.productId
-                })),
-                shippingAddress: {
-                    address: formData.address.trim(),
-                    city: formData.city.trim(),
-                    state: formData.state.trim(),
-                    zipCode: formData.zipCode.trim(),
-                    country: formData.country
-                },
-                paymentMethod: formData.paymentMethod,
-                itemsPrice: subtotal,
-                shippingPrice: shippingCost,
-                totalPrice: total
-            }
+            if (formData.paymentMethod === 'card') {
+                // Card flow: init payment first, create order only after APPROVED
+                const res = await initPayment({
+                    amount: total,
+                    currency,
+                    clientRef: `pending-${Date.now()}`,
+                    orderData: buildOrderData()
+                })
 
-            // 1. Create the Order in the Backend first
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/orders`, orderData)
-            
-            const createdOrder = response.data.order
-
-            if (createdOrder) {
-                // 2. Check Payment Method
-                const requiresGateway = ['cod', 'card'].includes(formData.paymentMethod) && formData.paymentMethod !== 'cod';
-
-                if (requiresGateway) {
-                    try {
-                        const res = await initPayment({
-                            amount: total,
-                            currency: currency,
-                            clientRef: createdOrder.orderId,
-                        });
-                        console.log(res);
-                        
-
-                        if (res.data && res.data.paymentPageUrl && res.data.reqid) {
-                            // NOTE: cart is intentionally NOT cleared here. The
-                            // customer hasn't paid yet — clearing it now would
-                            // lose their order if they cancel or the card is
-                            // declined inside the iframe. It's cleared only
-                            // once the postMessage listener above confirms
-                            // status === APPROVED.
-                            setPendingPayment({ reqid: res.data.reqid, orderId: createdOrder.orderId });
-                            setIframeUrl(res.data.paymentPageUrl);
-                            toast.success("Redirecting to secure payment...");
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                        } else {
-                            throw new Error("Invalid payment gateway response");
-                        }
-                    } catch (paymentErr) {
-                        console.error(paymentErr);
-                        toast.error("Payment initialization failed");
-                        setErrors({ submit: "Payment gateway error. Please try again or select Cash on Delivery." });
-                    }
+                if (res.data?.paymentPageUrl && res.data?.reqid) {
+                    setPendingPayment({ reqid: res.data.reqid, orderData: buildOrderData() })
+                    setIframeUrl(res.data.paymentPageUrl)
+                    toast.success('Redirecting to secure payment...')
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
                 } else {
-                    // COD / Offline Flow
-                    emptyCart()
-                    window.dispatchEvent(new Event('cartUpdated'))
-                    toast.success('Order placed successfully!')
-                    navigate(`/order-success/${createdOrder.orderId}`)
+                    throw new Error('Invalid payment gateway response')
                 }
+            } else {
+                // COD flow: create order immediately
+                const response = await axios.post(`${import.meta.env.VITE_API_URL}/orders`, buildOrderData())
+                const createdOrder = response.data.order
+                emptyCart()
+                window.dispatchEvent(new Event('cartUpdated'))
+                toast.success('Order placed successfully!')
+                navigate(`/order-success/${createdOrder.orderId}`)
             }
         } catch (error) {
             const errorMessage = error.response?.data?.message || 'Failed to place order.'
@@ -830,7 +814,7 @@ const Checkout = () => {
                                 <div className="bg-white rounded-2xl border border-vanilla-100 shadow-sm overflow-hidden p-1 relative">
                                     <div className="p-4 bg-vanilla-50 border-b border-vanilla-100 mb-2 flex justify-between items-center">
                                         <h2 className="font-bold text-lg text-vanilla-900">Secure Payment</h2>
-                                        <button
+                                        {/* <button
                                             onClick={() => {
                                                 // Graceful cancel: the order was already created (unpaid) and the
                                                 // cart is still intact since we never emptied it pre-payment.
@@ -842,7 +826,7 @@ const Checkout = () => {
                                             className="text-sm text-red-500 hover:underline disabled:opacity-40 disabled:cursor-not-allowed"
                                         >
                                             Cancel Payment
-                                        </button>
+                                        </button> */}
                                     </div>
                                     <div className="w-full relative">
                                         <iframe

@@ -18,6 +18,7 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { getOrderData } from '../api/data.api'
 import useSEO from '../hooks/useSEO'
+import { emptyCart } from '../utils/Cart'
 
 const OrderSuccess = () => {
     const navigate = useNavigate()
@@ -36,6 +37,8 @@ const OrderSuccess = () => {
 
     useEffect(() => {
         if (!orderId) return
+        
+        emptyCart();
 
         getOrderData(orderId)
             .then(res => {
