@@ -281,9 +281,7 @@ const OrderSummaryContent = ({
                         <Truck className="w-4 h-4 text-gold-500" />
                         <span>{selectedShipping.name}</span>
                     </div>
-                    <p className="text-xs text-vanilla-800/60 mt-1 ml-6">
-                        {selectedShipping.description}
-                    </p>
+
                 </div>
             )}
         </div>
@@ -439,23 +437,23 @@ const Checkout = () => {
         if (isLocal) {
             if (currency === 'USD') {
                 return [
-                    { id: 'standard', name: 'Standard Delivery', description: '3-5 business days' },
+                    { id: 'standard', name: 'Standard Delivery' },
                 ]
             }
             return [
-                { id: 'standard', name: 'Standard Delivery', description: '3-5 business days' },
+                { id: 'standard', name: 'Standard Delivery' },
             ]
         } else {
             // International
             if (currency === 'USD') {
                 return [
-                    { id: 'international-standard', name: 'International Standard', description: '10-15 business days', price: 15, freeOver: 100 },
-                    { id: 'international-express', name: 'International Express', description: '5-7 business days', price: 30, freeOver: null }
+                    { id: 'international-standard', name: 'International Standard', price: 15, freeOver: 100 },
+                    { id: 'international-express', name: 'International Express', price: 30, freeOver: null }
                 ]
             }
             return [
-                { id: 'international-standard', name: 'International Standard', description: '10-15 business days', price: 2500, freeOver: 25000 },
-                { id: 'international-express', name: 'International Express', description: '5-7 business days', price: 5000, freeOver: null }
+                { id: 'international-standard', name: 'International Standard', price: 2500, freeOver: 25000 },
+                { id: 'international-express', name: 'International Express', price: 5000, freeOver: null }
             ]
         }
     }
@@ -1063,10 +1061,7 @@ const Checkout = () => {
                                                                                 </span>
                                                                             )}
                                                                         </div>
-                                                                        <p className="text-vanilla-800/60 text-xs sm:text-sm flex items-center gap-1 mt-0.5">
-                                                                            <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-                                                                            {method.description}
-                                                                        </p>
+
                                                                     </div>
                                                                 </div>
                                                             </label>
