@@ -24,7 +24,8 @@ import {
     FileText,
     User,
     ShoppingBag,
-    SlidersHorizontal
+    SlidersHorizontal,
+    AlertCircleIcon
 } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -64,6 +65,45 @@ const ORDER_STATUSES = {
     },
     cancelled: {
         label: 'Cancelled',
+        bg: 'bg-red-50',
+        text: 'text-red-800',
+        border: 'border-red-200',
+        icon: XCircle
+    }
+};
+
+// Payment Status Configuration
+const PAYMENT_STATUSES = {
+    paid: {
+        label: 'Paid',
+        bg: 'bg-emerald-50',
+        text: 'text-emerald-800',
+        border: 'border-emerald-200',
+        icon: CheckCircle
+    },
+    unpaid: {
+        label: 'Unpaid',
+        bg: 'bg-amber-50',
+        text: 'text-amber-800',
+        border: 'border-amber-200',
+        icon: Clock
+    },
+    pending: {
+        label: 'Pending',
+        bg: 'bg-amber-50',
+        text: 'text-amber-800',
+        border: 'border-amber-200',
+        icon: Clock
+    },
+    refunded: {
+        label: 'Refunded',
+        bg: 'bg-blue-50',
+        text: 'text-blue-800',
+        border: 'border-blue-200',
+        icon: RefreshCcw
+    },
+    failed: {
+        label: 'Failed',
         bg: 'bg-red-50',
         text: 'text-red-800',
         border: 'border-red-200',
@@ -211,6 +251,7 @@ export default function AdminOrders() {
     const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const paginatedOrders = filteredOrders.slice(startIndex, startIndex + itemsPerPage);
+    
 
     // Helper Functions
     const formatPrice = (price) => `LKR ${(price || 0).toLocaleString()}`;
@@ -310,11 +351,21 @@ export default function AdminOrders() {
         const statusConfig = ORDER_STATUSES[status] || ORDER_STATUSES.pending;
         const Icon = statusConfig.icon;
         const sizeClasses = size === 'small' ? 'px-2 py-0.5 text-[10px]' : 'px-2.5 py-1 text-xs';
-
         return (
             <span className={`inline-flex items-center gap-1.5 rounded-full font-semibold border ${sizeClasses} ${statusConfig.bg} ${statusConfig.text} ${statusConfig.border}`}>
                 <Icon className={size === 'small' ? 'w-3 h-3' : 'w-3.5 h-3.5'} />
                 {statusConfig.label}
+            </span>
+        );
+    };
+
+    const PaymentBadge = ({ status }) => {
+        const config = PAYMENT_STATUSES[status] || PAYMENT_STATUSES.unpaid;
+        const Icon = config.icon;
+        return (
+            <span className={`inline-flex items-center gap-1.5 rounded-full font-semibold border px-2.5 py-1 text-xs ${config.bg} ${config.text} ${config.border}`}>
+                <Icon className="w-3.5 h-3.5" />
+                {config.label}
             </span>
         );
     };
@@ -661,7 +712,9 @@ export default function AdminOrders() {
                                         <th className="px-6 py-4 text-left font-bold text-vanilla-900">Customer</th>
                                         <th className="px-6 py-4 text-left font-bold text-vanilla-900">Products</th>
                                         <th className="px-6 py-4 text-left font-bold text-vanilla-900">Total</th>
-                                        <th className="px-6 py-4 text-left font-bold text-vanilla-900">Status</th>
+                                        <th className="px-6 py-4 text-left font-bold text-vanilla-900">Order Status</th>
+                                        <th className="px-6 py-4 text-left font-bold text-vanilla-900">Payment Method</th>
+                                        <th className="px-6 py-4 text-left font-bold text-vanilla-900">Payment Status</th>
                                         <th className="px-6 py-4 text-left font-bold text-vanilla-900">Date</th>
                                         <th className="px-6 py-4 text-right font-bold text-vanilla-900">Actions</th>
                                     </tr>
@@ -674,6 +727,8 @@ export default function AdminOrders() {
                                             <td className="px-6 py-4"><div className="max-w-50 truncate text-vanilla-800/70" title={getOrderItemsSummary(order)}>{getOrderItemsSummary(order)}</div></td>
                                             <td className="px-6 py-4"><span className="font-bold text-vanilla-900">{formatPrice(order.totalPrice)}</span></td>
                                             <td className="px-6 py-4"><StatusBadge status={order.status || 'pending'} /></td>
+                                            <td className="px-6 py-4"><span className="text-vanilla-800/80 text-xs">{PAYMENT_METHODS[order.paymentMethod] || order.paymentMethod || 'N/A'}</span></td>
+                                            <td className="px-6 py-4"><PaymentBadge status={order.paymentStatus} /></td>
                                             <td className="px-6 py-4"><span className="text-vanilla-800/60 text-xs">{formatDate(order.createdAt)}</span></td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="inline-flex items-center justify-end gap-2 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity">

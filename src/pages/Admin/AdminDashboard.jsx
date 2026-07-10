@@ -80,7 +80,7 @@ const StatusBadge = ({ status }) => {
       text: "text-purple-800",
       border: "border-purple-200",
       icon: Truck
-    },
+    }
   };
 
   const config = statusConfig[status] || statusConfig.pending;
@@ -449,7 +449,7 @@ function AdminDashboard() {
                 <tr>
                   <th className="text-left text-xs font-bold text-vanilla-800 uppercase tracking-wider px-6 py-4">Order</th>
                   <th className="text-left text-xs font-bold text-vanilla-800 uppercase tracking-wider px-6 py-4">Customer</th>
-                  <th className="text-left text-xs font-bold text-vanilla-800 uppercase tracking-wider px-6 py-4">Status</th>
+                  <th className="text-left text-xs font-bold text-vanilla-800 uppercase tracking-wider px-6 py-4">Order Status</th>
                   <th className="text-left text-xs font-bold text-vanilla-800 uppercase tracking-wider px-6 py-4">Amount</th>
                   <th className="text-left text-xs font-bold text-vanilla-800 uppercase tracking-wider px-6 py-4">Action</th>
                 </tr>
