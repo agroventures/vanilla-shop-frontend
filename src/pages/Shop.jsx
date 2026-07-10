@@ -920,7 +920,7 @@ const Shop = () => {
                     </div>
 
                     {/* Expanded Filters */}
-                    <div className={`${showFilters || window.innerWidth >= 1024 ? 'block' : 'hidden'} lg:block mt-6 pt-6 border-t border-vanilla-100`}>
+                    <div className={`${showFilters ? 'block' : 'hidden'} lg:block mt-6 pt-6 border-t border-vanilla-100`}>
                         <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center">
                             <span className="text-sm font-semibold text-vanilla-900">Category:</span>
                             <div className="flex flex-wrap gap-2">
