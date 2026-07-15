@@ -23,6 +23,7 @@ import { useEffect, useState } from "react";
 import Receipt from "./pages/Receipt";
 import OrderFailed from "./pages/OrderFailed";
 // import PaymentReturn from "./pages/PaymentReturn";
+import { Analytics } from "@vercel/analytics/react"
 
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
     <BrowserRouter>
       <Toaster position="top-right" reverseOrder={false} />
       <ScrollToTop />
+      <Analytics />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />

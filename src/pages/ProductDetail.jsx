@@ -429,7 +429,7 @@ const ProductDetail = () => {
             <select 
                 value={currency} 
                 onChange={(e) => setCurrency(e.target.value)} 
-                className="appearance-none pl-8 pr-8 py-2 bg-white border border-vanilla-200 rounded-full text-vanilla-900 font-medium text-sm focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 cursor-pointer shadow-sm hover:border-vanilla-300 transition-colors"
+                className="appearance-none pl-7 pr-7 py-2 bg-white border border-vanilla-200 rounded-full text-vanilla-900 font-medium text-xs sm:text-sm focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 cursor-pointer shadow-sm hover:border-vanilla-300 transition-colors"
             >
                 <option value="LKR">🇱🇰 LKR (Rs)</option>
                 <option value="USD">🇺🇸 USD ($)</option>
@@ -473,11 +473,11 @@ const ProductDetail = () => {
             }
             return (
                 <div className="flex items-baseline gap-3 flex-wrap">
-                    <span className="font-serif text-4xl font-bold text-gold-500">
+                    <span className="font-serif text-xl sm:text-4xl font-bold text-gold-500">
                         {formatPrice(variantPrice)}
                     </span>
                     {selectedVariant.weight && (
-                        <span className="text-vanilla-800/60 font-sans text-lg">
+                        <span className="text-vanilla-800/60 font-sans text-sm sm:text-lg">
                             / {selectedVariant.weight}
                         </span>
                     )}
@@ -488,11 +488,11 @@ const ProductDetail = () => {
         if (!hasVariants() && priceInfo.hasPrice) {
             return (
                 <div className="flex items-baseline gap-3 flex-wrap">
-                    <span className="font-serif text-4xl font-bold text-gold-500">
+                    <span className="font-serif text-xl sm:text-4xl font-bold text-gold-500">
                         {formatPrice(priceInfo.single)}
                     </span>
                     {product.weight && (
-                        <span className="text-vanilla-800/60 font-sans text-lg">
+                        <span className="text-vanilla-800/60 font-sans text-sm sm:text-lg">
                             / {product.weight}
                         </span>
                     )}
@@ -504,18 +504,18 @@ const ProductDetail = () => {
             if (priceInfo.hasRange) {
                 return (
                     <div className="flex items-baseline gap-2 flex-wrap">
-                        <span className="font-serif text-3xl font-bold text-gold-500">
+                        <span className="font-serif text-lg sm:text-3xl font-bold text-gold-500">
                             {formatPrice(priceInfo.min)}
                         </span>
-                        <span className="text-vanilla-800/40 text-xl font-serif">-</span>
-                        <span className="font-serif text-3xl font-bold text-gold-500">
+                        <span className="text-vanilla-800/40 text-lg font-serif">-</span>
+                        <span className="font-serif text-lg sm:text-3xl font-bold text-gold-500">
                             {formatPrice(priceInfo.max)}
                         </span>
                     </div>
                 )
             } else {
                 return (
-                    <span className="font-serif text-4xl font-bold text-gold-500">
+                    <span className="font-serif text-xl sm:text-4xl font-bold text-gold-500">
                         {formatPrice(priceInfo.single)}
                     </span>
                 )
@@ -592,8 +592,8 @@ const ProductDetail = () => {
             <main className="pt-24 pb-16 min-h-screen bg-vanilla-50 font-sans text-vanilla-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Breadcrumbs with Currency Selector */}
-                    <nav className="flex items-center justify-between text-sm py-6 gap-4">
-                        <div className="flex items-center gap-2 overflow-x-auto">
+                    <nav className="flex items-center justify-between text-sm py-6 gap-2">
+                        <div className="flex items-center gap-1.5 min-w-0 overflow-hidden">
                             <Link
                                 to="/"
                                 className="text-vanilla-800/60 hover:text-gold-500 transition-colors flex items-center gap-1 shrink-0"
@@ -601,15 +601,15 @@ const ProductDetail = () => {
                                 <Home className="w-4 h-4" />
                                 <span className="hidden sm:inline">Home</span>
                             </Link>
-                            <ChevronRight className="w-4 h-4 text-vanilla-200 shrink-0" />
+                            <ChevronRight className="w-3 h-3 text-vanilla-200 shrink-0" />
                             <Link
                                 to="/shop"
                                 className="text-vanilla-800/60 hover:text-gold-500 transition-colors shrink-0"
                             >
                                 Products
                             </Link>
-                            <ChevronRight className="w-4 h-4 text-vanilla-200 shrink-0" />
-                            <span className="text-vanilla-900 font-medium truncate max-w-37.5 sm:max-w-none">
+                            <ChevronRight className="w-3 h-3 text-vanilla-200 shrink-0" />
+                            <span className="text-vanilla-900 font-medium truncate">
                                 {product.name}
                             </span>
                         </div>
@@ -624,7 +624,7 @@ const ProductDetail = () => {
                             {/* ==================== */}
                             {/* IMAGE GALLERY */}
                             {/* ==================== */}
-                            <div className="relative bg-vanilla-50 p-4 lg:p-8">
+                            <div className="relative bg-vanilla-50 p-2 sm:p-4 lg:p-8">
                                 {/* Main Image */}
                                 <div
                                     className="relative aspect-square rounded-2xl overflow-hidden bg-white cursor-zoom-in shadow-sm"
@@ -650,30 +650,30 @@ const ProductDetail = () => {
                                         <>
                                             <button
                                                 onClick={(e) => { e.stopPropagation(); prevImage(); }}
-                                                className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 rounded-full flex items-center justify-center text-vanilla-900 hover:text-gold-500 hover:bg-white transition-colors duration-300 shadow-md"
+                                                className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-12 sm:h-12 bg-white/90 rounded-full flex items-center justify-center text-vanilla-900 hover:text-gold-500 hover:bg-white transition-colors duration-300 shadow-md"
                                             >
-                                                <ChevronLeft className="w-6 h-6" />
+                                                <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
                                             </button>
                                             <button
                                                 onClick={(e) => { e.stopPropagation(); nextImage(); }}
-                                                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 rounded-full flex items-center justify-center text-vanilla-900 hover:text-gold-500 hover:bg-white transition-colors duration-300 shadow-md"
+                                                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-12 sm:h-12 bg-white/90 rounded-full flex items-center justify-center text-vanilla-900 hover:text-gold-500 hover:bg-white transition-colors duration-300 shadow-md"
                                             >
-                                                <ChevronRight className="w-6 h-6" />
+                                                <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
                                             </button>
                                         </>
                                     )}
 
                                     {/* Category Badge */}
-                                    <div className="absolute top-4 left-4">
-                                        <span className="px-4 py-2 rounded-full text-sm font-semibold bg-vanilla-900 text-white shadow-lg tracking-wide">
+                                    <div className="absolute top-2 left-2 sm:top-4 sm:left-4">
+                                        <span className="px-2.5 py-1 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-semibold bg-vanilla-900 text-white shadow-lg tracking-wide">
                                             {product.category}
                                         </span>
                                     </div>
 
                                     {/* Current Image Source Indicator */}
                                     {allImagesWithSource[currentImageIndex]?.source?.type === 'variant' && (
-                                        <div className="absolute top-4 right-4">
-                                            <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-gold-500 text-white shadow-lg">
+                                        <div className="absolute top-2 right-2 sm:top-4 sm:right-4">
+                                            <span className="px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs font-medium bg-gold-500 text-white shadow-lg">
                                                 {allImagesWithSource[currentImageIndex].source.label}
                                             </span>
                                         </div>
@@ -718,7 +718,7 @@ const ProductDetail = () => {
                                                     <button
                                                         key={index}
                                                         onClick={() => setCurrentImageIndex(index)}
-                                                        className={`relative w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all duration-300 group ${
+                                                        className={`relative w-14 h-14 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all duration-300 group ${
                                                             isSelected
                                                                 ? 'border-gold-500 shadow-md ring-2 ring-gold-500/20'
                                                                 : 'border-transparent hover:border-vanilla-300'
@@ -790,11 +790,11 @@ const ProductDetail = () => {
                             {/* ==================== */}
                             {/* PRODUCT INFO */}
                             {/* ==================== */}
-                            <div className="p-6 lg:p-10 flex flex-col">
+                            <div className="p-3 sm:p-6 lg:p-10 flex flex-col">
                                 {/* Header */}
                                 <div className="mb-6">
-                                    <div className="flex items-start justify-between gap-4 mb-4">
-                                        <h1 className="font-serif text-3xl lg:text-4xl text-vanilla-900 font-bold leading-tight">
+                                    <div className="flex items-start justify-between gap-3 mb-4">
+                                        <h1 className="font-serif text-xl sm:text-3xl lg:text-4xl text-vanilla-900 font-bold leading-tight">
                                             {product.name}
                                         </h1>
                                         <div className="flex items-center gap-2 shrink-0">
@@ -998,7 +998,7 @@ const ProductDetail = () => {
                                 )}
 
                                 {/* Quantity & Add to Cart */}
-                                <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                                <div className="flex flex-col gap-3 mb-6">
                                     {/* Quantity Selector */}
                                     <div className="flex items-center justify-center border-2 border-vanilla-200 rounded-xl overflow-hidden bg-white">
                                         <button
@@ -1024,7 +1024,7 @@ const ProductDetail = () => {
                                     <button
                                         onClick={handleAddToCart}
                                         disabled={!canAddToCart()}
-                                        className={`flex-1 py-4 px-8 rounded-xl font-bold tracking-wide flex items-center justify-center gap-2 transition-all duration-300 shadow-md ${
+                                        className={`w-full py-4 px-4 rounded-xl font-bold tracking-wide flex items-center justify-center gap-2 transition-all duration-300 shadow-md text-sm sm:text-base ${
                                             addedToCart
                                                 ? 'bg-green-600 text-white'
                                                 : !canAddToCart()
@@ -1055,7 +1055,8 @@ const ProductDetail = () => {
                                         ) : (
                                             <>
                                                 <ShoppingBag className="w-5 h-5" />
-                                                Add to Cart <span className="hidden sm:inline">- {formatPrice(currentPrice * quantity)}</span>
+                                                <span>Add to Cart</span>
+                                                <span className="hidden sm:inline">- {formatPrice(currentPrice * quantity)}</span>
                                             </>
                                         )}
                                     </button>
@@ -1094,35 +1095,35 @@ const ProductDetail = () => {
                                 )}
 
                                 {/* Trust Badges */}
-                                <div className="grid grid-cols-2 gap-3 pt-6 border-t border-vanilla-100">
-                                    <div className="flex items-center gap-3 p-3 bg-vanilla-50 rounded-xl">
-                                        <Truck className="w-5 h-5 text-gold-500" />
-                                        <div>
-                                            <p className="text-sm font-bold text-vanilla-900">Free Shipping</p>
-                                            <p className="text-xs text-vanilla-800/60">
-                                                Orders over {currency === 'USD' ? '$25' : 'LKR 5,000'}
+                                <div className="grid grid-cols-2 gap-1.5 sm:gap-2 pt-4 sm:pt-6 border-t border-vanilla-100">
+                                    <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-3 bg-vanilla-50 rounded-xl">
+                                        <Truck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gold-500 shrink-0" />
+                                        <div className="min-w-0">
+                                            <p className="text-[10px] sm:text-xs font-bold text-vanilla-900 truncate">Free Shipping</p>
+                                            <p className="text-[9px] sm:text-[10px] text-vanilla-800/60 truncate">
+                                                Over {currency === 'USD' ? '$25' : 'LKR 5,000'}
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-3 p-3 bg-vanilla-50 rounded-xl">
-                                        <Shield className="w-5 h-5 text-gold-500" />
-                                        <div>
-                                            <p className="text-sm font-bold text-vanilla-900">Secure Payment</p>
-                                            <p className="text-xs text-vanilla-800/60">100% Protected</p>
+                                    <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-3 bg-vanilla-50 rounded-xl">
+                                        <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gold-500 shrink-0" />
+                                        <div className="min-w-0">
+                                            <p className="text-[10px] sm:text-xs font-bold text-vanilla-900 truncate">Secure Pay</p>
+                                            <p className="text-[9px] sm:text-[10px] text-vanilla-800/60">100% Protected</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-3 p-3 bg-vanilla-50 rounded-xl">
-                                        <RotateCcw className="w-5 h-5 text-gold-500" />
-                                        <div>
-                                            <p className="text-sm font-bold text-vanilla-900">Easy Returns</p>
-                                            <p className="text-xs text-vanilla-800/60">30 Day Policy</p>
+                                    <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-3 bg-vanilla-50 rounded-xl">
+                                        <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gold-500 shrink-0" />
+                                        <div className="min-w-0">
+                                            <p className="text-[10px] sm:text-xs font-bold text-vanilla-900 truncate">Easy Returns</p>
+                                            <p className="text-[9px] sm:text-[10px] text-vanilla-800/60">30 Day Policy</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-3 p-3 bg-vanilla-50 rounded-xl">
-                                        <Leaf className="w-5 h-5 text-gold-500" />
-                                        <div>
-                                            <p className="text-sm font-bold text-vanilla-900">100% Natural</p>
-                                            <p className="text-xs text-vanilla-800/60">Pure Ingredients</p>
+                                    <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-3 bg-vanilla-50 rounded-xl">
+                                        <Leaf className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gold-500 shrink-0" />
+                                        <div className="min-w-0">
+                                            <p className="text-[10px] sm:text-xs font-bold text-vanilla-900 truncate">100% Natural</p>
+                                            <p className="text-[9px] sm:text-[10px] text-vanilla-800/60">Pure Ingredients</p>
                                         </div>
                                     </div>
                                 </div>
