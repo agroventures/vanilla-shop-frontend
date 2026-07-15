@@ -23,8 +23,7 @@ import { useEffect, useState } from "react";
 import Receipt from "./pages/Receipt";
 import OrderFailed from "./pages/OrderFailed";
 // import PaymentReturn from "./pages/PaymentReturn";
-import { Analytics } from "@vercel/analytics/react"
-
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   const [loading, setLoading] = useState(true);

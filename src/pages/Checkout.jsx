@@ -46,6 +46,7 @@ import {
     canCheckoutInCurrency
 } from '../utils/Cart'
 import useSEO from '../hooks/useSEO'
+import deliveryFees from '../data/deliveryCost'
 // New Import based on your snippet
 import { initPayment, getTransaction } from "../api/payment.api";
 
@@ -261,6 +262,12 @@ const OrderSummaryContent = ({
                     <span>Subtotal ({cartItems.reduce((sum, item) => sum + item.quantity, 0)} items)</span>
                     <span className="font-medium text-vanilla-900">{formatPrice(subtotal)}</span>
                 </div>
+                {shippingCost > 0 && (
+                    <div className="flex justify-between text-vanilla-800/70">
+                        <span>Delivery Fee</span>
+                        <span className="font-medium text-vanilla-900">{formatPrice(shippingCost)}</span>
+                    </div>
+                )}
             </div>
 
             <div className="h-px bg-vanilla-100 my-4" />
@@ -274,16 +281,16 @@ const OrderSummaryContent = ({
                 </div>
             </div>
 
-            {/* Shipping Method */}
-            {selectedShipping && (
-                <div className="mt-4 p-3 bg-vanilla-50 rounded-lg border border-vanilla-100">
-                    <div className="flex items-center gap-2 text-sm text-vanilla-900 font-medium">
-                        <Truck className="w-4 h-4 text-gold-500" />
-                        <span>{selectedShipping.name}</span>
-                    </div>
-
-                </div>
-            )}
+            {/* Delivery Fee */}
+            {/* <div className="flex justify-between items-center mt-3 text-sm text-vanilla-800/70">
+                <span className="flex items-center gap-1.5">
+                    <Truck className="w-4 h-4 text-gold-500" />
+                    Delivery
+                </span>
+                <span className="font-medium text-vanilla-900">
+                    {shippingCost > 0 ? formatPrice(shippingCost) : '—'}
+                </span>
+            </div> */}
         </div>
     )
 }
@@ -431,17 +438,20 @@ const Checkout = () => {
     const canCheckout = missingPriceItems.length === 0
 
     // Shipping Logic with Currency Support
+    const selectedCityData = deliveryFees.find(d => d.city === formData.city)
+    const localDeliveryFee = selectedCityData?.fee || 0
+
     const getShippingMethods = () => {
         const isLocal = formData.country === 'Sri Lanka'
         
         if (isLocal) {
             if (currency === 'USD') {
                 return [
-                    { id: 'standard', name: 'Standard Delivery' },
+                    { id: 'standard', name: 'Standard Delivery', price: localDeliveryFee },
                 ]
             }
             return [
-                { id: 'standard', name: 'Standard Delivery' },
+                { id: 'standard', name: 'Standard Delivery', price: localDeliveryFee },
             ]
         } else {
             // International
@@ -576,7 +586,7 @@ const Checkout = () => {
 
     const getShippingCost = () => {
         if (selectedShipping?.freeOver && subtotal >= selectedShipping.freeOver) return 0
-        return selectedShipping?.price || 0
+        return selectedShipping?.price ?? 0
     }
 
     const shippingCost = getShippingCost()
@@ -949,18 +959,32 @@ const Checkout = () => {
                                                     <Input label="Street Address" name="address" required placeholder="123 Main Street" value={formData.address} onChange={handleChange} error={errors.address} />
 
                                                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                                        <Input label="City" name="city" required placeholder="City" value={formData.city} onChange={handleChange} error={errors.city} />
+                                                        {formData.country === 'Sri Lanka' ? (
+                                                            <Select label="City" name="city" required value={formData.city} onChange={(e) => {
+                                                                const city = e.target.value
+                                                                const data = deliveryFees.find(d => d.city === city)
+                                                                setFormData(prev => ({
+                                                                    ...prev,
+                                                                    city,
+                                                                    state: data?.district || prev.state,
+                                                                    zipCode: data?.postalCode || prev.zipCode
+                                                                }))
+                                                                if (errors.city) setErrors(prev => ({ ...prev, city: null }))
+                                                            }} error={errors.city}>
+                                                                <option value="">Select City</option>
+                                                                {deliveryFees.map(d => <option key={d.id} value={d.city}>{d.city}</option>)}
+                                                            </Select>
+                                                        ) : (
+                                                            <Input label="City" name="city" required placeholder="City" value={formData.city} onChange={handleChange} error={errors.city} />
+                                                        )}
 
                                                         {formData.country === 'Sri Lanka' ? (
-                                                            <Select label="District" name="state" required value={formData.state} onChange={handleChange} error={errors.state}>
-                                                                <option value="">Select District</option>
-                                                                {SRI_LANKAN_STATES.map((state) => <option key={state} value={state}>{state}</option>)}
-                                                            </Select>
+                                                            <Input label="District" name="state" required placeholder="District" value={formData.state} readOnly onChange={handleChange} error={errors.state} />
                                                         ) : (
                                                             <Input label="State / Province" name="state" required placeholder="State" value={formData.state} onChange={handleChange} error={errors.state} />
                                                         )}
 
-                                                        <Input label="Postal / ZIP Code" name="zipCode" required placeholder="00000" value={formData.zipCode} onChange={handleChange} error={errors.zipCode} />
+                                                        <Input label="Postal / ZIP Code" name="zipCode" required placeholder="00000" value={formData.zipCode} readOnly={formData.country === 'Sri Lanka'} onChange={handleChange} error={errors.zipCode} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -1200,6 +1224,10 @@ const Checkout = () => {
                                                         <div className="flex justify-between text-sm text-vanilla-800/70">
                                                             <span>Subtotal</span>
                                                             <span>{formatPrice(subtotal)}</span>
+                                                        </div>
+                                                        <div className="flex justify-between text-sm text-vanilla-800/70">
+                                                            <span>Delivery Fee</span>
+                                                            <span>{shippingCost > 0 ? formatPrice(shippingCost) : formData.country === 'Sri Lanka' && !formData.city ? 'Select city' : 'Free'}</span>
                                                         </div>
                                                         <div className="flex justify-between font-bold text-base sm:text-lg pt-2 text-vanilla-900">
                                                             <span className="font-serif">Total</span>
