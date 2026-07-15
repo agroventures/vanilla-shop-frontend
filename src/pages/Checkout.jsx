@@ -760,13 +760,13 @@ const Checkout = () => {
                         </div>
                         
                         {/* Currency Selector - Hide if Iframe is active to prevent switching during payment */}
-                        {!iframeUrl && (
+                        {/* {!iframeUrl && (
                             <CurrencySelector 
                                 currency={currency} 
                                 onCurrencyChange={handleCurrencyChange}
                                 className="shrink-0"
                             />
-                        )}
+                        )} */}
                     </nav>
                 </div>
             </div>
@@ -1316,13 +1316,13 @@ const Checkout = () => {
                                 <div className="p-5 bg-vanilla-50 border-b border-vanilla-100 flex items-center justify-between">
                                     <h2 className="font-bold text-lg text-vanilla-900 font-serif">Order Summary</h2>
                                     {/* Hide currency selector in summary during payment */}
-                                    {!iframeUrl && (
+                                    {/* {!iframeUrl && (
                                         <CurrencySelector 
                                             currency={currency} 
                                             onCurrencyChange={handleCurrencyChange}
                                             compact
                                         />
-                                    )}
+                                    )} */}
                                 </div>
                                 <div className="p-5">
                                     <OrderSummaryContent
