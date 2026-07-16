@@ -35,7 +35,7 @@ const About = () => {
             <span className="uppercase tracking-widest text-gold-500 text-sm font-bold mb-2 block">Est. Feb 21, 2025</span>
             <h2 className="text-4xl font-serif font-bold text-vanilla-900 mb-6">A Dream Rooted in Colombo</h2>
             <p className="text-lg text-vanilla-800/80 mb-6 leading-relaxed">
-              Founded at <strong>No. 253, Koswatta, Kaduwela Road, Battaramulla</strong>, our journey began with a simple dream: to celebrate the essence of vanilla in its purest form.
+              Located at <strong>No. 253, Koswatta, Kaduwela Road, Battaramulla</strong>, our journey began with a simple dream: to celebrate the essence of vanilla in its purest form.
             </p>
             <p className="text-vanilla-800/70 mb-6 leading-relaxed">
               As Sri Lanka’s first premium vanilla boutique café, we have transformed a simple ingredient into an immersive experience that engages all senses. Every detail — from our aromatic brews and desserts to our artisanal retail range — reflects our devotion to authenticity and excellence.
