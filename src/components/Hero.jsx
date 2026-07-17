@@ -108,7 +108,7 @@ const Hero = () => {
       </div>
 
       {/* Bottom scroll cue — drawing line instead of bounce dot */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-3">
+      {/* <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-3">
         <span
           className="text-[9px] uppercase tracking-[0.4em] text-[#F3E9D8]/40 opacity-0 animate-[fadeUp_0.9s_ease_forwards]"
           style={{ fontFamily: "'Jost', sans-serif", animationDelay: '1.1s' }}
@@ -118,7 +118,7 @@ const Hero = () => {
         <div className="relative h-10 w-px bg-[#F3E9D8]/15 overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full bg-[#C6A668] animate-[scrollLine_2.2s_ease-in-out_infinite]" />
         </div>
-      </div>
+      </div> */}
 
       <style>{`
         @keyframes fadeUp {
