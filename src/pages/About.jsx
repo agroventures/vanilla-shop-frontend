@@ -50,7 +50,7 @@ const About = () => {
           <div className="relative">
             <div className="absolute -inset-4 border-2 border-gold-500 rounded-lg transform translate-x-4 translate-y-4 hidden md:block"></div>
             <img 
-              src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1000&auto=format&fit=crop" 
+              src="/images/about/products.jpeg" 
               alt="Artisanal Cafe Interior" 
               className="relative rounded-lg shadow-2xl w-full h-auto object-cover"
             />
