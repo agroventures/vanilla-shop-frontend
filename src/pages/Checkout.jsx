@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+import ReCAPTCHA from 'react-google-recaptcha'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import {
     ChevronRight,
@@ -366,6 +367,8 @@ const Checkout = () => {
     // Order is only created after APPROVED is confirmed.
     const [pendingPayment, setPendingPayment] = useState(null) // { reqid, orderData }
     const [verifyingPayment, setVerifyingPayment] = useState(false)
+    const recaptchaRef = useRef(null)
+    const [captchaToken, setCaptchaToken] = useState(null)
 
     // Currency State - Initialize from localStorage or location state
     const [currency, setCurrency] = useState(() => {
@@ -672,6 +675,10 @@ const Checkout = () => {
         if (!validateStep(3)) return
         if (!canCheckout) {
             toast.error(`Some items don't have prices in ${currency}`)
+            return
+        }
+        if (formData.paymentMethod === 'card' && !captchaToken) {
+            toast.error('Please complete the CAPTCHA verification.')
             return
         }
 
@@ -1208,6 +1215,22 @@ const Checkout = () => {
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            {/* reCAPTCHA for card payments */}
+                                            {formData.paymentMethod === 'card' && (
+                                                <div className="bg-white rounded-xl sm:rounded-2xl border border-vanilla-100 shadow-sm p-4 sm:p-5">
+                                                    <p className="text-sm font-bold text-vanilla-900 mb-3 flex items-center gap-2">
+                                                        <ShieldCheck className="w-4 h-4 text-gold-500" />
+                                                        Security Verification
+                                                    </p>
+                                                    <ReCAPTCHA
+                                                        ref={recaptchaRef}
+                                                        sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                                                        onChange={(token) => setCaptchaToken(token)}
+                                                        onExpired={() => setCaptchaToken(null)}
+                                                    />
+                                                </div>
+                                            )}
 
                                             {/* Terms */}
                                             <div className="bg-white rounded-xl sm:rounded-2xl border border-vanilla-100 shadow-sm p-4 sm:p-5">
