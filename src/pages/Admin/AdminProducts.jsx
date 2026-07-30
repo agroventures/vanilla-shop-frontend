@@ -24,6 +24,7 @@ import toast from "react-hot-toast";
 import useSEO from "../../hooks/useSEO";
 
 export default function AdminProducts() {
+    const isMarketing = localStorage.getItem("role") === "marketing";
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
@@ -193,12 +194,14 @@ export default function AdminProducts() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <PageTitle title="Products" subtitle="Manage your store catalog" />
-                <Link to='/admin/products/add' className="w-full sm:w-auto">
-                    <button className="w-full flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-vanilla-900 text-white font-medium hover:bg-vanilla-800 transition-all shadow-md">
-                        <Plus className="w-4 h-4" />
-                        Add Product
-                    </button>
-                </Link>
+                {!isMarketing && (
+                    <Link to='/admin/products/add' className="w-full sm:w-auto">
+                        <button className="w-full flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-vanilla-900 text-white font-medium hover:bg-vanilla-800 transition-all shadow-md">
+                            <Plus className="w-4 h-4" />
+                            Add Product
+                        </button>
+                    </Link>
+                )}
             </div>
 
             {/* Filters */}
@@ -329,7 +332,8 @@ export default function AdminProducts() {
                                                             {product.variants && product.variants.length > 0 && (
                                                                 <button onClick={() => toggleExpand(product._id)} className="p-2 rounded-lg hover:bg-vanilla-200 text-vanilla-500 hover:text-vanilla-900 transition">{expandedProduct === product._id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}</button>
                                                             )}
-                                                            <Link to={`/admin/products/edit/${product.slug}`}><button className="p-2 rounded-lg hover:bg-blue-50 text-vanilla-400 hover:text-blue-600 transition"><Pencil className="w-4 h-4" /></button></Link>
+                                                            
+                                                            {!isMarketing && <Link to={`/admin/products/edit/${product.slug}`}><button className="p-2 rounded-lg hover:bg-blue-50 text-vanilla-400 hover:text-blue-600 transition"><Pencil className="w-4 h-4" /></button></Link>}
                                                             {/* <button onClick={() => { setSelectedProductId(product._id); setDeleteModalOpen(true); }} className="p-2 rounded-lg hover:bg-red-50 text-vanilla-400 hover:text-red-600 transition"><Trash2 className="w-4 h-4" /></button> */}
                                                         </div>
                                                     </td>
@@ -466,21 +470,24 @@ export default function AdminProducts() {
                                             )}
 
                                             <div className="flex gap-2 shrink-0">
-                                                <Link to={`/admin/products/edit/${product.slug}`}>
-                                                    <button className="p-2 rounded-lg bg-vanilla-50 text-vanilla-400 hover:text-blue-600 hover:bg-blue-50 border border-vanilla-200 transition">
-                                                        <Pencil className="w-4 h-4" />
-                                                    </button>
-                                                </Link>
-
-                                                <button
-                                                    onClick={() => {
-                                                        setSelectedProductId(product._id);
-                                                        setDeleteModalOpen(true);
-                                                    }}
-                                                    className="p-2 rounded-lg bg-vanilla-50 text-vanilla-400 hover:text-red-600 hover:bg-red-50 border border-vanilla-200 transition"
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
+                                                {!isMarketing && (
+                                                    <>
+                                                        <Link to={`/admin/products/edit/${product.slug}`}>
+                                                            <button className="p-2 rounded-lg bg-vanilla-50 text-vanilla-400 hover:text-blue-600 hover:bg-blue-50 border border-vanilla-200 transition">
+                                                                <Pencil className="w-4 h-4" />
+                                                            </button>
+                                                        </Link>
+                                                        <button
+                                                            onClick={() => {
+                                                                setSelectedProductId(product._id);
+                                                                setDeleteModalOpen(true);
+                                                            }}
+                                                            className="p-2 rounded-lg bg-vanilla-50 text-vanilla-400 hover:text-red-600 hover:bg-red-50 border border-vanilla-200 transition"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </button>
+                                                    </>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
