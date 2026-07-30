@@ -6,6 +6,7 @@ import {
     LogOut,
     ShoppingBag,
     Menu,
+    BarChart2,
 } from "lucide-react";
 import axios from "axios";
 
@@ -15,6 +16,7 @@ import AdminProducts from "./Admin/AdminProducts";
 import AdminOrders from "./Admin/AdminOrders";
 import AdminAddProduct from "./Admin/AdminAddProduct";
 import AdminEditProduct from "./Admin/AdminEditProduct";
+import AdminReport from "./Admin/AdminReport";
 
 export default function Admin() {
     const location = useLocation();
@@ -56,6 +58,7 @@ export default function Admin() {
         { path: "/admin", icon: LayoutDashboard, label: "Dashboard" },
         { path: "/admin/products", icon: Gift, label: "Products" },
         { path: "/admin/orders", icon: ShoppingBag, label: "Orders" },
+        { path: "/admin/report", icon: BarChart2, label: "Revenue Report" },
     ];
 
     return (
@@ -153,6 +156,7 @@ export default function Admin() {
                                 <Route path="/products/add" element={<AdminAddProduct />} />
                                 <Route path="/products/edit/:slug" element={<AdminEditProduct />} />
                                 <Route path="/orders" element={<AdminOrders />} />
+                                <Route path="/report" element={<AdminReport />} />
                             </Route>
                         </Routes>
                     </div>
