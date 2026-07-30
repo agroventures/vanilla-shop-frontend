@@ -24,6 +24,7 @@ import Receipt from "./pages/Receipt";
 import OrderFailed from "./pages/OrderFailed";
 // import PaymentReturn from "./pages/PaymentReturn";
 import { Analytics } from "@vercel/analytics/react"
+import SocialMediaLinks from "./pages/SocialMediaLinks";
 
 
 function App() {
@@ -66,6 +67,7 @@ function App() {
         <Route path="/admin/*" element={<Admin />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/social-media" element={<SocialMediaLinks />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
