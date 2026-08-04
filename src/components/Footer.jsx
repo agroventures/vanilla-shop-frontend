@@ -162,12 +162,12 @@ const Footer = () => {
           <div className="flex items-center gap-2 text-[11px] text-vanilla-300/40">
             <span>Powered by</span>
             <a
-              href="https://ventrax.lk"
-              target="_blank"
+              href="#"
+              // target="_blank"
               rel="noreferrer"
               className="font-medium text-vanilla-300/60 transition-colors duration-300 hover:text-gold-400"
             >
-              Ventrax.lk
+              Agroventures Digital
             </a>
           </div>
 
