@@ -32,7 +32,7 @@ export default function Admin() {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((res) => {
-                if (res.data.admin.userRole === "admin" || res.data.admin.userRole === "marketing") {
+                if (res.data.admin.userRole === "admin" || res.data.admin.userRole === "marketing" || res.data.admin.userRole === "it") {
                     setAdmin(res.data.admin);
                 } else {
                     window.location.href = "/";

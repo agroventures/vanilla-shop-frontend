@@ -68,7 +68,7 @@ export default function Login() {
 
             toast.success("Login successful");
 
-            navigate(res.data.role === "admin" || res.data.role === "marketing" ? "/admin" : "/");
+            navigate(res.data.role === "admin" || res.data.role === "marketing" || res.data.role === "it" ? "/admin" : "/" );
         } catch (err) {
             toast.error(
                 err?.response?.data?.message || "Invalid email or password"

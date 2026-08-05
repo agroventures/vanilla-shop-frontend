@@ -9,7 +9,7 @@ const AuthRoute = () => {
         return <Navigate to="/login" />;
     }
 
-    if (role !== "admin" && role !== "marketing") {
+    if (role !== "admin" && role !== "marketing" && role !== "it") {
         return <Navigate to="/" />;
     }
 

@@ -120,7 +120,7 @@ const PAYMENT_METHODS = {
 };
 
 export default function AdminOrders() {
-    const isMarketing = localStorage.getItem("role") === "marketing";
+    const isNotAdmin = localStorage.getItem("role") === "marketing";
     // State
     const [orders, setOrders] = useState([]);
     const [filteredOrders, setFilteredOrders] = useState([]);
@@ -734,8 +734,8 @@ export default function AdminOrders() {
                                             <td className="px-6 py-4 text-right">
                                                 <div className="inline-flex items-center justify-end gap-2 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity">
                                                     <button onClick={() => { setSelectedOrder(order); setShowViewModal(true); }} className="p-2 text-vanilla-400 hover:text-gold-500 hover:bg-vanilla-100 rounded-lg transition-colors" title="View Details"><Eye className="w-4 h-4" /></button>
-                                                    {!isMarketing && <button onClick={() => { setSelectedOrder(order); setShowStatusModal(true); }} className="p-2 text-vanilla-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Update Status"><Pencil className="w-4 h-4" /></button>}
-                                                    {!isMarketing && <button onClick={() => { setSelectedOrder(order); setShowDeleteModal(true); }} className="p-2 text-vanilla-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete Order"><Trash2 className="w-4 h-4" /></button>}
+                                                    {!isNotAdmin && <button onClick={() => { setSelectedOrder(order); setShowStatusModal(true); }} className="p-2 text-vanilla-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Update Status"><Pencil className="w-4 h-4" /></button>}
+                                                    {!isNotAdmin && <button onClick={() => { setSelectedOrder(order); setShowDeleteModal(true); }} className="p-2 text-vanilla-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete Order"><Trash2 className="w-4 h-4" /></button>}
                                                 </div>
                                             </td>
                                         </tr>
