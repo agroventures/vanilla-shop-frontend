@@ -1,4 +1,4 @@
-import { Routes, Route, Link, useLocation } from "react-router-dom";
+import { Routes, Route, Link, useLocation, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
     Gift,
@@ -7,6 +7,7 @@ import {
     ShoppingBag,
     Menu,
     BarChart2,
+    MonitorSmartphone,
 } from "lucide-react";
 import axios from "axios";
 
@@ -17,6 +18,7 @@ import AdminOrders from "./Admin/AdminOrders";
 import AdminAddProduct from "./Admin/AdminAddProduct";
 import AdminEditProduct from "./Admin/AdminEditProduct";
 import AdminReport from "./Admin/AdminReport";
+import AdminPOS from "./Admin/AdminPOS";
 
 export default function Admin() {
     const location = useLocation();
@@ -32,7 +34,8 @@ export default function Admin() {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((res) => {
-                if (res.data.admin.userRole === "admin" || res.data.admin.userRole === "marketing" || res.data.admin.userRole === "it") {
+                const role = res.data.admin.userRole;
+                if (role === "admin" || role === "marketing" || role === "it" || role === "cashier") {
                     setAdmin(res.data.admin);
                 } else {
                     window.location.href = "/";
@@ -54,12 +57,15 @@ export default function Admin() {
         return location.pathname.startsWith(path);
     };
 
+    const isCashier = admin?.userRole === "cashier";
+
     const navItems = [
-        { path: "/admin", icon: LayoutDashboard, label: "Dashboard" },
-        { path: "/admin/products", icon: Gift, label: "Products" },
-        { path: "/admin/orders", icon: ShoppingBag, label: "Orders" },
-        { path: "/admin/report", icon: BarChart2, label: "Revenue Report" },
-    ];
+        { path: "/admin", icon: LayoutDashboard, label: "Dashboard", roles: null },
+        { path: "/admin/products", icon: Gift, label: "Products", roles: null },
+        { path: "/admin/orders", icon: ShoppingBag, label: "Orders", roles: null },
+        { path: "/admin/pos", icon: MonitorSmartphone, label: "POS", roles: null },
+        { path: "/admin/report", icon: BarChart2, label: "Revenue Report", roles: null },
+    ].filter(item => !isCashier || item.path === "/admin/pos");
 
     return (
         <div className="w-full h-screen flex bg-vanilla-100 font-sans overflow-hidden">
@@ -151,12 +157,13 @@ export default function Admin() {
                     <div className="w-full h-full rounded-2xl bg-vanilla-50 shadow-xl border border-vanilla-200 overflow-y-auto p-4 lg:p-8">
                         <Routes>
                             <Route element={<AuthRoute />}>
-                                <Route path="/" element={<AdminDashboard />} />
-                                <Route path="/products" element={<AdminProducts />} />
-                                <Route path="/products/add" element={<AdminAddProduct />} />
-                                <Route path="/products/edit/:slug" element={<AdminEditProduct />} />
-                                <Route path="/orders" element={<AdminOrders />} />
-                                <Route path="/report" element={<AdminReport />} />
+                                <Route path="/" element={isCashier ? <Navigate to="/admin/pos" replace /> : <AdminDashboard />} />
+                                <Route path="/products" element={isCashier ? <Navigate to="/admin/pos" replace /> : <AdminProducts />} />
+                                <Route path="/products/add" element={isCashier ? <Navigate to="/admin/pos" replace /> : <AdminAddProduct />} />
+                                <Route path="/products/edit/:slug" element={isCashier ? <Navigate to="/admin/pos" replace /> : <AdminEditProduct />} />
+                                <Route path="/orders" element={isCashier ? <Navigate to="/admin/pos" replace /> : <AdminOrders />} />
+                                <Route path="/report" element={isCashier ? <Navigate to="/admin/pos" replace /> : <AdminReport />} />
+                                <Route path="/pos" element={<AdminPOS />} />
                             </Route>
                         </Routes>
                     </div>

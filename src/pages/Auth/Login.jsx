@@ -62,13 +62,19 @@ export default function Login() {
             );
 
             localStorage.setItem("token", res.data.token);
-            localStorage.setItem("role", res.data.role);
+            const role = res.data.role || res.data.userRole;
+            localStorage.setItem("role", role);
 
-            console.log("login res.data:", res.data);
 
             toast.success("Login successful");
 
-            navigate(res.data.role === "admin" || res.data.role === "marketing" || res.data.role === "it" ? "/admin" : "/" );
+            if (role === "cashier") {
+                navigate("/admin/pos");
+            } else if (role === "admin" || role === "marketing" || role === "it") {
+                navigate("/admin");
+            } else {
+                navigate("/");
+            }
         } catch (err) {
             toast.error(
                 err?.response?.data?.message || "Invalid email or password"

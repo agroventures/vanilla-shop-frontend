@@ -130,6 +130,7 @@ export default function AdminOrders() {
     // Filters & Search
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [sourceFilter, setSourceFilter] = useState('all');
     const [dateFilter, setDateFilter] = useState('all');
     const [sortBy, setSortBy] = useState('newest');
     const [showFilters, setShowFilters] = useState(false);
@@ -203,6 +204,11 @@ export default function AdminOrders() {
             result = result.filter(order => order.status === statusFilter);
         }
 
+        // Source filter
+        if (sourceFilter !== 'all') {
+            result = result.filter(order => (order.source || 'online') === sourceFilter);
+        }
+
         // Date filter
         if (dateFilter !== 'all') {
             const now = new Date();
@@ -246,7 +252,7 @@ export default function AdminOrders() {
 
         setFilteredOrders(result);
         setCurrentPage(1);
-    }, [orders, searchQuery, statusFilter, dateFilter, sortBy]);
+    }, [orders, searchQuery, statusFilter, sourceFilter, dateFilter, sortBy]);
 
     // Pagination
     const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
@@ -341,11 +347,12 @@ export default function AdminOrders() {
     const clearFilters = () => {
         setSearchQuery('');
         setStatusFilter('all');
+        setSourceFilter('all');
         setDateFilter('all');
         setSortBy('newest');
     };
 
-    const hasActiveFilters = searchQuery || statusFilter !== 'all' || dateFilter !== 'all' || sortBy !== 'newest';
+    const hasActiveFilters = searchQuery || statusFilter !== 'all' || sourceFilter !== 'all' || dateFilter !== 'all' || sortBy !== 'newest';
 
     // Status Badge Component
     const StatusBadge = ({ status, size = 'default' }) => {
@@ -472,6 +479,15 @@ export default function AdminOrders() {
                                 <div className="bg-white border border-vanilla-200 rounded-xl p-4 space-y-3 text-sm shadow-sm">
                                     <div className="flex justify-between items-center"><span className="text-vanilla-800/70">Payment</span><span className="font-medium text-vanilla-900">{PAYMENT_METHODS[order.paymentMethod] || order.paymentMethod}</span></div>
                                     <div className="flex justify-between items-center"><span className="text-vanilla-800/70">Status</span><StatusBadge status={order.status || 'pending'} /></div>
+                                    <div className="flex justify-between items-center"><span className="text-vanilla-800/70">Source</span>
+                                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border ${
+                                            order.source === 'pos'
+                                                ? 'bg-violet-50 text-violet-700 border-violet-200'
+                                                : 'bg-sky-50 text-sky-700 border-sky-200'
+                                        }`}>
+                                            {order.source === 'pos' ? 'POS' : 'Online'}
+                                        </span>
+                                    </div>
                                     <div className="flex justify-between items-center"><span className="text-vanilla-800/70">Date</span><span className="font-medium text-vanilla-900">{formatDate(order.createdAt)}</span></div>
                                 </div>
                             </div>
@@ -658,11 +674,19 @@ export default function AdminOrders() {
                     <button onClick={() => setShowFilters(!showFilters)} className={`lg:hidden p-2.5 border rounded-lg transition-colors flex items-center justify-center shrink-0 ${showFilters || hasActiveFilters ? 'border-gold-500 bg-vanilla-50 text-gold-600' : 'border-vanilla-200 text-vanilla-600 hover:bg-vanilla-50'}`}><SlidersHorizontal className="w-5 h-5" /></button>
                 </div>
 
-                <div className={`${showFilters ? 'grid' : 'hidden'} lg:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-3 pt-3 border-t border-vanilla-100 lg:border-0 lg:pt-0`}>
+                <div className={`${showFilters ? 'grid' : 'hidden'} lg:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mt-3 pt-3 border-t border-vanilla-100 lg:border-0 lg:pt-0`}>
                     <div className="relative">
                         <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="w-full px-3 py-2.5 border border-vanilla-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 text-sm bg-white text-vanilla-900 appearance-none">
                             <option value="all">All Statuses</option>
                             {Object.entries(ORDER_STATUSES).map(([key, config]) => (<option key={key} value={key}>{config.label}</option>))}
+                        </select>
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-vanilla-400 pointer-events-none" />
+                    </div>
+                    <div className="relative">
+                        <select value={sourceFilter} onChange={(e) => setSourceFilter(e.target.value)} className="w-full px-3 py-2.5 border border-vanilla-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 text-sm bg-white text-vanilla-900 appearance-none">
+                            <option value="all">All Sources</option>
+                            <option value="online">Online</option>
+                            <option value="pos">POS</option>
                         </select>
                         <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-vanilla-400 pointer-events-none" />
                     </div>
@@ -716,6 +740,7 @@ export default function AdminOrders() {
                                         <th className="px-6 py-4 text-left font-bold text-vanilla-900">Order Status</th>
                                         <th className="px-6 py-4 text-left font-bold text-vanilla-900">Payment Method</th>
                                         <th className="px-6 py-4 text-left font-bold text-vanilla-900">Payment Status</th>
+                                        <th className="px-6 py-4 text-left font-bold text-vanilla-900">Source</th>
                                         <th className="px-6 py-4 text-left font-bold text-vanilla-900">Date</th>
                                         <th className="px-6 py-4 text-right font-bold text-vanilla-900">Actions</th>
                                     </tr>
@@ -730,6 +755,15 @@ export default function AdminOrders() {
                                             <td className="px-6 py-4"><StatusBadge status={order.status || 'pending'} /></td>
                                             <td className="px-6 py-4"><span className="text-vanilla-800/80 text-xs">{PAYMENT_METHODS[order.paymentMethod] || order.paymentMethod || 'N/A'}</span></td>
                                             <td className="px-6 py-4"><PaymentBadge status={order.paymentStatus} /></td>
+                                            <td className="px-6 py-4">
+                                                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border ${
+                                                    order.source === 'pos'
+                                                        ? 'bg-violet-50 text-violet-700 border-violet-200'
+                                                        : 'bg-sky-50 text-sky-700 border-sky-200'
+                                                }`}>
+                                                    {order.source === 'pos' ? 'POS' : 'Online'}
+                                                </span>
+                                            </td>
                                             <td className="px-6 py-4"><span className="text-vanilla-800/60 text-xs">{formatDate(order.createdAt)}</span></td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="inline-flex items-center justify-end gap-2 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity">
