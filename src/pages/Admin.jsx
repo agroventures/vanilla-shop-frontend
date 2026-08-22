@@ -22,27 +22,39 @@ import AdminPOS from "./Admin/AdminPOS";
 
 export default function Admin() {
     const location = useLocation();
-    const [admin, setAdmin] = useState(null);
+    const [admin, setAdmin] = useState({ userRole: localStorage.getItem("role") });
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
-        if (!token) window.location.href = "/login";
+        const role = localStorage.getItem("role");
+
+        if (!token) {
+            window.location.href = "/login";
+            return;
+        }
+
+        const validRoles = ["admin", "marketing", "it", "cashier"];
+        if (!validRoles.includes(role)) {
+            window.location.href = "/";
+            return;
+        }
+
+        if (role === "cashier") return;
 
         axios
             .get(`${import.meta.env.VITE_API_URL}/admin`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((res) => {
-                const role = res.data.admin.userRole;
-                if (role === "admin" || role === "marketing" || role === "it" || role === "cashier") {
-                    setAdmin(res.data.admin);
-                } else {
-                    window.location.href = "/";
-                }
+                setAdmin(res.data.admin);
             })
-            .catch(() => {
-                window.location.href = "/";
+            .catch((err) => {
+                if (err?.response?.status === 401 || err?.response?.status === 403) {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("role");
+                    window.location.href = "/login";
+                }
             });
     }, []);
 

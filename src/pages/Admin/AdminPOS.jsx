@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Search, Plus, Minus, Trash2, ShoppingCart, X, Loader2, Package, CheckCircle, Banknote, CreditCard, Building } from "lucide-react";
+import { Search, Plus, Minus, Trash2, ShoppingCart, X, Loader2, Package, CheckCircle, Banknote, CreditCard, Building, Printer } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import PageTitle from "../../components/admin/PageTitle";
@@ -22,6 +22,7 @@ export default function AdminPOS() {
     const [paymentMethod, setPaymentMethod] = useState("cod");
     const [placing, setPlacing] = useState(false);
     const [showCart, setShowCart] = useState(false);
+    const [printMode, setPrintMode] = useState(false);
 
     useSEO({ title: "POS - The Vanilla Shop", url: window.location.href });
 
@@ -60,42 +61,108 @@ export default function AdminPOS() {
 
     const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
-    const handlePlaceOrder = async () => {
+    const placeOrder = async () => {
+        const res = await axios.post(
+            `${import.meta.env.VITE_API_URL}/orders`,
+            {
+                firstName: "POS",
+                lastName: "Sale",
+                email: "pos@vanillashop.com",
+                phone: "N/A",
+                currency: "LKR",
+                orderItems: cart.map((i) => ({
+                    name: i.name,
+                    quantity: i.quantity,
+                    image: i.image || "",
+                    price: i.price,
+                    priceInLKR: i.price,
+                    product: i.productId,
+                })),
+                shippingAddress: { address: "In-Store", city: "In-Store", state: "In-Store", zipCode: "00000", country: "Sri Lanka" },
+                paymentMethod,
+                itemsPrice: total,
+                shippingPrice: 0,
+                totalPrice: total,
+                source: "pos",
+            },
+            { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+        );
+        return res.data;
+    };
+
+    const printBill = (orderData) => {
+        const paymentLabel = PAYMENT_METHODS.find((m) => m.id === paymentMethod)?.label || paymentMethod;
+        const date = new Date().toLocaleString();
+        const orderId = orderData?.order?._id || orderData?._id || "";
+
+        const html = `
+            <html><head><title>Receipt</title><style>
+                body { font-family: monospace; font-size: 13px; width: 300px; margin: 0 auto; padding: 16px; }
+                h2 { text-align: center; margin: 0 0 4px; font-size: 16px; }
+                p { text-align: center; margin: 2px 0; font-size: 11px; color: #555; }
+                hr { border: none; border-top: 1px dashed #999; margin: 10px 0; }
+                .row { display: flex; justify-content: space-between; margin: 4px 0; }
+                .total { font-weight: bold; font-size: 14px; }
+                .footer { text-align: center; margin-top: 12px; font-size: 11px; color: #777; }
+            </style></head><body>
+                <h2>The Vanilla Shop</h2>
+                <p>In-Store Sale</p>
+                <p>${date}</p>
+                ${orderId ? `<p>Order: ${orderId}</p>` : ""}
+                <hr/>
+                ${cart.map((i) => `
+                    <div class="row">
+                        <span>${i.name} x${i.quantity}</span>
+                        <span>LKR ${(i.price * i.quantity).toLocaleString()}</span>
+                    </div>`).join("")}
+                <hr/>
+                <div class="row total">
+                    <span>Total</span>
+                    <span>LKR ${total.toLocaleString()}</span>
+                </div>
+                <div class="row"><span>Payment</span><span>${paymentLabel}</span></div>
+                <div class="footer">Thank you for your purchase!</div>
+            </body></html>`;
+
+        const win = window.open("", "_blank", "width=400,height=600");
+        win.document.write(html);
+        win.document.close();
+        win.focus();
+        win.print();
+        win.close();
+    };
+
+    const handleSave = async () => {
         if (cart.length === 0) return toast.error("Cart is empty");
         setPlacing(true);
+        setPrintMode(false);
         try {
-            await axios.post(
-                `${import.meta.env.VITE_API_URL}/orders`,
-                {
-                    firstName: "POS",
-                    lastName: "Sale",
-                    email: "pos@vanillashop.com",
-                    phone: "N/A",
-                    currency: "LKR",
-                    orderItems: cart.map((i) => ({
-                        name: i.name,
-                        quantity: i.quantity,
-                        image: i.image || "",
-                        price: i.price,
-                        priceInLKR: i.price,
-                        product: i.productId,
-                    })),
-                    shippingAddress: { address: "In-Store", city: "In-Store", state: "In-Store", zipCode: "00000", country: "Sri Lanka" },
-                    paymentMethod,
-                    itemsPrice: total,
-                    shippingPrice: 0,
-                    totalPrice: total,
-                    source: "pos",
-                },
-                { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
-            );
-            toast.success("Order placed successfully!");
+            await placeOrder();
+            toast.success("Order saved!");
             setCart([]);
             setShowCart(false);
         } catch (err) {
             toast.error(err.response?.data?.message || "Failed to place order");
         } finally {
             setPlacing(false);
+        }
+    };
+
+    const handleSaveAndPrint = async () => {
+        if (cart.length === 0) return toast.error("Cart is empty");
+        setPlacing(true);
+        setPrintMode(true);
+        try {
+            const data = await placeOrder();
+            toast.success("Order saved!");
+            printBill(data);
+            setCart([]);
+            setShowCart(false);
+        } catch (err) {
+            toast.error(err.response?.data?.message || "Failed to place order");
+        } finally {
+            setPlacing(false);
+            setPrintMode(false);
         }
     };
 
@@ -168,14 +235,24 @@ export default function AdminPOS() {
                     <span className="font-bold text-vanilla-900">Total</span>
                     <span className="font-bold text-xl text-gold-600 font-serif">{formatPrice(total)}</span>
                 </div>
-                <button
-                    onClick={handlePlaceOrder}
-                    disabled={placing || cart.length === 0}
-                    className="w-full py-3 bg-vanilla-900 text-white rounded-xl font-bold hover:bg-vanilla-800 transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-md"
-                >
-                    {placing ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle className="w-5 h-5" />}
-                    {placing ? "Placing..." : "Place Order"}
-                </button>
+                <div className="grid grid-cols-2 gap-2">
+                    <button
+                        onClick={handleSave}
+                        disabled={placing || cart.length === 0}
+                        className="py-3 bg-vanilla-900 text-white rounded-xl font-bold hover:bg-vanilla-800 transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-md text-sm"
+                    >
+                        {placing && !printMode ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+                        Save
+                    </button>
+                    <button
+                        onClick={handleSaveAndPrint}
+                        disabled={placing || cart.length === 0}
+                        className="py-3 bg-gold-600 text-black rounded-xl font-bold hover:bg-gold-700 transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-md text-sm"
+                    >
+                        {placing && printMode ? <Loader2 className="w-4 h-4 animate-spin" /> : <Printer className="w-4 h-4" />}
+                        Save & Print
+                    </button>
+                </div>
             </div>
         </div>
     );
