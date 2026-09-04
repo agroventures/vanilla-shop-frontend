@@ -117,7 +117,7 @@ const Products = () => {
         <div className="text-center mt-20">
           <Link
             to="/shop"
-            className="group relative inline-block px-10 py-4 text-xs uppercase tracking-[0.3em] font-medium text-white bg-vanilla-950 overflow-hidden"
+            className="group relative inline-block px-10 py-4 text-xs uppercase tracking-[0.3em] font-medium text-white bg-vanilla-900 overflow-hidden"
           >
             <span className="relative z-10">View Full Catalog</span>
             <span className="absolute inset-0 bg-gold-500 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 ease-out" />
